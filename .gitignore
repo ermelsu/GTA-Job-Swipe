@@ -1,0 +1,9 @@
+# prints crus — ficam só na sua máquina (podem ser pesados).
+# O que vai pro site são as versões cortadas em /images.
+raw/*
+!raw/.gitkeep
+
+.DS_Store
+Thumbs.db
+node_modules/
+*.log

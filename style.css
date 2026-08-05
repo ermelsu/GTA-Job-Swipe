@@ -1,0 +1,114 @@
+:root{
+  --bg:#0b0f14; --bg2:#121924; --card:#1a2431; --line:#26333f;
+  --txt:#eef3f8; --muted:#8ea0b3;
+  --like:#2ecc71; --dislike:#ff5a5f; --skip:#f5b942; --accent:#5b9dff;
+  --radius:20px;
+}
+*{box-sizing:border-box; -webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{
+  margin:0; background:radial-gradient(120% 100% at 50% 0%, var(--bg2), var(--bg));
+  color:var(--txt); font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  overscroll-behavior:none;
+}
+
+/* ---------- telas ---------- */
+.screen{display:none; min-height:100dvh; flex-direction:column}
+.screen.active{display:flex}
+
+/* ---------- login / fim ---------- */
+.login-card{
+  margin:auto; padding:28px 24px; width:min(92vw,420px); text-align:center;
+  display:flex; flex-direction:column; gap:16px;
+}
+.logo{font-size:2.4rem; font-weight:800; margin:0; letter-spacing:-.5px}
+.logo span{color:var(--accent)}
+.subtitle{color:var(--muted); margin:0; line-height:1.5}
+.hint{color:var(--muted); font-size:.85rem; margin:8px 0 0}
+#login-form{display:flex; flex-direction:column; gap:12px; margin-top:8px}
+input[type=text]{
+  padding:15px 16px; border-radius:14px; border:1px solid var(--line);
+  background:var(--bg2); color:var(--txt); font-size:1.05rem; text-align:center;
+}
+input[type=text]:focus{outline:none; border-color:var(--accent)}
+.btn-primary,.btn-secondary{
+  padding:15px; border:0; border-radius:14px; font-size:1.05rem; font-weight:700;
+  cursor:pointer; color:#fff;
+}
+.btn-primary{background:linear-gradient(120deg,var(--accent),#7c5cff)}
+.btn-secondary{background:var(--card); border:1px solid var(--line); color:var(--txt)}
+.btn-primary:active,.btn-secondary:active{transform:scale(.98)}
+.demo-badge{font-size:.78rem; color:var(--skip); margin:0}
+
+/* ---------- topbar / progresso ---------- */
+.topbar{
+  display:flex; align-items:center; gap:12px; padding:14px 18px;
+  padding-top:max(14px,env(safe-area-inset-top));
+}
+.greeting{font-weight:700; font-size:.95rem; white-space:nowrap;
+  max-width:28vw; overflow:hidden; text-overflow:ellipsis}
+.progress{flex:1; height:8px; background:var(--card); border-radius:99px; overflow:hidden}
+.progress-fill{height:100%; width:0; border-radius:99px;
+  background:linear-gradient(90deg,var(--accent),var(--like)); transition:width .25s ease}
+.progress-text{font-size:.85rem; color:var(--muted); white-space:nowrap}
+
+/* ---------- deck de cards ---------- */
+.deck{
+  position:relative; flex:1; margin:6px 18px 0;
+  display:flex; align-items:center; justify-content:center;
+}
+.card{
+  position:absolute; width:100%; max-width:460px; aspect-ratio:16/9;
+  border-radius:var(--radius); overflow:hidden; background:var(--card);
+  border:1px solid var(--line); box-shadow:0 18px 40px rgba(0,0,0,.45);
+  touch-action:none; will-change:transform; user-select:none;
+  display:flex; flex-direction:column; justify-content:flex-end;
+}
+.card img{
+  position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
+  pointer-events:none;
+}
+.card .caption{
+  position:relative; z-index:2; padding:14px 16px; font-weight:700;
+  background:linear-gradient(180deg,transparent,rgba(0,0,0,.75));
+  text-shadow:0 1px 4px rgba(0,0,0,.8);
+}
+.card .idx{position:absolute; top:10px; left:12px; z-index:2; font-size:.78rem;
+  color:#fff; background:rgba(0,0,0,.45); padding:3px 9px; border-radius:99px}
+
+/* selos LIKE / NOPE que aparecem ao arrastar */
+.stamp{
+  position:absolute; top:22px; z-index:3; font-size:1.6rem; font-weight:900;
+  letter-spacing:2px; padding:6px 14px; border-radius:10px; border:4px solid;
+  opacity:0; transition:opacity .1s;
+}
+.stamp-like{right:18px; color:var(--like); border-color:var(--like); transform:rotate(14deg)}
+.stamp-nope{left:18px;  color:var(--dislike); border-color:var(--dislike); transform:rotate(-14deg)}
+
+.empty{color:var(--muted); text-align:center; padding:20px}
+
+/* ---------- botões de controle ---------- */
+.controls{
+  display:flex; gap:16px; justify-content:center; align-items:center;
+  padding:18px; padding-bottom:max(18px,env(safe-area-inset-bottom));
+}
+.ctrl{
+  width:60px; height:60px; border-radius:50%; border:1px solid var(--line);
+  background:var(--card); color:var(--txt); font-size:1.5rem; cursor:pointer;
+  display:grid; place-items:center; transition:transform .1s, background .15s;
+}
+.ctrl:active{transform:scale(.9)}
+.ctrl:disabled{opacity:.35; cursor:default}
+.ctrl-undo{width:48px; height:48px; font-size:1.2rem; color:var(--muted)}
+.ctrl-skip{width:48px; height:48px; font-size:1.3rem; color:var(--skip)}
+.ctrl-like{color:var(--like); border-color:var(--like)}
+.ctrl-dislike{color:var(--dislike); border-color:var(--dislike)}
+
+/* ---------- toast ---------- */
+.toast{
+  position:fixed; left:50%; bottom:calc(96px + env(safe-area-inset-bottom));
+  transform:translateX(-50%); background:#000c; color:#fff; padding:10px 16px;
+  border-radius:99px; font-size:.9rem; z-index:50;
+}
+
+@media (max-width:380px){ .logo{font-size:2rem} .ctrl{width:54px;height:54px} }

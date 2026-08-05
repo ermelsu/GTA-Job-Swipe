@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+  <meta name="theme-color" content="#0b0f14">
+  <title>GTA Job Swipe</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ================= TELA 1: LOGIN ================= -->
+  <section id="screen-login" class="screen active">
+    <div class="login-card">
+      <h1 class="logo">GTA <span>Job Swipe</span></h1>
+      <p class="subtitle">Curta 👍 ou passe 👎 nas corridas. Arraste o card ou use os botões.</p>
+      <form id="login-form" autocomplete="off">
+        <input id="name-input" type="text" placeholder="Seu nome" maxlength="24" required>
+        <button type="submit" class="btn-primary">Começar</button>
+      </form>
+      <p id="demo-badge" class="demo-badge" hidden>modo demo — votos só neste aparelho</p>
+    </div>
+  </section>
+
+  <!-- ================= TELA 2: SWIPE ================= -->
+  <section id="screen-swipe" class="screen">
+    <header class="topbar">
+      <span id="greeting" class="greeting"></span>
+      <div class="progress">
+        <div id="progress-fill" class="progress-fill"></div>
+      </div>
+      <span id="progress-text" class="progress-text">0 / 0</span>
+    </header>
+
+    <div id="deck" class="deck" aria-live="polite"></div>
+
+    <div class="controls">
+      <button id="btn-undo"    class="ctrl ctrl-undo"    title="Desfazer" aria-label="Desfazer">↩︎</button>
+      <button id="btn-dislike" class="ctrl ctrl-dislike" title="Passar"   aria-label="Passar">✕</button>
+      <button id="btn-skip"    class="ctrl ctrl-skip"    title="Pular"    aria-label="Pular">»</button>
+      <button id="btn-like"    class="ctrl ctrl-like"    title="Curtir"   aria-label="Curtir">♥</button>
+    </div>
+  </section>
+
+  <!-- ================= TELA 3: FIM ================= -->
+  <section id="screen-done" class="screen">
+    <div class="login-card">
+      <h1 class="logo">Valeu! 🏁</h1>
+      <p id="done-summary" class="subtitle"></p>
+      <button id="btn-restart" class="btn-secondary">Refazer do zero</button>
+      <p class="hint">Pode fechar a página — seus votos já foram salvos.</p>
+    </div>
+  </section>
+
+  <div id="toast" class="toast" hidden></div>
+
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

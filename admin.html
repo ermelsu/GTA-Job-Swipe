@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ranking — GTA Job Swipe</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body{padding:20px}
+    .wrap{max-width:760px; margin:0 auto}
+    h1{font-size:1.6rem}
+    table{width:100%; border-collapse:collapse; margin-top:16px; font-size:.95rem}
+    th,td{padding:10px 8px; border-bottom:1px solid var(--line); text-align:left}
+    th{color:var(--muted); font-weight:600}
+    td.num{text-align:right; font-variant-numeric:tabular-nums}
+    .thumb{width:80px; aspect-ratio:16/9; object-fit:cover; border-radius:8px; vertical-align:middle}
+    .like{color:var(--like); font-weight:700}
+    .dislike{color:var(--dislike)}
+    .bar{height:6px; background:var(--card); border-radius:99px; overflow:hidden; margin-top:4px}
+    .bar > i{display:block; height:100%; background:var(--like)}
+    .tools{display:flex; gap:10px; flex-wrap:wrap; margin-top:16px}
+    .tools button{padding:10px 14px}
+    .rank{color:var(--muted); width:28px}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>🏁 Ranking de corridas</h1>
+    <p id="status" class="subtitle">Carregando…</p>
+    <div class="tools" hidden id="tools">
+      <button class="btn-secondary" id="btn-refresh">Atualizar</button>
+      <button class="btn-secondary" id="btn-csv">Baixar CSV</button>
+    </div>
+    <div id="table-wrap"></div>
+  </div>
+
+  <script src="config.js"></script>
+  <script>
+  (async () => {
+    const CFG = window.CONFIG || {};
+    const status = document.getElementById("status");
+
+    if (!CFG.SUPABASE_URL || !CFG.SUPABASE_ANON_KEY) {
+      status.textContent = "Configure o Supabase em config.js para ver o ranking.";
+      return;
+    }
+    // trava boba de senha
+    if (CFG.ADMIN_PASSWORD && CFG.ADMIN_PASSWORD !== "troque-isto") {
+      const pw = prompt("Senha:");
+      if (pw !== CFG.ADMIN_PASSWORD) { status.textContent = "Senha incorreta."; return; }
+    }
+
+    let jobs = [];
+    try { jobs = await (await fetch("jobs.json", {cache:"no-store"})).json(); } catch {}
+    const titleOf = {}, imgOf = {};
+    jobs.forEach(j => { titleOf[j.id] = j.title || j.id; imgOf[j.id] = j.img; });
+
+    async function fetchRanking() {
+      const res = await fetch(`${CFG.SUPABASE_URL}/rest/v1/ranking?select=*`, {
+        headers: { apikey: CFG.SUPABASE_ANON_KEY,
+                   Authorization: `Bearer ${CFG.SUPABASE_ANON_KEY}` },
+      });
+      if (!res.ok) throw new Error(await res.text());
+      return res.json();
+    }
+
+    let rows = [];
+    function draw() {
+      rows.sort((a,b) => b.likes - a.likes || a.dislikes - b.dislikes);
+      const maxLikes = Math.max(1, ...rows.map(r => r.likes));
+      let html = `<table><thead><tr>
+        <th></th><th></th><th>Corrida</th>
+        <th class="num">👍</th><th class="num">👎</th>
+        <th class="num">pulos</th><th class="num">votantes</th></tr></thead><tbody>`;
+      rows.forEach((r, i) => {
+        html += `<tr>
+          <td class="rank">${i+1}</td>
+          <td>${imgOf[r.job_id] ? `<img class="thumb" src="${imgOf[r.job_id]}">` : ""}</td>
+          <td>${titleOf[r.job_id] || r.job_id}
+              <div class="bar"><i style="width:${r.likes/maxLikes*100}%"></i></div></td>
+          <td class="num like">${r.likes}</td>
+          <td class="num dislike">${r.dislikes}</td>
+          <td class="num">${r.skips}</td>
+          <td class="num">${r.votantes}</td></tr>`;
+      });
+      html += "</tbody></table>";
+      document.getElementById("table-wrap").innerHTML = html;
+      status.textContent = `${rows.length} corridas · ${rows.reduce((s,r)=>s+r.likes+r.dislikes+r.skips,0)} votos`;
+    }
+
+    function toCSV() {
+      const head = "job_id,title,likes,dislikes,skips,votantes\n";
+      const body = rows.map(r =>
+        `${r.job_id},"${(titleOf[r.job_id]||"").replace(/"/g,'""')}",${r.likes},${r.dislikes},${r.skips},${r.votantes}`
+      ).join("\n");
+      const blob = new Blob([head+body], {type:"text/csv"});
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob); a.download = "ranking.csv"; a.click();
+    }
+
+    async function load() {
+      try { rows = await fetchRanking(); draw(); document.getElementById("tools").hidden = false; }
+      catch (e) { status.textContent = "Erro: " + e.message; }
+    }
+    document.getElementById("btn-refresh").onclick = load;
+    document.getElementById("btn-csv").onclick = toCSV;
+    load();
+  })();
+  </script>
+</body>
+</html>
