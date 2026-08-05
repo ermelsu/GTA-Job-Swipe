@@ -3,9 +3,13 @@
 // ===========================================================================
 // Onde achar:
 //   1. Crie um projeto grátis em https://supabase.com
-//   2. Painel do projeto -> Settings -> API
-//   3. Copie "Project URL" e a chave "anon public" (pode ficar pública, é
-//      feita pra front-end; a segurança fica nas policies do banco).
+//   2. SUPABASE_URL:  Settings -> Data API -> "Project URL"
+//                     (algo como https://xxxxxxxx.supabase.co)
+//   3. SUPABASE_ANON_KEY:  Settings -> API Keys -> "Publishable key"
+//                     (começa com sb_publishable_... — é a chave segura pra
+//                      navegador. NÃO use a "Secret key" sb_secret_...!)
+//      Obs.: em projetos antigos essa chave se chamava "anon public" — serve
+//      igual. A segurança fica nas policies do banco (o supabase_setup.sql).
 //
 // Enquanto isso estiver em branco, o site roda em MODO DEMO: os votos ficam
 // só no seu navegador (localStorage) e nada é enviado pra nuvem. Útil pra
