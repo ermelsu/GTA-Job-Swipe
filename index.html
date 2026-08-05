@@ -53,12 +53,18 @@
   <!-- ================= APP ================= -->
   <section id="screen-app" class="screen">
     <header class="topbar">
-      <span id="greeting" class="greeting"></span>
+      <div class="who">
+        <span id="avatar" class="avatar" aria-hidden="true"></span>
+        <span id="greeting" class="greeting"></span>
+      </div>
       <div id="swipe-progress" class="progress" hidden>
         <div id="progress-fill" class="progress-fill"></div>
       </div>
       <span id="view-title" class="view-title"></span>
-      <button id="btn-help" class="icon-btn" title="Tutorial" aria-label="Tutorial">?</button>
+      <div class="topbar-actions">
+        <button id="btn-help" class="icon-btn" title="Tutorial" aria-label="Tutorial">❓</button>
+        <button id="btn-logout" class="icon-btn" title="Sair" aria-label="Sair">🚪</button>
+      </div>
     </header>
 
     <main id="views">
@@ -87,7 +93,7 @@
       <!-- ---- LISTAS ---- -->
       <div id="view-lists" class="view">
         <div id="lists-home">
-          <button id="btn-newlist" class="btn-primary wide">＋ Nova lista</button>
+          <button id="btn-newlist" class="btn-primary wide">➕ Nova lista</button>
           <div id="lists-container"></div>
           <div id="lists-empty" class="empty-state">Nenhuma lista ainda.<br>Crie uma e vá adicionando corridas 🏁</div>
         </div>
@@ -106,9 +112,9 @@
 
     <nav class="bottomnav">
       <button class="nav-item active" data-view="swipe"><span>🎴</span>Deslizar</button>
-      <button class="nav-item" data-view="grid"><span>▦</span>Grade</button>
-      <button class="nav-item" data-view="likes"><span>♥</span>Curtidas</button>
-      <button class="nav-item" data-view="lists"><span>☰</span>Listas</button>
+      <button class="nav-item" data-view="grid"><span>🏁</span>Grade</button>
+      <button class="nav-item" data-view="likes"><span>❤️</span>Curtidas</button>
+      <button class="nav-item" data-view="lists"><span>📋</span>Listas</button>
     </nav>
   </section>
 
@@ -119,9 +125,9 @@
     <div class="sheet-panel">
       <img id="sheet-img" class="sheet-img" alt="">
       <div class="sheet-actions">
-        <button id="sheet-dislike" class="btn-round dislike">✕<small>Passar</small></button>
-        <button id="sheet-like" class="btn-round like">♥<small>Curtir</small></button>
-        <button id="sheet-addlist" class="btn-round add">＋<small>Lista</small></button>
+        <button id="sheet-dislike" class="btn-round dislike">👎<small>Passar</small></button>
+        <button id="sheet-like" class="btn-round like">❤️<small>Curtir</small></button>
+        <button id="sheet-addlist" class="btn-round add">📋<small>Lista</small></button>
       </div>
       <button class="btn-ghost" data-close>Fechar</button>
     </div>
@@ -131,7 +137,7 @@
   <div id="pickmodal" class="modal" hidden>
     <div class="modal-bg" data-close></div>
     <div class="pick-panel">
-      <h3>Adicionar a uma lista</h3>
+      <h3>📋 Adicionar a uma lista</h3>
       <div id="pick-lists" class="pick-lists"></div>
       <form id="pick-newform" class="pick-new">
         <input id="pick-newname" type="text" placeholder="Nova lista…" maxlength="30">

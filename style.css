@@ -81,9 +81,14 @@ input[type=text]:focus{outline:none; border-color:var(--accent)}
   display:flex; align-items:center; gap:12px; padding:12px 16px;
   padding-top:max(12px,env(safe-area-inset-top)); border-bottom:1px solid var(--line);
 }
+.who{display:flex; align-items:center; gap:9px; min-width:0}
+.avatar{width:36px; height:36px; flex:none; border-radius:50%; display:grid;
+  place-items:center; font-weight:800; color:#fff; font-size:1rem;
+  box-shadow:0 2px 8px #0006; border:2px solid #fff2}
 .greeting{font-weight:700; font-size:.95rem; white-space:nowrap;
-  max-width:34vw; overflow:hidden; text-overflow:ellipsis}
+  max-width:30vw; overflow:hidden; text-overflow:ellipsis}
 .view-title{margin-left:auto; font-weight:700; color:var(--muted)}
+.topbar-actions{display:flex; gap:8px; flex:none}
 .progress{flex:1; height:8px; background:var(--card); border-radius:99px; overflow:hidden}
 .progress-fill{height:100%; width:0; border-radius:99px;
   background:linear-gradient(90deg,var(--accent),var(--like)); transition:width .25s ease}

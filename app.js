@@ -360,9 +360,24 @@
     try { votes = JSON.parse(localStorage.getItem(K.votes())) || {}; } catch { votes = {}; }
     try { lists = JSON.parse(localStorage.getItem(K.lists())) || []; } catch { lists = []; }
   }
+  function avatarColor(s) {
+    let h = 0; for (const c of s) h = (h * 31 + c.charCodeAt(0)) >>> 0;
+    return `hsl(${h % 360} 62% 46%)`;
+  }
+  function setAvatar(name) {
+    const a = $("#avatar");
+    a.textContent = (name.trim()[0] || "?").toUpperCase();
+    a.style.background = avatarColor(name || "?");
+  }
   function enterApp() {
+    setAvatar(voter.name);
     $("#greeting").textContent = `Oi, ${voter.name}`;
     showScreen("screen-app"); switchView("swipe"); flushRetry();
+  }
+  function logout() {
+    if (!confirm("Sair? Seus votos e listas ficam salvos.")) return;
+    $("#name-input").value = voter.name;
+    showScreen("screen-login");
   }
 
   function bind() {
@@ -371,7 +386,10 @@
       e.preventDefault();
       const name = $("#name-input").value.trim(); if (!name) return;
       let saved = null; try { saved = JSON.parse(localStorage.getItem(K.voter)); } catch {}
-      voter = { id: (saved && saved.id) || uid(), name };
+      // mesmo nome no mesmo aparelho = mesma pessoa (recupera dados); nome
+      // diferente = novo votante (útil se emprestar o celular)
+      const id = (saved && saved.name === name && saved.id) ? saved.id : uid();
+      voter = { id, name };
       localStorage.setItem(K.voter, JSON.stringify(voter));
       try { await loadJobs(); } catch (err) { return toast("Erro: " + err.message); }
       loadLocal();
@@ -382,6 +400,7 @@
     $("#tut-next").onclick = () => { if (tut < 2) { tut++; renderTut(); } else finishTutorial(); };
     $("#tut-skip").onclick = finishTutorial;
     $("#btn-help").onclick = startTutorial;
+    $("#btn-logout").onclick = logout;
 
     // nav
     $$(".nav-item").forEach((b) => b.onclick = () => switchView(b.dataset.view));
