@@ -125,13 +125,13 @@
   async function load(){
     $("#status").hidden = false; $("#status").textContent = "Carregando…";
     try{
-      const [jobs, votes, pls] = await Promise.all([
-        fetch("jobs.json",{cache:"no-store"}).then(r=>r.json()).catch(()=>[]),
-        sb("votes?select=*&order=created_at.desc&limit=100000"),
-        sb("playlists?select=*&limit=100000"),
-      ]);
+      const jobs = await fetch("jobs.json",{cache:"no-store"}).then(r=>r.json()).catch(()=>[]);
       jobById = {}; jobs.forEach(j=>jobById[j.id]=j);
-      render(votes, pls);
+      const votes = await sb("votes?select=*&order=created_at.desc&limit=100000");
+      let pls = [], plsErr = null;                       // playlists é opcional
+      try { pls = await sb("playlists?select=*&limit=100000"); }
+      catch(e){ plsErr = e; console.warn("playlists indisponível:", e.message); }
+      render(votes, pls, plsErr);
       $("#status").hidden = true; $("#app").hidden = false;
       $("#updated").textContent = "atualizado " + new Date().toLocaleTimeString("pt-BR");
     }catch(e){
@@ -147,7 +147,7 @@
     return `<div class="th"><img src="${j.img}" alt="" loading="lazy"><span>${esc(j.title||jobId)}</span></div>`;
   }
 
-  function render(votes, pls){
+  function render(votes, pls, plsErr){
     // ----- agrega -----
     const voters = {};   // id -> {name,id,like:[],dislike:[],skip:[],last}
     votes.forEach(v=>{
@@ -220,6 +220,11 @@
       </div>`).join("") : "<p class='empty'>Ninguém entrou ainda.</p>";
 
     // ----- LISTAS -----
+    if(plsErr){
+      $("#sec-listas").innerHTML = `<div class="empty">A tabela <b>playlists</b> ainda não existe no Supabase.<br><br>
+        Abra o <b>SQL Editor</b> e rode o bloco de playlists do <code>supabase_setup.sql</code> pra ativar esta aba.</div>`;
+      return;
+    }
     $("#sec-listas").innerHTML = lists.length ? lists.map(l=>`
       <div class="pl-card">
         <div class="pl-head"><b>🏁 ${esc(l.name||"(sem nome)")}</b>
