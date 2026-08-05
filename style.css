@@ -37,6 +37,7 @@ body{
   background:var(--card); color:var(--txt); font-size:1.1rem; cursor:pointer;
 }
 .icon-btn.danger{color:var(--dislike)}
+a.icon-btn{display:grid; place-items:center; text-decoration:none}
 
 /* ---------- login ---------- */
 .card-mid{

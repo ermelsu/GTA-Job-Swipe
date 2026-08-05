@@ -70,9 +70,9 @@
   </div>
 
   <div id="gate" class="gate" hidden>
-    <p class="muted">Digite a senha do painel:</p>
-    <input id="gate-pw" type="password" placeholder="senha">
-    <button class="btn-primary" onclick="checkPw()">Entrar</button>
+    <p class="muted">Área restrita. Confirme seu nome de admin:</p>
+    <input id="gate-name" type="text" placeholder="seu nome" autocomplete="off">
+    <button class="btn-primary" onclick="checkName()">Entrar</button>
     <p id="gate-msg" class="dislike"></p>
   </div>
 
@@ -107,11 +107,13 @@
   const color = s => { let h=0; for(const c of (s||"?")) h=(h*31+c.charCodeAt(0))>>>0; return `hsl(${h%360} 62% 46%)`; };
   let jobById = {}, rankRows = [];
 
-  // ------- gate de senha -------
-  function needPw(){ return CFG.ADMIN_PASSWORD && CFG.ADMIN_PASSWORD !== "troque-isto"; }
-  function checkPw(){
-    if($("#gate-pw").value === CFG.ADMIN_PASSWORD){ sessionStorage.setItem("gjs_admin","1"); start(); }
-    else $("#gate-msg").textContent = "Senha incorreta.";
+  // ------- acesso restrito por NOME -------
+  const ADMIN_NAME = (CFG.ADMIN_NAME || "Emerson-admin");
+  const isAdmin = n => (n||"").trim().toLowerCase() === ADMIN_NAME.toLowerCase();
+  function savedVoterName(){ try{ return (JSON.parse(localStorage.getItem("gjs_voter"))||{}).name; }catch(e){ return null; } }
+  function checkName(){
+    if(isAdmin($("#gate-name").value)){ localStorage.setItem("gjs_admin_ok","1"); start(); }
+    else $("#gate-msg").textContent = "Acesso restrito. Esse nome não tem permissão.";
   }
 
   async function sb(path){
@@ -244,14 +246,14 @@
 
   function start(){ $("#gate").hidden=true; load(); }
 
-  // boot
+  // boot — libera automático se você já entrou no app como admin neste navegador
   if(!CFG.SUPABASE_URL || !KEY){
     $("#status").innerHTML = "<span class='dislike'>Configure o Supabase em config.js.</span>";
-  } else if(needPw() && sessionStorage.getItem("gjs_admin")!=="1"){
-    $("#status").hidden=true; $("#gate").hidden=false;
-    $("#gate-pw").addEventListener("keydown", e=>{ if(e.key==="Enter") checkPw(); });
-  } else {
+  } else if(localStorage.getItem("gjs_admin_ok")==="1" || isAdmin(savedVoterName())){
     start();
+  } else {
+    $("#status").hidden=true; $("#gate").hidden=false;
+    $("#gate-name").addEventListener("keydown", e=>{ if(e.key==="Enter") checkName(); });
   }
   </script>
 </body>

@@ -7,6 +7,8 @@
 
   const CFG = window.CONFIG || {};
   const CLOUD = Boolean(CFG.SUPABASE_URL && CFG.SUPABASE_ANON_KEY);
+  const ADMIN_NAME = (CFG.ADMIN_NAME || "Emerson-admin");
+  const isAdmin = (n) => (n || "").trim().toLowerCase() === ADMIN_NAME.toLowerCase();
   const $ = (s) => document.querySelector(s);
   const $$ = (s) => [...document.querySelectorAll(s)];
 
@@ -393,6 +395,9 @@
     if (!jobs.length) { try { await loadJobs(); } catch (err) { console.warn(err); } }
     setAvatar(voter.name);
     $("#greeting").textContent = `Oi, ${voter.name}`;
+    const admin = isAdmin(voter.name);
+    $("#btn-admin").hidden = !admin;
+    if (admin) localStorage.setItem("gjs_admin_ok", "1");
     showScreen("screen-app"); switchView("swipe"); flushRetry();
   }
   function logout() {

@@ -20,9 +20,8 @@ window.CONFIG = {
   SUPABASE_URL: "https://ffdmxtcdgxtmmxkkhuzz.supabase.co",
   SUPABASE_ANON_KEY: "sb_publishable_pSx_m7hzo5nKUeEsVfVHBw_kkskuZFc",
 
-  // Senha simples pra abrir a página de resultados (admin.html). Não é
-  // segurança de verdade, só pra amigo curioso não bisbilhotar o ranking.
-  ADMIN_PASSWORD: "troque-isto",
+  // Só quem entrar no app com ESTE nome vê o painel (admin.html).
+  ADMIN_NAME: "Emerson-admin",
 };
 // MANTENHA TODO O CÓDIGO DO SUPABASE ACIMA E ADICIONE APENAS ISSO NO FINAL:
 
