@@ -129,8 +129,7 @@
       <div class="stamp stamp-like">CURTIU</div>
       <div class="stamp stamp-nope">PASSOU</div>
       <img src="${job.img}" alt="${job.title || job.id}" draggable="false"
-           onerror="this.parentElement.classList.add('imgfail')">
-      <div class="caption">${job.title || job.id}</div>`;
+           onerror="this.parentElement.classList.add('imgfail')">`;
     return el;
   }
 

@@ -12,20 +12,22 @@ Tudo roda no **GitHub Pages** (site estático, sem servidor) + **Supabase**
 ## Como está montado
 
 ```
-raw/               seus prints crus (não vão pro site — ficam só na sua máquina)
-images/            imagens cortadas e otimizadas (webp) — geradas pelo script
-jobs.json          lista das corridas — gerada pelo script
-prepare.py         corta + comprime + gera o jobs.json (roda 1x por lote)
+crop.html          FERRAMENTA DE CORTE: recorta cada corrida dos prints (use esta)
+images/            imagens cortadas e otimizadas (webp)
+jobs.json          lista das corridas — atualizada pela ferramenta de corte
 index.html         o site do swipe (login → swipe → fim)
 app.js             lógica do swipe
 style.css          visual
 admin.html         ranking dos votos (só pra você)
 config.js          suas credenciais do Supabase
 supabase_setup.sql cria a tabela de votos no Supabase
+prepare.py         alternativa: se você JÁ tem imagens individuais por corrida
+raw/               (opcional) prints crus pro prepare.py
 ```
 
-> Já vem com **12 imagens de exemplo** pra você testar na hora. Quando tiver os
-> prints reais, é só trocar (passo 3).
+> Já vem com **12 imagens de exemplo** pra você testar na hora. Quando for usar
+> pra valer, apague as de exemplo antes de adicionar as reais:
+> `rm images/job_*.webp && echo "[]" > jobs.json` (depois faça o passo 3).
 
 ---
 
@@ -46,16 +48,28 @@ supabase_setup.sql cria a tabela de votos no Supabase
    escolha a branch e a pasta `/ (root)` → **Save**.
 3. Em ~1 min o site fica no ar em `https://SEU-USUARIO.github.io/GTA-Job-Swipe/`.
 
-### 3. Trocar pelas suas corridas
-1. Jogue os prints das corridas na pasta `raw/`.
-2. (Opcional) Calibre o corte: veja **Ajuste do corte** abaixo.
-3. Rode:
-   ```bash
-   pip install Pillow
-   python3 prepare.py
-   ```
-   Isso recria `images/` e `jobs.json`.
-4. `git add . && git commit -m "novas corridas" && git push` — pronto, no ar.
+### 3. Recortar suas corridas (a parte principal)
+Você tira prints da **lista** de corridas do Social Club (várias por print). A
+ferramenta `crop.html` recorta cada uma no mesmo tamanho — capa + nome, cortando
+logo abaixo da linha divisória. Use no **Chrome ou Edge** (desktop).
+
+1. Abra `https://SEU-USUARIO.github.io/GTA-Job-Swipe/crop.html`.
+2. Arraste seus prints pra tela (ou botão **+ Prints**).
+3. Na **1ª corrida**, arraste um retângulo em volta dela (capa + nome, parando
+   abaixo da linha). Esse vira o **tamanho-padrão**.
+4. Nas demais, só **clique no canto superior-esquerdo** de cada corrida — a
+   caixa aparece no mesmo tamanho. Ajuste fino com as **setas** e tecle
+   **Enter** pra adicionar. (Opcional: digite um nome pra ajudar no ranking.)
+5. Clique **💾 Salvar na pasta do projeto** e escolha a pasta do repositório —
+   ela grava as imagens em `images/` e atualiza o `jobs.json` sozinha.
+6. `git add . && git commit -m "novas corridas" && git push` — no ar.
+
+> **Sem Chrome/Edge?** Use o botão **Baixar (fallback)**: baixa as imagens e o
+> `jobs.json`; aí você põe as imagens em `images/` e o `jobs.json` na raiz à mão.
+
+> **Já tem uma imagem por corrida** (não a lista)? Aí dá pra usar o `prepare.py`:
+> jogue as imagens em `raw/`, rode `pip install Pillow && python3 prepare.py`,
+> e ele gera `images/` + `jobs.json`. Veja **Ajuste do corte** abaixo.
 
 ### 4. Ver o ranking
 Abra `https://SEU-USUARIO.github.io/GTA-Job-Swipe/admin.html`.
