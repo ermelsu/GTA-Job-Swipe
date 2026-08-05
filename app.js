@@ -170,12 +170,14 @@
   function buildCard(job, interactive) {
     const el = document.createElement("div"); el.className = "card";
     const pos = jobs.indexOf(job) + 1;
+    const cap = (/^https?:/.test(job.img) && job.title)
+      ? `<div class="caption">${escapeHTML(job.title)}</div>` : "";
     el.innerHTML = `
       <span class="idx">${pos} / ${jobs.length}</span>
       <div class="stamp stamp-like">CURTIU</div>
       <div class="stamp stamp-nope">PASSOU</div>
       <img src="${job.img}" alt="${job.title || job.id}" draggable="false"
-           onerror="this.parentElement.classList.add('imgfail')">`;
+           onerror="this.parentElement.classList.add('imgfail')">${cap}`;
     return el;
   }
   function enableDrag(card) {
@@ -229,9 +231,11 @@
     const v = votes[job.id];
     const mark = v === "like" ? `<span class="mark like">♥</span>`
               : v === "dislike" ? `<span class="mark dislike">✕</span>` : "";
+    const cap = (/^https?:/.test(job.img) && job.title)
+      ? `<div class="cap">${escapeHTML(job.title)}</div>` : "";
     return `<div class="tile" data-job="${job.id}">${mark}
       <img src="${job.img}" alt="${job.title || job.id}"
-           onerror="this.style.aspectRatio='16/9';this.style.background='#26333f'"></div>`;
+           onerror="this.style.aspectRatio='16/9';this.style.background='#26333f'">${cap}</div>`;
   }
   function renderGrid() {
     $("#grid-all").innerHTML = jobs.map(tileHTML).join("");
@@ -250,6 +254,7 @@
   function openSheet(jobId) {
     sheetJob = jobId; const job = jobById[jobId];
     $("#sheet-img").src = job.img;
+    $("#sheet-title").textContent = job.title || "";
     refreshSheet(); $("#sheet").hidden = false;
   }
   function refreshSheet() {
