@@ -9,48 +9,137 @@
 </head>
 <body>
 
-  <!-- ================= TELA 1: LOGIN ================= -->
+  <!-- ================= LOGIN ================= -->
   <section id="screen-login" class="screen active">
-    <div class="login-card">
+    <div class="card-mid">
       <h1 class="logo">GTA <span>Job Swipe</span></h1>
-      <p class="subtitle">Curta 👍 ou passe 👎 nas corridas. Arraste o card ou use os botões.</p>
+      <p class="subtitle">Curta 👍 ou passe 👎 nas corridas e monte suas playlists.</p>
       <form id="login-form" autocomplete="off">
         <input id="name-input" type="text" placeholder="Seu nome" maxlength="24" required>
-        <button type="submit" class="btn-primary">Começar</button>
+        <button type="submit" class="btn-primary">Entrar</button>
       </form>
-      <p id="demo-badge" class="demo-badge" hidden>modo demo — votos só neste aparelho</p>
+      <p id="demo-badge" class="demo-badge" hidden>modo demo — dados só neste aparelho</p>
     </div>
   </section>
 
-  <!-- ================= TELA 2: SWIPE ================= -->
-  <section id="screen-swipe" class="screen">
+  <!-- ================= TUTORIAL ================= -->
+  <section id="screen-tutorial" class="screen">
+    <div class="tut">
+      <div id="tut-track" class="tut-track">
+        <div class="tut-slide">
+          <div class="tut-art art-swipe"><span>👈</span><div class="tut-card"></div><span>👉</span></div>
+          <h2>Deslize</h2>
+          <p>Arraste pra <b class="c-like">direita pra curtir</b> ou <b class="c-no">esquerda pra passar</b>. Também dá pra usar os botões.</p>
+        </div>
+        <div class="tut-slide">
+          <div class="tut-art art-grid"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+          <h2>Veja todas</h2>
+          <p>Na <b>Grade</b>, todas as corridas aparecem como no site da Rockstar. Toque numa pra curtir ou adicionar numa lista.</p>
+        </div>
+        <div class="tut-slide">
+          <div class="tut-art art-list"><span class="pl">🏁 Minha corrida top</span><i>＋</i><i>＋</i></div>
+          <h2>Monte playlists</h2>
+          <p>Crie uma <b>lista</b> com um nome e vá adicionando as corridas que você quer jogar depois.</p>
+        </div>
+      </div>
+      <div class="tut-dots"><i class="active"></i><i></i><i></i></div>
+      <div class="tut-actions">
+        <button id="tut-skip" class="btn-ghost">Pular</button>
+        <button id="tut-next" class="btn-primary">Próximo</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= APP ================= -->
+  <section id="screen-app" class="screen">
     <header class="topbar">
       <span id="greeting" class="greeting"></span>
-      <div class="progress">
+      <div id="swipe-progress" class="progress" hidden>
         <div id="progress-fill" class="progress-fill"></div>
       </div>
-      <span id="progress-text" class="progress-text">0 / 0</span>
+      <span id="view-title" class="view-title"></span>
+      <button id="btn-help" class="icon-btn" title="Tutorial" aria-label="Tutorial">?</button>
     </header>
 
-    <div id="deck" class="deck" aria-live="polite"></div>
+    <main id="views">
+      <!-- ---- DESLIZAR ---- -->
+      <div id="view-swipe" class="view active">
+        <div id="deck" class="deck" aria-live="polite"></div>
+        <div class="controls">
+          <button id="btn-undo"    class="ctrl ctrl-undo"    title="Desfazer" aria-label="Desfazer">↩︎</button>
+          <button id="btn-dislike" class="ctrl ctrl-dislike" title="Passar"   aria-label="Passar">✕</button>
+          <button id="btn-like"    class="ctrl ctrl-like"    title="Curtir"   aria-label="Curtir">♥</button>
+          <button id="btn-skip"    class="ctrl ctrl-skip"    title="Pular"    aria-label="Pular">»</button>
+        </div>
+      </div>
 
-    <div class="controls">
-      <button id="btn-undo"    class="ctrl ctrl-undo"    title="Desfazer" aria-label="Desfazer">↩︎</button>
-      <button id="btn-dislike" class="ctrl ctrl-dislike" title="Passar"   aria-label="Passar">✕</button>
-      <button id="btn-skip"    class="ctrl ctrl-skip"    title="Pular"    aria-label="Pular">»</button>
-      <button id="btn-like"    class="ctrl ctrl-like"    title="Curtir"   aria-label="Curtir">♥</button>
-    </div>
+      <!-- ---- GRADE ---- -->
+      <div id="view-grid" class="view">
+        <div id="grid-all" class="racegrid"></div>
+      </div>
+
+      <!-- ---- CURTIDAS ---- -->
+      <div id="view-likes" class="view">
+        <div id="likes-empty" class="empty-state">Você ainda não curtiu nenhuma corrida.<br>Vá em <b>Deslizar</b> ou <b>Grade</b> e comece 👍</div>
+        <div id="grid-likes" class="racegrid"></div>
+      </div>
+
+      <!-- ---- LISTAS ---- -->
+      <div id="view-lists" class="view">
+        <div id="lists-home">
+          <button id="btn-newlist" class="btn-primary wide">＋ Nova lista</button>
+          <div id="lists-container"></div>
+          <div id="lists-empty" class="empty-state">Nenhuma lista ainda.<br>Crie uma e vá adicionando corridas 🏁</div>
+        </div>
+        <div id="list-detail" hidden>
+          <div class="detail-head">
+            <button id="btn-back-lists" class="icon-btn">‹</button>
+            <h2 id="list-detail-name"></h2>
+            <button id="btn-del-list" class="icon-btn danger" title="Apagar lista">🗑</button>
+          </div>
+          <button id="btn-add-to-list" class="btn-primary wide">＋ Adicionar corridas</button>
+          <div id="list-detail-grid" class="racegrid"></div>
+          <div id="list-detail-empty" class="empty-state">Lista vazia. Toque em <b>Adicionar corridas</b>.</div>
+        </div>
+      </div>
+    </main>
+
+    <nav class="bottomnav">
+      <button class="nav-item active" data-view="swipe"><span>🎴</span>Deslizar</button>
+      <button class="nav-item" data-view="grid"><span>▦</span>Grade</button>
+      <button class="nav-item" data-view="likes"><span>♥</span>Curtidas</button>
+      <button class="nav-item" data-view="lists"><span>☰</span>Listas</button>
+    </nav>
   </section>
 
-  <!-- ================= TELA 3: FIM ================= -->
-  <section id="screen-done" class="screen">
-    <div class="login-card">
-      <h1 class="logo">Valeu! 🏁</h1>
-      <p id="done-summary" class="subtitle"></p>
-      <button id="btn-restart" class="btn-secondary">Refazer do zero</button>
-      <p class="hint">Pode fechar a página — seus votos já foram salvos.</p>
+  <!-- ============ MODAIS ============ -->
+  <!-- ação sobre uma corrida (abre da grade/curtidas) -->
+  <div id="sheet" class="modal" hidden>
+    <div class="modal-bg" data-close></div>
+    <div class="sheet-panel">
+      <img id="sheet-img" class="sheet-img" alt="">
+      <div class="sheet-actions">
+        <button id="sheet-dislike" class="btn-round dislike">✕<small>Passar</small></button>
+        <button id="sheet-like" class="btn-round like">♥<small>Curtir</small></button>
+        <button id="sheet-addlist" class="btn-round add">＋<small>Lista</small></button>
+      </div>
+      <button class="btn-ghost" data-close>Fechar</button>
     </div>
-  </section>
+  </div>
+
+  <!-- escolher/ criar lista pra adicionar a corrida -->
+  <div id="pickmodal" class="modal" hidden>
+    <div class="modal-bg" data-close></div>
+    <div class="pick-panel">
+      <h3>Adicionar a uma lista</h3>
+      <div id="pick-lists" class="pick-lists"></div>
+      <form id="pick-newform" class="pick-new">
+        <input id="pick-newname" type="text" placeholder="Nova lista…" maxlength="30">
+        <button class="btn-primary" type="submit">Criar</button>
+      </form>
+      <button class="btn-ghost" data-close>Pronto</button>
+    </div>
+  </div>
 
   <div id="toast" class="toast" hidden></div>
 

@@ -2,7 +2,7 @@
   --bg:#0b0f14; --bg2:#121924; --card:#1a2431; --line:#26333f;
   --txt:#eef3f8; --muted:#8ea0b3;
   --like:#2ecc71; --dislike:#ff5a5f; --skip:#f5b942; --accent:#5b9dff;
-  --radius:20px;
+  --radius:18px; --nav-h:64px;
 }
 *{box-sizing:border-box; -webkit-tap-highlight-color:transparent}
 html,body{height:100%}
@@ -11,102 +11,194 @@ body{
   color:var(--txt); font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   overscroll-behavior:none;
 }
+.c-like{color:var(--like)} .c-no{color:var(--dislike)}
 
 /* ---------- telas ---------- */
 .screen{display:none; min-height:100dvh; flex-direction:column}
 .screen.active{display:flex}
 
-/* ---------- login / fim ---------- */
-.login-card{
+/* ---------- botões base ---------- */
+.btn-primary,.btn-ghost{
+  padding:14px; border:0; border-radius:14px; font-size:1.02rem; font-weight:700;
+  cursor:pointer; color:#fff;
+}
+.btn-primary{background:linear-gradient(120deg,var(--accent),#7c5cff)}
+.btn-ghost{background:transparent; color:var(--muted); font-weight:600}
+.btn-primary:active{transform:scale(.98)}
+.btn-primary.wide{width:100%; margin-bottom:14px}
+.icon-btn{
+  width:38px; height:38px; flex:none; border-radius:50%; border:1px solid var(--line);
+  background:var(--card); color:var(--txt); font-size:1.1rem; cursor:pointer;
+}
+.icon-btn.danger{color:var(--dislike)}
+
+/* ---------- login ---------- */
+.card-mid{
   margin:auto; padding:28px 24px; width:min(92vw,420px); text-align:center;
   display:flex; flex-direction:column; gap:16px;
 }
 .logo{font-size:2.4rem; font-weight:800; margin:0; letter-spacing:-.5px}
 .logo span{color:var(--accent)}
 .subtitle{color:var(--muted); margin:0; line-height:1.5}
-.hint{color:var(--muted); font-size:.85rem; margin:8px 0 0}
 #login-form{display:flex; flex-direction:column; gap:12px; margin-top:8px}
 input[type=text]{
   padding:15px 16px; border-radius:14px; border:1px solid var(--line);
   background:var(--bg2); color:var(--txt); font-size:1.05rem; text-align:center;
 }
 input[type=text]:focus{outline:none; border-color:var(--accent)}
-.btn-primary,.btn-secondary{
-  padding:15px; border:0; border-radius:14px; font-size:1.05rem; font-weight:700;
-  cursor:pointer; color:#fff;
-}
-.btn-primary{background:linear-gradient(120deg,var(--accent),#7c5cff)}
-.btn-secondary{background:var(--card); border:1px solid var(--line); color:var(--txt)}
-.btn-primary:active,.btn-secondary:active{transform:scale(.98)}
 .demo-badge{font-size:.78rem; color:var(--skip); margin:0}
 
-/* ---------- topbar / progresso ---------- */
+/* ---------- tutorial ---------- */
+.tut{margin:auto; width:min(94vw,440px); padding:24px; text-align:center;
+     display:flex; flex-direction:column; gap:20px}
+.tut-track{overflow:hidden}
+.tut-slide{display:none; flex-direction:column; align-items:center; gap:12px}
+.tut-slide.active{display:flex; animation:fade .35s ease}
+@keyframes fade{from{opacity:0; transform:translateX(20px)} to{opacity:1}}
+.tut-slide h2{font-size:1.5rem; margin:6px 0 0}
+.tut-slide p{color:var(--muted); line-height:1.55; margin:0}
+.tut-art{height:180px; width:100%; display:flex; align-items:center; justify-content:center;
+  gap:14px; background:var(--bg2); border:1px solid var(--line); border-radius:var(--radius)}
+.art-swipe span{font-size:1.6rem}
+.art-swipe .tut-card{width:120px; height:130px; border-radius:14px;
+  background:linear-gradient(135deg,#5b9dff,#7c5cff); box-shadow:0 10px 24px #0007;
+  transform:rotate(-6deg)}
+.art-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; padding:24px}
+.art-grid i{background:linear-gradient(135deg,#243447,#3a5170); border-radius:8px; aspect-ratio:16/10}
+.art-list{flex-direction:column; gap:10px; padding:24px}
+.art-list .pl{background:var(--card); border:1px solid var(--line); padding:8px 14px;
+  border-radius:10px; font-weight:700}
+.art-list i{width:60%; background:var(--card); border:1px dashed var(--line);
+  border-radius:8px; height:26px; display:grid; place-items:center; color:var(--accent)}
+.tut-dots{display:flex; gap:8px; justify-content:center}
+.tut-dots i{width:8px; height:8px; border-radius:50%; background:var(--line)}
+.tut-dots i.active{background:var(--accent); width:22px; border-radius:99px}
+.tut-actions{display:flex; gap:10px}
+.tut-actions .btn-primary{flex:1}
+
+/* ---------- topbar ---------- */
 .topbar{
-  display:flex; align-items:center; gap:12px; padding:14px 18px;
-  padding-top:max(14px,env(safe-area-inset-top));
+  display:flex; align-items:center; gap:12px; padding:12px 16px;
+  padding-top:max(12px,env(safe-area-inset-top)); border-bottom:1px solid var(--line);
 }
 .greeting{font-weight:700; font-size:.95rem; white-space:nowrap;
-  max-width:28vw; overflow:hidden; text-overflow:ellipsis}
+  max-width:34vw; overflow:hidden; text-overflow:ellipsis}
+.view-title{margin-left:auto; font-weight:700; color:var(--muted)}
 .progress{flex:1; height:8px; background:var(--card); border-radius:99px; overflow:hidden}
 .progress-fill{height:100%; width:0; border-radius:99px;
   background:linear-gradient(90deg,var(--accent),var(--like)); transition:width .25s ease}
-.progress-text{font-size:.85rem; color:var(--muted); white-space:nowrap}
+.topbar .progress + .view-title{margin-left:0}
 
-/* ---------- deck de cards ---------- */
-.deck{
-  position:relative; flex:1; margin:6px 18px 0;
-  display:flex; align-items:center; justify-content:center;
-}
+/* ---------- área de views ---------- */
+#views{flex:1; position:relative; overflow-y:auto; padding-bottom:calc(var(--nav-h) + 12px)}
+.view{display:none; min-height:100%}
+.view.active{display:flex; flex-direction:column}
+
+/* ---------- swipe ---------- */
+#view-swipe{padding:0}
+.deck{position:relative; flex:1; margin:10px 18px 0;
+  display:flex; align-items:center; justify-content:center; min-height:46vh}
 .card{
   position:absolute; width:100%; max-width:460px;
   border-radius:var(--radius); overflow:hidden; background:var(--card);
   border:1px solid var(--line); box-shadow:0 18px 40px rgba(0,0,0,.45);
   touch-action:none; will-change:transform; user-select:none;
 }
-/* a imagem recortada já traz capa + nome, então ela define a altura do card */
-.card img{
-  display:block; width:100%; height:auto; pointer-events:none;
-}
-.card.imgfail::after{
-  content:"imagem não carregou"; display:flex; aspect-ratio:16/9;
-  align-items:center; justify-content:center; color:var(--muted);
-}
+.card img{display:block; width:100%; height:auto; pointer-events:none}
+.card.imgfail::after{content:"imagem não carregou"; display:flex; aspect-ratio:16/9;
+  align-items:center; justify-content:center; color:var(--muted)}
 .card .idx{position:absolute; top:10px; left:12px; z-index:2; font-size:.78rem;
   color:#fff; background:rgba(0,0,0,.45); padding:3px 9px; border-radius:99px}
-
-/* selos LIKE / NOPE que aparecem ao arrastar */
-.stamp{
-  position:absolute; top:22px; z-index:3; font-size:1.6rem; font-weight:900;
-  letter-spacing:2px; padding:6px 14px; border-radius:10px; border:4px solid;
-  opacity:0; transition:opacity .1s;
-}
+.stamp{position:absolute; top:22px; z-index:3; font-size:1.6rem; font-weight:900;
+  letter-spacing:2px; padding:6px 14px; border-radius:10px; border:4px solid; opacity:0; transition:opacity .1s}
 .stamp-like{right:18px; color:var(--like); border-color:var(--like); transform:rotate(14deg)}
 .stamp-nope{left:18px;  color:var(--dislike); border-color:var(--dislike); transform:rotate(-14deg)}
+.deck .empty-state{position:static}
 
-.empty{color:var(--muted); text-align:center; padding:20px}
-
-/* ---------- botões de controle ---------- */
-.controls{
-  display:flex; gap:16px; justify-content:center; align-items:center;
-  padding:18px; padding-bottom:max(18px,env(safe-area-inset-bottom));
-}
-.ctrl{
-  width:60px; height:60px; border-radius:50%; border:1px solid var(--line);
-  background:var(--card); color:var(--txt); font-size:1.5rem; cursor:pointer;
-  display:grid; place-items:center; transition:transform .1s, background .15s;
-}
+.controls{display:flex; gap:16px; justify-content:center; align-items:center; padding:16px}
+.ctrl{width:58px; height:58px; border-radius:50%; border:1px solid var(--line);
+  background:var(--card); color:var(--txt); font-size:1.45rem; cursor:pointer;
+  display:grid; place-items:center; transition:transform .1s}
 .ctrl:active{transform:scale(.9)}
 .ctrl:disabled{opacity:.35; cursor:default}
-.ctrl-undo{width:48px; height:48px; font-size:1.2rem; color:var(--muted)}
-.ctrl-skip{width:48px; height:48px; font-size:1.3rem; color:var(--skip)}
+.ctrl-undo{width:46px; height:46px; font-size:1.15rem; color:var(--muted)}
+.ctrl-skip{width:46px; height:46px; font-size:1.25rem; color:var(--skip)}
 .ctrl-like{color:var(--like); border-color:var(--like)}
 .ctrl-dislike{color:var(--dislike); border-color:var(--dislike)}
 
-/* ---------- toast ---------- */
-.toast{
-  position:fixed; left:50%; bottom:calc(96px + env(safe-area-inset-bottom));
-  transform:translateX(-50%); background:#000c; color:#fff; padding:10px 16px;
-  border-radius:99px; font-size:.9rem; z-index:50;
-}
+/* ---------- grade de corridas ---------- */
+.racegrid{display:grid; grid-template-columns:repeat(2,1fr); gap:10px; padding:14px}
+@media(min-width:620px){ .racegrid{grid-template-columns:repeat(3,1fr)} }
+.tile{position:relative; border-radius:12px; overflow:hidden; border:1px solid var(--line);
+  background:var(--card); cursor:pointer}
+.tile img{display:block; width:100%; height:auto}
+.tile:active{transform:scale(.98)}
+.tile .mark{position:absolute; top:6px; right:6px; width:26px; height:26px; border-radius:50%;
+  display:grid; place-items:center; font-size:.85rem; color:#fff; box-shadow:0 2px 8px #0008}
+.tile .mark.like{background:var(--like)} .tile .mark.dislike{background:var(--dislike)}
 
-@media (max-width:380px){ .logo{font-size:2rem} .ctrl{width:54px;height:54px} }
+/* ---------- estado vazio ---------- */
+.empty-state{margin:auto; padding:40px 24px; text-align:center; color:var(--muted); line-height:1.6}
+
+/* ---------- listas ---------- */
+#view-lists{padding:14px}
+#lists-container{display:flex; flex-direction:column; gap:10px}
+.listcard{display:flex; align-items:center; gap:12px; padding:12px 14px; cursor:pointer;
+  background:var(--card); border:1px solid var(--line); border-radius:14px}
+.listcard .lc-thumbs{display:flex; flex:none}
+.listcard .lc-thumbs img{width:38px; height:38px; object-fit:cover; border-radius:8px;
+  margin-left:-10px; border:2px solid var(--card)}
+.listcard .lc-thumbs img:first-child{margin-left:0}
+.listcard .lc-info{flex:1; min-width:0}
+.listcard .lc-info b{display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.listcard .lc-info small{color:var(--muted)}
+.listcard .chev{color:var(--muted); font-size:1.3rem}
+.detail-head{display:flex; align-items:center; gap:10px; margin-bottom:14px}
+.detail-head h2{flex:1; font-size:1.2rem; margin:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.tile.picked::after{content:"✓"; position:absolute; inset:0; background:rgba(46,204,113,.35);
+  display:grid; place-items:center; font-size:2rem; font-weight:900; color:#fff}
+
+/* ---------- navegação inferior ---------- */
+.bottomnav{position:fixed; bottom:0; left:0; right:0; height:calc(var(--nav-h) + env(safe-area-inset-bottom));
+  padding-bottom:env(safe-area-inset-bottom); display:flex; background:var(--bg2);
+  border-top:1px solid var(--line); z-index:20}
+.nav-item{flex:1; border:0; background:transparent; color:var(--muted); cursor:pointer;
+  font-size:.72rem; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px}
+.nav-item span{font-size:1.25rem; line-height:1}
+.nav-item.active{color:var(--accent)}
+
+/* ---------- modais ---------- */
+.modal{position:fixed; inset:0; z-index:40; display:flex; align-items:flex-end; justify-content:center}
+.modal[hidden]{display:none}
+.modal-bg{position:absolute; inset:0; background:rgba(0,0,0,.6)}
+.sheet-panel,.pick-panel{position:relative; width:min(100%,480px); background:var(--bg2);
+  border:1px solid var(--line); border-radius:20px 20px 0 0; padding:16px;
+  display:flex; flex-direction:column; gap:14px; max-height:90dvh; overflow:auto;
+  animation:slideup .25s ease}
+@keyframes slideup{from{transform:translateY(40px); opacity:.4} to{transform:none; opacity:1}}
+.sheet-img{width:100%; border-radius:12px; display:block}
+.sheet-actions{display:flex; gap:12px; justify-content:center}
+.btn-round{flex:1; border:1px solid var(--line); background:var(--card); color:var(--txt);
+  border-radius:14px; padding:12px 6px; cursor:pointer; font-size:1.3rem;
+  display:flex; flex-direction:column; align-items:center; gap:4px}
+.btn-round small{font-size:.72rem; color:var(--muted); font-weight:600}
+.btn-round.like{color:var(--like); border-color:var(--like)}
+.btn-round.dislike{color:var(--dislike); border-color:var(--dislike)}
+.btn-round.add{color:var(--accent); border-color:var(--accent)}
+.btn-round.on{background:rgba(46,204,113,.15)}
+.pick-panel h3{margin:0}
+.pick-lists{display:flex; flex-direction:column; gap:8px; max-height:40vh; overflow:auto}
+.pick-row{display:flex; align-items:center; gap:10px; padding:12px; border:1px solid var(--line);
+  border-radius:12px; background:var(--card); cursor:pointer}
+.pick-row.on{border-color:var(--like)}
+.pick-row .tick{margin-left:auto; color:var(--like); font-weight:900; opacity:0}
+.pick-row.on .tick{opacity:1}
+.pick-new{display:flex; gap:8px}
+.pick-new input{flex:1; text-align:left}
+
+/* ---------- toast ---------- */
+.toast{position:fixed; left:50%; bottom:calc(var(--nav-h) + 20px + env(safe-area-inset-bottom));
+  transform:translateX(-50%); background:#000c; color:#fff; padding:10px 16px;
+  border-radius:99px; font-size:.9rem; z-index:50}
+
+@media (max-width:360px){ .logo{font-size:2rem} .ctrl{width:52px;height:52px} }

@@ -48,6 +48,30 @@ create policy "anon le votos"
   to anon
   using (true);
 
+-- ===========================================================================
+-- Playlists — cada votante guarda suas listas como JSON (1 linha por pessoa)
+-- ===========================================================================
+create table if not exists public.playlists (
+  voter_id    text primary key,
+  voter_name  text        not null,
+  data        jsonb       not null default '[]',   -- [{name, jobs:[...]}]
+  updated_at  timestamptz not null default now()
+);
+
+alter table public.playlists enable row level security;
+
+drop policy if exists "anon salva playlist" on public.playlists;
+create policy "anon salva playlist"
+  on public.playlists for insert to anon with check (true);
+
+drop policy if exists "anon atualiza playlist" on public.playlists;
+create policy "anon atualiza playlist"
+  on public.playlists for update to anon using (true) with check (true);
+
+drop policy if exists "anon le playlist" on public.playlists;
+create policy "anon le playlist"
+  on public.playlists for select to anon using (true);
+
 -- View pronta com o ranking de curtidas por corrida.
 create or replace view public.ranking as
 select
