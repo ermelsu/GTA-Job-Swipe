@@ -24,3 +24,10 @@ window.CONFIG = {
   // segurança de verdade, só pra amigo curioso não bisbilhotar o ranking.
   ADMIN_PASSWORD: "troque-isto",
 };
+// MANTENHA TODO O CÓDIGO DO SUPABASE ACIMA E ADICIONE APENAS ISSO NO FINAL:
+
+const APP_JOBS_CONFIG = {
+  IMAGE_PATH: './images/',
+  TOTAL_JOBS: 19,
+  IMAGE_EXTENSION: '.webp'
+};
