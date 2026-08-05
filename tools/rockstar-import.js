@@ -24,36 +24,71 @@
     if (done) return; done = true;
     const H = { "accept": "*/*", "authorization": auth, "x-requested-with": "XMLHttpRequest",
                 "x-cache-ver": "1", "x-lang": "en-US" };
+    const base = new URL(url, location.origin);
+    const ps = parseInt(base.searchParams.get("pageSize") || "15") || 15;
+    const PARAMS = ["page", "offset", "currentPage", "pageIndex", "skip", "start", "pageNumber", "p"];
+    // cada candidato: dado o total já coletado (c), qual valor mandar
+    const CANDS = [
+      ["page",       c => c / ps + 1],   // page 1-indexado: 2,3,...
+      ["offset",     c => c],            // offset: 15,30,...
+      ["currentPage",c => c / ps],       // 0-indexado: 1,2,...
+      ["pageIndex",  c => c / ps],
+      ["skip",       c => c],
+      ["start",      c => c],
+      ["pageNumber", c => c / ps + 1],
+      ["p",          c => c / ps + 1],
+    ];
     const all = [], seen = new Set();
-    let mode = "page", pageNum = 0;   // detecta sozinho: 'page' ou 'offset'
+    let locked = null;
     console.log("%c✅ Baixando as corridas…", "color:#2ecc71;font-weight:bold");
-    while (all.length < MAX) {
-      const u = new URL(url, location.origin);
-      u.searchParams.delete("page"); u.searchParams.delete("offset");
-      u.searchParams.set(mode, mode === "page" ? pageNum : all.length);
-      let data;
-      try {
-        const r = await orig(u.toString(), { headers: H, credentials: "include" });
-        if (!r.ok) { console.warn("HTTP", r.status, "— parando (token pode ter expirado)."); break; }
-        data = await r.json();
-      } catch (e) { console.warn("falha:", e); break; }
-      const items = (data.content && data.content.items) || [];
-      if (!items.length) break;
-      const before = all.length;
+
+    async function fetchItems(param, val) {
+      const u = new URL(base.toString());
+      PARAMS.forEach(k => u.searchParams.delete(k));
+      if (param) u.searchParams.set(param, val);
+      let r; try { r = await orig(u.toString(), { headers: H, credentials: "include" }); }
+      catch (e) { console.warn("falha:", e); return null; }
+      if (!r.ok) { console.warn("HTTP", r.status); return null; }
+      const d = await r.json();
+      return (d && d.content && d.content.items) || [];
+    }
+    function addNew(items) {
+      let added = 0;
       for (const it of items) {
         if (all.length >= MAX) break;
-        if (!it.id || seen.has(it.id)) continue; seen.add(it.id);
+        if (!it.id || seen.has(it.id)) continue; seen.add(it.id); added++;
         all.push({ id: "job_" + String(all.length + 1).padStart(3, "0"),
                    img: it.imgSrc, title: it.name || "", type: it.type || "", jobId: it.id });
       }
-      const added = all.length - before;
-      console.log(`${mode}=${mode === "page" ? pageNum : before}: +${added} (total ${all.length})`);
-      if (added === 0) {                         // não avançou
-        if (mode === "page") { mode = "offset"; continue; }   // troca a estratégia
-        break;                                                // offset também parou
+      return added;
+    }
+
+    // 1ª página (URL como veio)
+    const first = await fetchItems(null, null);
+    if (!first) { done = false; return; }
+    addNew(first);
+    console.log(`1ª página: ${all.length}`);
+
+    while (all.length < MAX && first.length) {
+      let added = 0;
+      if (locked) {
+        const items = await fetchItems(locked[0], locked[1](all.length));
+        if (!items || !items.length) break;
+        added = addNew(items);
+        if (added === 0) break;
+      } else {
+        let ok = false;
+        for (const [param, fn] of CANDS) {                 // descobre qual paginação avança
+          const items = await fetchItems(param, fn(all.length));
+          if (items && items.length && addNew(items) > 0) {
+            locked = [param, fn]; ok = true;
+            console.log(`✅ paginação detectada: ${param}`);
+            break;
+          }
+        }
+        if (!ok) { console.warn("Não achei o parâmetro de paginação — ficando com", all.length); break; }
       }
-      if (mode === "page") pageNum++;
-      if (data.hasMore === false) break;
+      console.log(`total ${all.length}`);
       await new Promise(r => setTimeout(r, 250));
     }
     console.log(`%c✅ ${all.length} corridas prontas`, "color:#2ecc71;font-size:14px;font-weight:bold", all);
