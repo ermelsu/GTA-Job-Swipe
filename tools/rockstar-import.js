@@ -1,61 +1,96 @@
 /* ==========================================================================
-   GTA Job Swipe — importador Rockstar (AUTO-CAPTURA o token). Cole no Console.
+   GTA Job Swipe — importador Rockstar (cole no Console do navegador).
    --------------------------------------------------------------------------
-   Não precisa colar token nenhum. O script "escuta" a própria requisição que a
-   página faz (fetch OU XHR), reaproveita os cabeçalhos reais (token válido) e
-   pagina sozinho, baixando um jobs.json pronto.
+   Estratégia dupla, sem colar token:
+   1) Procura o token de sessão no próprio navegador -> baixa NA HORA.
+   2) Se não achar, "escuta" a requisição da página (fetch/XHR) -> role a
+      página pra disparar uma busca e ele captura o token e baixa.
 
-   USO:
-   1. Logado em socialclub.rockstargames.com/jobs (com os filtros que quiser).
-   2. F12 -> Console -> cole este script todo -> Enter.
-   3. ROLE a página pra baixo (ou mude a ordenação) pra disparar uma busca.
-   4. O jobs.json baixa sozinho. Suba no GitHub (Add file -> Upload files).
+   USO: logado em socialclub.rockstargames.com/jobs, F12 -> Console -> cola
+   tudo -> Enter. O jobs.json baixa. Suba no GitHub (Add file -> Upload files).
    ========================================================================== */
 (() => {
-  const MAX = 100;  // quantas corridas puxar (as mais curtidas primeiro). Aumente se quiser.
+  const MAX = 100;   // quantas corridas puxar (as mais curtidas). Aumente se quiser.
+
+  // Lista de corridas (ajuste sort/platform/searchTerm se quiser outra):
+  const API_BASE = "https://scapi.rockstargames.com/search/mission" +
+    "?dateRangeCreated=any&sort=likes&platform=pcalt&title=gtav" +
+    "&includeCommentCount=true&pageSize=15&searchTerm=";
 
   const orig = window.fetch.bind(window);
   let done = false;
-  const STRIP = ["host","content-length","cookie","origin","referer","referrer",
-    "user-agent","connection","accept-encoding","sec-fetch-dest","sec-fetch-mode",
-    "sec-fetch-site","sec-ch-ua","sec-ch-ua-mobile","sec-ch-ua-platform"];
 
-  function go(url, headers) {
+  async function paginate(url, auth) {
     if (done) return; done = true;
-    (async () => {
+    const H = { "accept": "*/*", "authorization": auth, "x-requested-with": "XMLHttpRequest",
+                "x-cache-ver": "1", "x-lang": "en-US" };
+    const all = [], seen = new Set();
+    let mode = "page", pageNum = 0;   // detecta sozinho: 'page' ou 'offset'
+    console.log("%c✅ Baixando as corridas…", "color:#2ecc71;font-weight:bold");
+    while (all.length < MAX) {
       const u = new URL(url, location.origin);
-      const H = {}; Object.keys(headers || {}).forEach(k => { if (!STRIP.includes(k.toLowerCase())) H[k] = headers[k]; });
-      const all = [], seen = new Set(); let page = 0;
-      console.log("%c✅ Requisição capturada! Baixando páginas…", "color:#2ecc71;font-weight:bold");
-      while (all.length < MAX) {
-        u.searchParams.set("page", page);
-        let data;
-        try {
-          const r = await orig(u.toString(), { headers: H, credentials: "include" });
-          if (!r.ok) { console.warn("HTTP", r.status, "— parando"); break; }
-          data = await r.json();
-        } catch (e) { console.warn("falha:", e); break; }
-        const items = (data.content && data.content.items) || [];
-        if (!items.length) break;
-        for (const it of items) {
-          if (all.length >= MAX) break;
-          if (!it.id || seen.has(it.id)) continue; seen.add(it.id);
-          all.push({ id: "job_" + String(all.length + 1).padStart(3, "0"),
-                     img: it.imgSrc, title: it.name || "", type: it.type || "", jobId: it.id });
-        }
-        console.log(`página ${page}: ${all.length}/${MAX}`);
-        if (!data.hasMore) break;
-        page++; await new Promise(r => setTimeout(r, 250));
+      u.searchParams.delete("page"); u.searchParams.delete("offset");
+      u.searchParams.set(mode, mode === "page" ? pageNum : all.length);
+      let data;
+      try {
+        const r = await orig(u.toString(), { headers: H, credentials: "include" });
+        if (!r.ok) { console.warn("HTTP", r.status, "— parando (token pode ter expirado)."); break; }
+        data = await r.json();
+      } catch (e) { console.warn("falha:", e); break; }
+      const items = (data.content && data.content.items) || [];
+      if (!items.length) break;
+      const before = all.length;
+      for (const it of items) {
+        if (all.length >= MAX) break;
+        if (!it.id || seen.has(it.id)) continue; seen.add(it.id);
+        all.push({ id: "job_" + String(all.length + 1).padStart(3, "0"),
+                   img: it.imgSrc, title: it.name || "", type: it.type || "", jobId: it.id });
       }
-      console.log(`%c✅ ${all.length} corridas prontas`, "color:#2ecc71;font-size:14px;font-weight:bold", all);
-      const a = document.createElement("a");
-      a.href = URL.createObjectURL(new Blob([JSON.stringify(all, null, 2)], { type: "application/json" }));
-      a.download = "jobs.json"; a.click();
-      console.log("⬇️ jobs.json baixado! Suba no GitHub (Add file -> Upload files).");
-    })();
+      const added = all.length - before;
+      console.log(`${mode}=${mode === "page" ? pageNum : before}: +${added} (total ${all.length})`);
+      if (added === 0) {                         // não avançou
+        if (mode === "page") { mode = "offset"; continue; }   // troca a estratégia
+        break;                                                // offset também parou
+      }
+      if (mode === "page") pageNum++;
+      if (data.hasMore === false) break;
+      await new Promise(r => setTimeout(r, 250));
+    }
+    console.log(`%c✅ ${all.length} corridas prontas`, "color:#2ecc71;font-size:14px;font-weight:bold", all);
+    if (!all.length) { console.warn("Nada baixado. Me avise o que apareceu aqui."); done = false; return; }
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([JSON.stringify(all, null, 2)], { type: "application/json" }));
+    a.download = "jobs.json"; a.click();
+    console.log("⬇️ jobs.json baixado! Suba no GitHub (Add file -> Upload files).");
   }
 
-  // hook do fetch
+  // ---- 1) tenta achar o token de sessão no navegador ----
+  function b64(s) { s = s.replace(/-/g, "+").replace(/_/g, "/"); while (s.length % 4) s += "="; return atob(s); }
+  function findToken() {
+    const vals = [];
+    try { for (let i = 0; i < localStorage.length; i++) vals.push(localStorage.getItem(localStorage.key(i))); } catch (e) {}
+    try { for (let i = 0; i < sessionStorage.length; i++) vals.push(sessionStorage.getItem(sessionStorage.key(i))); } catch (e) {}
+    vals.push(document.cookie);
+    const re = /eyJ[A-Za-z0-9_-]+\.eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+/g;
+    const found = [];
+    for (const v of vals) { if (v) { const m = String(v).match(re); if (m) found.push(...m); } }
+    for (const t of found) {
+      try { const p = JSON.parse(b64(t.split(".")[1]));
+        if ((p.scope && ("" + p.scope).includes("scapi")) || JSON.stringify(p.aud || "").includes("scapi")) return t;
+      } catch (e) {}
+    }
+    return found[0] || null;
+  }
+
+  const tok = findToken();
+  if (tok) {
+    console.log("%c🔑 Token achado no navegador — baixando sem precisar rolar!", "color:#2ecc71;font-size:14px;font-weight:bold");
+    paginate(API_BASE, "Bearer " + tok);
+    return;
+  }
+
+  // ---- 2) fallback: captura a requisição da página ----
+  const getAuth = (h) => { for (const k in h) { if (k.toLowerCase() === "authorization") return h[k]; } return null; };
   window.fetch = function (input, init) {
     try {
       const url = typeof input === "string" ? input : (input && input.url);
@@ -63,21 +98,18 @@
         const h = {};
         if (init && init.headers) new Headers(init.headers).forEach((v, k) => h[k] = v);
         else if (input && input.headers && input.headers.forEach) input.headers.forEach((v, k) => h[k] = v);
-        if (h.authorization) go(url, h);
+        const a = getAuth(h); if (a) paginate(url, a);
       }
     } catch (e) {}
     return orig.apply(this, arguments);
   };
-
-  // hook do XMLHttpRequest (caso a página use XHR/axios)
-  const XO = XMLHttpRequest.prototype.open, XS = XMLHttpRequest.prototype.setRequestHeader, XSend = XMLHttpRequest.prototype.send;
+  const XO = XMLHttpRequest.prototype.open, XS = XMLHttpRequest.prototype.setRequestHeader, XSe = XMLHttpRequest.prototype.send;
   XMLHttpRequest.prototype.open = function (m, u) { this.__u = u; this.__h = {}; return XO.apply(this, arguments); };
   XMLHttpRequest.prototype.setRequestHeader = function (k, v) { if (this.__h) this.__h[k] = v; return XS.apply(this, arguments); };
   XMLHttpRequest.prototype.send = function () {
-    try { if (this.__u && this.__u.includes("/search/mission") && this.__h && this.__h.authorization) go(this.__u, this.__h); } catch (e) {}
-    return XSend.apply(this, arguments);
+    try { if (this.__u && this.__u.includes("/search/mission")) { const a = getAuth(this.__h || {}); if (a) paginate(this.__u, a); } } catch (e) {}
+    return XSe.apply(this, arguments);
   };
-
-  console.log("%c✅ Coletor ligado! Agora ROLE a página pra baixo (ou mude a ordenação) pra disparar uma busca. O jobs.json baixa sozinho.",
-              "color:#5b9dff;font-size:14px;font-weight:bold");
+  console.log("%c🔎 Não achei o token salvo. ROLE a página pra baixo (ou mude a ordenação) pra eu capturar. Se nada acontecer, me manda o que apareceu aqui.",
+              "color:#f5b942;font-size:14px;font-weight:bold");
 })();
