@@ -10,38 +10,45 @@
   *{box-sizing:border-box}
   body{margin:0;background:var(--bg);color:var(--txt);
        font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:15px}
-  header{padding:12px 18px;border-bottom:1px solid var(--line);display:flex;
-         gap:12px;align-items:center;flex-wrap:wrap;position:sticky;top:0;background:var(--bg2);z-index:5}
-  h1{font-size:1.05rem;margin:0}
+  header{padding:10px 16px;border-bottom:1px solid var(--line);display:flex;
+         gap:10px;align-items:center;flex-wrap:wrap;position:sticky;top:0;background:var(--bg2);z-index:5}
+  h1{font-size:1.02rem;margin:0}
   .accent{color:var(--accent)}
-  button{padding:9px 14px;border-radius:10px;border:1px solid var(--line);
-         background:var(--card);color:var(--txt);cursor:pointer;font-size:.92rem}
+  button{padding:9px 13px;border-radius:10px;border:1px solid var(--line);
+         background:var(--card);color:var(--txt);cursor:pointer;font-size:.9rem}
   button.primary{background:linear-gradient(120deg,var(--accent),#7c5cff);border:0;font-weight:700}
   button:disabled{opacity:.4;cursor:default}
-  .layout{display:flex;gap:14px;padding:14px;align-items:flex-start}
-  .stage-wrap{flex:1;min-width:0}
-  .toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px}
-  .stage{position:relative;overflow:auto;max-height:78vh;border:1px solid var(--line);
-         border-radius:12px;background:#000;touch-action:none}
-  .stage img{display:block;user-select:none;-webkit-user-drag:none}
+  /* barra de passo */
+  .stepbar{display:flex;align-items:center;gap:12px;justify-content:center;
+    padding:10px 14px;background:var(--bg2);border-bottom:1px solid var(--line);text-align:center}
+  .stepbar b{color:var(--accent)}
+  .stepbar .sz{color:var(--like);font-weight:700}
+  .layout{display:flex;gap:14px;padding:14px;align-items:flex-start;justify-content:center}
+  .stage-wrap{flex:1;min-width:0;max-width:1200px}
+  .toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px;justify-content:center}
+  .stage{position:relative;overflow:auto;max-height:76vh;border:1px solid var(--line);
+         border-radius:12px;background:#05070a;touch-action:none;
+         display:flex;justify-content:center;align-items:flex-start}
+  .canvaswrap{position:relative;flex:none;margin:auto}
+  .canvaswrap img{display:block;user-select:none;-webkit-user-drag:none}
   .box{position:absolute;border:2px solid var(--like);
-       box-shadow:0 0 0 9999px rgba(0,0,0,.35);pointer-events:none}
+       box-shadow:0 0 0 9999px rgba(0,0,0,.45);cursor:move}
   .box b{position:absolute;top:-22px;left:0;background:var(--like);color:#000;
         font-size:.72rem;padding:1px 6px;border-radius:6px;white-space:nowrap}
-  .side{width:280px;flex-shrink:0}
-  .side h2{font-size:.85rem;color:var(--muted);margin:0 0 8px;text-transform:uppercase;letter-spacing:.5px}
-  .grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;max-height:70vh;overflow:auto}
+  .box.model{border-color:var(--accent)}
+  .box.model b{background:var(--accent);color:#fff}
+  .side{width:260px;flex-shrink:0}
+  .side h2{font-size:.82rem;color:var(--muted);margin:0 0 8px;text-transform:uppercase;letter-spacing:.5px}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;max-height:72vh;overflow:auto}
   .thumb{position:relative;border:1px solid var(--line);border-radius:8px;overflow:hidden}
   .thumb img{width:100%;display:block}
   .thumb span{position:absolute;top:2px;left:4px;font-size:.68rem;background:#000a;padding:0 5px;border-radius:5px}
   .thumb button{position:absolute;top:2px;right:2px;width:22px;height:22px;padding:0;
         border-radius:6px;background:var(--dislike);border:0;line-height:1;font-size:.9rem}
-  .hint{color:var(--muted);font-size:.85rem;line-height:1.5}
-  .drop{border:2px dashed var(--line);border-radius:14px;padding:40px 20px;text-align:center;color:var(--muted)}
+  .drop{border:2px dashed var(--line);border-radius:14px;padding:60px 20px;text-align:center;color:var(--muted);max-width:900px;margin:24px auto}
   .drop.hi{border-color:var(--accent);color:var(--txt)}
   input[type=text]{padding:8px 10px;border-radius:8px;border:1px solid var(--line);
-        background:var(--bg2);color:var(--txt);width:100%}
-  .row{display:flex;gap:8px;align-items:center;margin:8px 0}
+        background:var(--bg2);color:var(--txt)}
   kbd{background:var(--card);border:1px solid var(--line);border-radius:5px;padding:1px 6px;font-size:.8rem}
   .count{font-weight:700}
   .nav{display:flex;gap:6px;align-items:center}
@@ -55,260 +62,241 @@
     <input id="file" type="file" accept="image/*" multiple hidden>
     <button onclick="document.getElementById('file').click()">+ Prints</button>
   </label>
-  <span class="badge">Corridas capturadas: <span class="count" id="count">0</span></span>
+  <span class="badge">Capturadas: <span class="count" id="count">0</span></span>
   <button id="save" class="primary" disabled>💾 Salvar na pasta do projeto</button>
   <button id="dl" disabled>Baixar (fallback)</button>
 </header>
 
-<div class="layout">
+<div id="stepbar" class="stepbar" hidden></div>
+
+<div id="empty" class="drop">Arraste seus prints aqui, ou clique em <b>+ Prints</b> lá em cima.</div>
+
+<div id="editor" class="layout" hidden>
   <div class="stage-wrap">
-    <div id="empty" class="drop">Arraste seus prints aqui, ou clique em <b>+ Prints</b> lá em cima.</div>
-    <div id="editor" hidden>
-      <div class="toolbar">
-        <div class="nav">
-          <button id="prev">‹</button>
-          <span class="badge" id="imgnav">1 / 1</span>
-          <button id="next">›</button>
-        </div>
-        <span class="badge">Zoom</span>
-        <button id="zout">−</button><button id="zin">+</button><button id="zfit">ajustar</button>
-        <input id="title" type="text" placeholder="nome opcional (p/ ranking)" style="max-width:220px">
-        <button id="add" class="primary" disabled>Adicionar corrida ⏎</button>
+    <div class="toolbar">
+      <div class="nav">
+        <button id="prev">‹</button>
+        <span class="badge" id="imgnav">1 / 1</span>
+        <button id="next">›</button>
       </div>
-      <div id="stage" class="stage">
+      <span class="badge">Zoom</span>
+      <button id="zout">−</button><button id="zin">+</button><button id="zfit">ajustar</button>
+      <button id="redef" hidden>↺ Redefinir tamanho</button>
+      <input id="title" type="text" placeholder="nome opcional (p/ ranking)" style="max-width:200px">
+      <button id="add" class="primary" disabled>Adicionar corrida ⏎</button>
+    </div>
+    <div id="stage" class="stage">
+      <div id="canvaswrap" class="canvaswrap">
         <img id="shot" alt="">
         <div id="box" class="box" hidden><b id="boxlabel"></b></div>
       </div>
-      <p class="hint" style="margin-top:8px">
-        1) <b>Arraste</b> um retângulo na 1ª corrida (capa + nome, cortando abaixo da linha) — isso vira o tamanho-padrão.
-        2) Depois é só <b>clicar no canto superior-esquerdo</b> de cada corrida que a caixa aparece no mesmo tamanho.
-        Ajuste fino com as <kbd>setas</kbd> (<kbd>Shift</kbd>+seta = 10px). <kbd>Enter</kbd> adiciona.
-      </p>
     </div>
   </div>
 
   <aside class="side">
     <h2>Capturadas</h2>
     <div id="grid" class="grid"></div>
-    <p class="hint" id="sidehint">Nada ainda. As corridas que você adicionar aparecem aqui.</p>
+    <p class="badge" id="sidehint" style="margin-top:8px">Nada ainda.</p>
   </aside>
 </div>
 
 <script>
 (() => {
 "use strict";
-const TARGET_W = 800, QUALITY = 0.82;
+const TARGET_W = 800, QUALITY = 0.82, MIN = 24;
 const $ = s => document.querySelector(s);
 
-let shots = [];            // [{img:Image, name}]
-let si = 0;                // índice do print atual
-let zoom = 1;
-let ref = null;            // {w,h} tamanho-padrão em px da imagem
-let box = null;            // {x,y,w,h} seleção atual em px da imagem
-let captured = [];         // [{blob, url, title}]
-let drawing = false, sx0 = 0, sy0 = 0, moved = false;
+let shots = [], si = 0, zoom = 1, zoomInit = false;
+let ref = null;            // {w,h} tamanho-modelo (px da imagem)
+let box = null;            // {x,y,w,h} px da imagem
+let captured = [];         // [{blob,url,title}]
+let mode = "define";       // "define" (arrastar p/ criar modelo) | "place" (clicar p/ posicionar)
+let action = null;         // interação atual: "draw" | "move" | null
+let ax=0, ay=0, offx=0, offy=0;
 
-const stage = $("#stage"), shotEl = $("#shot"), boxEl = $("#box");
+const stage = $("#stage"), wrap = $("#canvaswrap"), shotEl = $("#shot"), boxEl = $("#box");
 
 // ---------- carregar prints ----------
 $("#file").addEventListener("change", e => addFiles(e.target.files));
-["dragover","dragenter"].forEach(ev => $("#empty").addEventListener(ev, e=>{e.preventDefault();e.currentTarget.classList.add("hi")}));
-["dragleave","drop"].forEach(ev => $("#empty").addEventListener(ev, e=>{e.preventDefault();e.currentTarget.classList.remove("hi")}));
-$("#empty").addEventListener("drop", e => addFiles(e.dataTransfer.files));
+["dragover","dragenter"].forEach(ev => $("#empty").addEventListener(ev, e=>{e.preventDefault();$("#empty").classList.add("hi")}));
+["dragleave"].forEach(ev => $("#empty").addEventListener(ev, e=>{e.preventDefault();$("#empty").classList.remove("hi")}));
 window.addEventListener("dragover", e=>e.preventDefault());
-window.addEventListener("drop", e=>{e.preventDefault(); if(e.target.closest("#empty")) return; addFiles(e.dataTransfer.files)});
+window.addEventListener("drop", e=>{e.preventDefault(); $("#empty").classList.remove("hi"); if(e.dataTransfer) addFiles(e.dataTransfer.files)});
 
 function addFiles(list){
-  const files = [...list].filter(f => f.type.startsWith("image/"));
-  let pending = files.length;
-  if(!pending) return;
-  files.forEach(f => {
-    const img = new Image();
-    img.onload = () => { shots.push({img, name:f.name}); if(--pending===0) ready(); };
-    img.src = URL.createObjectURL(f);
-  });
+  const files=[...list].filter(f=>f.type.startsWith("image/"));
+  let n=files.length; if(!n) return;
+  files.forEach(f=>{ const img=new Image();
+    img.onload=()=>{ shots.push({img,name:f.name}); if(--n===0) ready(); };
+    img.src=URL.createObjectURL(f); });
 }
 function ready(){
-  $("#empty").hidden = true; $("#editor").hidden = false;
-  if(!zoomInit){ si = shots.length - countLoadedBefore(); }
-  showShot(shots.length - 1 < 0 ? 0 : Math.min(si, shots.length-1));
+  $("#empty").hidden=true; $("#editor").hidden=false; $("#stepbar").hidden=false;
+  showShot(Math.min(si, shots.length-1));
 }
-let zoomInit = false;
-function countLoadedBefore(){ return 0; }
+
+// ---------- passo/instrução ----------
+function renderStep(){
+  const s=$("#stepbar");
+  if(mode==="define"){
+    s.innerHTML = `<span><b>Passo 1:</b> arraste um retângulo na 1ª corrida (capa + nome, cortando na linha) para definir o <b>tamanho-modelo</b>.</span>`;
+  } else {
+    s.innerHTML = `<span><b>Passo 2:</b> clique no canto de cada corrida para posicionar e tecle <kbd>Enter</kbd>. Ajuste com <kbd>setas</kbd>.</span>
+      <span class="sz">Tamanho travado: ${Math.round(ref.w)}×${Math.round(ref.h)}</span>`;
+  }
+  $("#redef").hidden = mode!=="place";
+  boxEl.classList.toggle("model", mode==="define");
+}
 
 // ---------- exibir print ----------
 function showShot(i){
-  si = Math.max(0, Math.min(i, shots.length-1));
-  const s = shots[si];
-  shotEl.src = s.img.src;
-  if(!zoomInit){ fit(); zoomInit = true; } else applyZoom();
-  $("#imgnav").textContent = `${si+1} / ${shots.length}`;
-  clearBox();
+  si=Math.max(0,Math.min(i,shots.length-1));
+  shotEl.src=shots[si].img.src;
+  if(!zoomInit){ fit(); zoomInit=true; } else applyZoom();
+  $("#imgnav").textContent=`${si+1} / ${shots.length}`;
+  box=null; drawBox(); renderStep(); $("#add").disabled=true;
 }
-$("#prev").onclick = () => showShot(si-1);
-$("#next").onclick = () => showShot(si+1);
-$("#zin").onclick = () => { zoom = Math.min(4, zoom*1.2); applyZoom(); };
-$("#zout").onclick = () => { zoom = Math.max(.15, zoom/1.2); applyZoom(); };
-$("#zfit").onclick = fit;
+$("#prev").onclick=()=>showShot(si-1);
+$("#next").onclick=()=>showShot(si+1);
+$("#zin").onclick=()=>{zoom=Math.min(4,zoom*1.2);applyZoom()};
+$("#zout").onclick=()=>{zoom=Math.max(.1,zoom/1.2);applyZoom()};
+$("#zfit").onclick=fit;
 function fit(){
-  const s = shots[si]; if(!s) return;
-  const avail = stage.clientWidth || 800;
-  zoom = Math.min(1, avail / s.img.naturalWidth);
-  applyZoom();
+  const s=shots[si]; if(!s) return;
+  const avail=(stage.clientWidth||900)-4;
+  zoom=Math.min(1, avail/s.img.naturalWidth); applyZoom();
 }
 function applyZoom(){
-  const s = shots[si]; if(!s) return;
-  shotEl.style.width = (s.img.naturalWidth * zoom) + "px";
+  const s=shots[si]; if(!s) return;
+  shotEl.style.width=(s.img.naturalWidth*zoom)+"px";
   drawBox();
 }
 
-// ---------- desenhar/posicionar caixa ----------
-function toImg(clientX, clientY){
-  const r = shotEl.getBoundingClientRect();
-  return { x:(clientX - r.left)/zoom, y:(clientY - r.top)/zoom };
+// ---------- coordenadas ----------
+function toImg(cx,cy){
+  const r=shotEl.getBoundingClientRect();
+  return { x:(cx-r.left)/zoom, y:(cy-r.top)/zoom };
 }
-stage.addEventListener("pointerdown", e => {
-  if(e.target.closest("button")) return;
-  const p = toImg(e.clientX, e.clientY);
-  drawing = true; moved = false; sx0 = p.x; sy0 = p.y;
-  stage.setPointerCapture(e.pointerId);
-});
-stage.addEventListener("pointermove", e => {
-  if(!drawing) return;
-  const p = toImg(e.clientX, e.clientY);
-  if(Math.abs(p.x-sx0) > 4 || Math.abs(p.y-sy0) > 4) moved = true;
-  box = { x:Math.min(sx0,p.x), y:Math.min(sy0,p.y),
-          w:Math.abs(p.x-sx0), h:Math.abs(p.y-sy0) };
-  drawBox();
-});
-stage.addEventListener("pointerup", e => {
-  if(!drawing) return; drawing = false;
-  if(moved){                       // arrastou: define o tamanho-padrão
-    ref = { w:box.w, h:box.h };
-  } else if(ref){                  // clicou: coloca caixa do tamanho-padrão
-    const p = toImg(e.clientX, e.clientY);
-    box = { x:p.x, y:p.y, w:ref.w, h:ref.h };
-  } else { box = null; }
-  clampBox(); drawBox();
-  $("#add").disabled = !box;
-});
 function clampBox(){
-  if(!box) return; const s = shots[si].img;
-  box.x = Math.max(0, Math.min(box.x, s.naturalWidth - box.w));
-  box.y = Math.max(0, Math.min(box.y, s.naturalHeight - box.h));
+  if(!box) return; const s=shots[si].img;
+  box.x=Math.max(0,Math.min(box.x,s.naturalWidth-box.w));
+  box.y=Math.max(0,Math.min(box.y,s.naturalHeight-box.h));
 }
 function drawBox(){
-  if(!box){ boxEl.hidden = true; return; }
-  boxEl.hidden = false;
-  boxEl.style.left = (box.x*zoom)+"px"; boxEl.style.top = (box.y*zoom)+"px";
-  boxEl.style.width = (box.w*zoom)+"px"; boxEl.style.height = (box.h*zoom)+"px";
-  $("#boxlabel").textContent = `${Math.round(box.w)}×${Math.round(box.h)}`;
+  if(!box){ boxEl.hidden=true; return; }
+  boxEl.hidden=false;
+  boxEl.style.left=(box.x*zoom)+"px"; boxEl.style.top=(box.y*zoom)+"px";
+  boxEl.style.width=(box.w*zoom)+"px"; boxEl.style.height=(box.h*zoom)+"px";
+  $("#boxlabel").textContent=`${Math.round(box.w)}×${Math.round(box.h)}`;
 }
-function clearBox(){ box = null; boxEl.hidden = true; $("#add").disabled = true; }
 
-// ---------- nudge com setas + Enter ----------
-document.addEventListener("keydown", e => {
-  if(e.target.tagName === "INPUT") return;
+// ---------- interação ----------
+stage.addEventListener("pointerdown", e=>{
+  if(e.target.closest("button")) return;
+  stage.setPointerCapture(e.pointerId);
+  const p=toImg(e.clientX,e.clientY);
+  if(mode==="define"){
+    action="draw"; ax=p.x; ay=p.y;
+    box={x:p.x,y:p.y,w:0,h:0}; drawBox();
+  } else {
+    // modo posicionar: coloca/segura a caixa (tamanho travado = ref)
+    action="move";
+    if(!box) box={x:p.x-ref.w/2,y:p.y-ref.h/2,w:ref.w,h:ref.h};
+    // guarda o quanto o cursor está deslocado do canto, pra mover sem "pular"
+    offx=p.x-box.x; offy=p.y-box.y;
+    if(offx<0||offx>box.w||offy<0||offy>box.h){ offx=box.w/2; offy=box.h/2; }
+    box.x=p.x-offx; box.y=p.y-offy; clampBox(); drawBox();
+  }
+});
+stage.addEventListener("pointermove", e=>{
+  if(!action) return;
+  const p=toImg(e.clientX,e.clientY);
+  if(action==="draw"){
+    box={x:Math.min(ax,p.x),y:Math.min(ay,p.y),w:Math.abs(p.x-ax),h:Math.abs(p.y-ay)};
+    drawBox();
+  } else if(action==="move"){
+    box.x=p.x-offx; box.y=p.y-offy; clampBox(); drawBox();
+  }
+});
+stage.addEventListener("pointerup", e=>{
+  if(!action) return;
+  if(action==="draw"){
+    if(box && box.w>=MIN && box.h>=MIN){          // modelo válido
+      ref={w:box.w,h:box.h}; mode="place"; clampBox();
+    } else { box=null; }                          // clique acidental: ignora
+    renderStep();
+  }
+  action=null; drawBox();
+  $("#add").disabled=!box;
+});
+$("#redef").onclick=()=>{ ref=null; box=null; mode="define"; renderStep(); drawBox(); $("#add").disabled=true; };
+
+// ---------- teclado ----------
+document.addEventListener("keydown", e=>{
+  if(e.target.tagName==="INPUT") return;
   if(!box) return;
-  const step = e.shiftKey ? 10 : 1;
-  if(e.key === "ArrowLeft"){ box.x -= step; }
-  else if(e.key === "ArrowRight"){ box.x += step; }
-  else if(e.key === "ArrowUp"){ box.y -= step; }
-  else if(e.key === "ArrowDown"){ box.y += step; }
-  else if(e.key === "Enter"){ addCard(); return; }
+  const step=e.shiftKey?10:1;
+  if(e.key==="ArrowLeft") box.x-=step;
+  else if(e.key==="ArrowRight") box.x+=step;
+  else if(e.key==="ArrowUp") box.y-=step;
+  else if(e.key==="ArrowDown") box.y+=step;
+  else if(e.key==="Enter"){ addCard(); return; }
   else return;
   e.preventDefault(); clampBox(); drawBox();
 });
-$("#add").onclick = addCard;
+$("#add").onclick=addCard;
 
 // ---------- recortar → webp ----------
 function cropBlob(){
-  const s = shots[si].img;
-  const scale = TARGET_W / box.w;
-  const c = document.createElement("canvas");
-  c.width = TARGET_W; c.height = Math.round(box.h*scale);
-  const ctx = c.getContext("2d");
-  ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = "high";
-  ctx.drawImage(s, box.x, box.y, box.w, box.h, 0, 0, c.width, c.height);
-  return new Promise(res => c.toBlob(res, "image/webp", QUALITY));
+  const s=shots[si].img, scale=TARGET_W/box.w;
+  const c=document.createElement("canvas");
+  c.width=TARGET_W; c.height=Math.round(box.h*scale);
+  const ctx=c.getContext("2d"); ctx.imageSmoothingQuality="high";
+  ctx.drawImage(s,box.x,box.y,box.w,box.h,0,0,c.width,c.height);
+  return new Promise(r=>c.toBlob(r,"image/webp",QUALITY));
 }
 async function addCard(){
-  if(!box) return;
-  const blob = await cropBlob();
-  const url = URL.createObjectURL(blob);
-  const title = $("#title").value.trim();
-  captured.push({ blob, url, title });
-  $("#title").value = "";
-  renderGrid();
-  // mantém o tamanho-padrão pronto pro próximo clique
+  if(!box || mode!=="place") return;
+  const blob=await cropBlob(); const url=URL.createObjectURL(blob);
+  captured.push({blob,url,title:$("#title").value.trim()});
+  $("#title").value=""; renderGrid();
 }
 function renderGrid(){
-  $("#count").textContent = captured.length;
-  $("#save").disabled = $("#dl").disabled = captured.length === 0;
-  $("#sidehint").hidden = captured.length > 0;
-  $("#grid").innerHTML = captured.map((c,i) =>
-    `<div class="thumb"><span>${i+1}</span>
-       <button data-i="${i}" title="remover">✕</button>
-       <img src="${c.url}"></div>`).join("");
-  $("#grid").querySelectorAll("button").forEach(b =>
-    b.onclick = () => { captured.splice(+b.dataset.i,1); renderGrid(); });
+  $("#count").textContent=captured.length;
+  $("#save").disabled=$("#dl").disabled=captured.length===0;
+  $("#sidehint").hidden=captured.length>0;
+  $("#grid").innerHTML=captured.map((c,i)=>
+    `<div class="thumb"><span>${i+1}</span><button data-i="${i}">✕</button><img src="${c.url}"></div>`).join("");
+  $("#grid").querySelectorAll("button").forEach(b=>b.onclick=()=>{captured.splice(+b.dataset.i,1);renderGrid();});
 }
 
 // ---------- salvar ----------
-function nextNumber(existing){
-  let max = 0;
-  existing.forEach(j => { const m = /(\d+)/.exec(j.id||""); if(m) max = Math.max(max, +m[1]); });
-  return max + 1;
-}
-$("#save").onclick = async () => {
-  if(!window.showDirectoryPicker){
-    alert("Seu navegador não suporta salvar direto na pasta.\nUse o botão \"Baixar (fallback)\" ou abra no Chrome/Edge.");
-    return;
-  }
+function nextNumber(existing){ let m=0; existing.forEach(j=>{const x=/(\d+)/.exec(j.id||"");if(x)m=Math.max(m,+x[1]);}); return m+1; }
+$("#save").onclick=async ()=>{
+  if(!window.showDirectoryPicker){ alert("Navegador sem suporte. Use \"Baixar (fallback)\" ou abra no Chrome/Edge."); return; }
   try{
-    const root = await window.showDirectoryPicker({ mode:"readwrite" });
-    const imagesDir = await root.getDirectoryHandle("images", { create:true });
-    let jobs = [];
-    try{
-      const jf = await root.getFileHandle("jobs.json");
-      jobs = JSON.parse(await (await jf.getFile()).text());
-      if(!Array.isArray(jobs)) jobs = [];
-    }catch{}
-    let n = nextNumber(jobs);
+    const root=await window.showDirectoryPicker({mode:"readwrite"});
+    const dir=await root.getDirectoryHandle("images",{create:true});
+    let jobs=[]; try{ const jf=await root.getFileHandle("jobs.json"); jobs=JSON.parse(await (await jf.getFile()).text()); if(!Array.isArray(jobs))jobs=[]; }catch{}
+    let n=nextNumber(jobs);
     for(const c of captured){
-      const id = "job_" + String(n).padStart(3,"0");
-      const fname = id + ".webp";
-      const fh = await imagesDir.getFileHandle(fname, { create:true });
-      const w = await fh.createWritable(); await w.write(c.blob); await w.close();
-      jobs.push({ id, img:"images/"+fname, title:c.title || id.replace("_"," ") });
-      n++;
+      const id="job_"+String(n).padStart(3,"0"), fname=id+".webp";
+      const fh=await dir.getFileHandle(fname,{create:true});
+      const w=await fh.createWritable(); await w.write(c.blob); await w.close();
+      jobs.push({id,img:"images/"+fname,title:c.title||id.replace("_"," ")}); n++;
     }
-    const jf = await root.getFileHandle("jobs.json", { create:true });
-    const w = await jf.createWritable();
-    await w.write(JSON.stringify(jobs, null, 2)); await w.close();
-    alert(`Salvo! ${captured.length} corrida(s) adicionada(s).\nAgora dê: git add . && git commit && git push`);
-    captured = []; renderGrid();
-  }catch(err){
-    if(err.name !== "AbortError") alert("Erro ao salvar: " + err.message);
-  }
+    const jf=await root.getFileHandle("jobs.json",{create:true});
+    const w=await jf.createWritable(); await w.write(JSON.stringify(jobs,null,2)); await w.close();
+    alert(`Salvo! ${captured.length} corrida(s).\nAgora suba a pasta images/ + jobs.json no GitHub (Add file → Upload files).`);
+    captured=[]; renderGrid();
+  }catch(err){ if(err.name!=="AbortError") alert("Erro: "+err.message); }
 };
-
-// fallback: baixa jobs.json (parcial) + imagens uma a uma
-$("#dl").onclick = async () => {
-  const jobs = captured.map((c,i) => {
-    const id = "job_" + String(i+1).padStart(3,"0");
-    return { id, img:"images/"+id+".webp", title:c.title || id.replace("_"," ") };
-  });
-  captured.forEach((c,i) => {
-    const a = document.createElement("a");
-    a.href = c.url; a.download = "job_"+String(i+1).padStart(3,"0")+".webp";
-    setTimeout(()=>a.click(), i*250);
-  });
-  const blob = new Blob([JSON.stringify(jobs,null,2)], {type:"application/json"});
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob); a.download = "jobs.json";
-  setTimeout(()=>a.click(), captured.length*250 + 300);
-  alert("Baixando imagens + jobs.json.\nColoque as imagens em /images e o jobs.json na raiz. (A numeração recomeça do 1 nesse modo.)");
+$("#dl").onclick=()=>{
+  const jobs=captured.map((c,i)=>{const id="job_"+String(i+1).padStart(3,"0");return {id,img:"images/"+id+".webp",title:c.title||id.replace("_"," ")};});
+  captured.forEach((c,i)=>{const a=document.createElement("a");a.href=c.url;a.download="job_"+String(i+1).padStart(3,"0")+".webp";setTimeout(()=>a.click(),i*250);});
+  const blob=new Blob([JSON.stringify(jobs,null,2)],{type:"application/json"});
+  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="jobs.json";setTimeout(()=>a.click(),captured.length*250+300);
+  alert("Baixando imagens + jobs.json. Suba as imagens em /images e o jobs.json na raiz.");
 };
 
 renderGrid();

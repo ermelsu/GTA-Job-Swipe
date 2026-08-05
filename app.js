@@ -353,7 +353,7 @@
     const r = await fetch("jobs.json", { cache: "no-store" });
     if (!r.ok) throw new Error("jobs.json não encontrado");
     jobs = await r.json();
-    if (!Array.isArray(jobs) || !jobs.length) throw new Error("jobs.json vazio");
+    if (!Array.isArray(jobs) || !jobs.length) throw new Error("As corridas ainda estão sendo cadastradas 🏁 volte em instantes!");
     jobs.forEach((j) => (jobById[j.id] = j));
   }
   function loadLocal() {
