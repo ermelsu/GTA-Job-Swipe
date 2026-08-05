@@ -111,20 +111,14 @@
     for (const v of vals) { if (v) { const m = String(v).match(re); if (m) found.push(...m); } }
     for (const t of found) {
       try { const p = JSON.parse(b64(t.split(".")[1]));
+        if (p.exp && p.exp * 1000 < Date.now()) continue;   // ignora token expirado
         if ((p.scope && ("" + p.scope).includes("scapi")) || JSON.stringify(p.aud || "").includes("scapi")) return t;
       } catch (e) {}
     }
     return found[0] || null;
   }
 
-  const tok = findToken();
-  if (tok) {
-    console.log("%c🔑 Token achado no navegador — baixando sem precisar rolar!", "color:#2ecc71;font-size:14px;font-weight:bold");
-    paginate(API_BASE, "Bearer " + tok);
-    return;
-  }
-
-  // ---- 2) fallback: captura a requisição da página ----
+  // ---- 1) escutador SEMPRE ligado: captura o token REAL da requisição ao vivo ----
   const getAuth = (h) => { for (const k in h) { if (k.toLowerCase() === "authorization") return h[k]; } return null; };
   window.fetch = function (input, init) {
     try {
@@ -145,6 +139,11 @@
     try { if (this.__u && this.__u.includes("/search/mission")) { const a = getAuth(this.__h || {}); if (a) paginate(this.__u, a); } } catch (e) {}
     return XSe.apply(this, arguments);
   };
-  console.log("%c🔎 Não achei o token salvo. ROLE a página pra baixo (ou mude a ordenação) pra eu capturar. Se nada acontecer, me manda o que apareceu aqui.",
+
+  // ---- 2) tentativa extra: token salvo (se falhar/401, o escutador acima assume) ----
+  const tok = findToken();
+  if (tok) { console.log("🔑 Tentando com o token salvo…"); paginate(API_BASE, "Bearer " + tok); }
+
+  console.log("%c🔎 Se não baixar em alguns segundos, ROLE a página pra baixo (ou mude a ordenação) — vou capturar o token real e baixar.",
               "color:#f5b942;font-size:14px;font-weight:bold");
 })();
