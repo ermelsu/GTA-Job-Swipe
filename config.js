@@ -17,8 +17,9 @@
 // ===========================================================================
 
 window.CONFIG = {
+  // FALTA a URL do projeto: Settings -> Data API -> "Project URL"
   SUPABASE_URL: "",          // ex: "https://xxxxxxxx.supabase.co"
-  SUPABASE_ANON_KEY: "",     // ex: "eyJhbGciOi..."
+  SUPABASE_ANON_KEY: "sb_publishable_pSx_m7hzo5nKUeEsVfVHBw_kkskuZFc",
 
   // Senha simples pra abrir a página de resultados (admin.html). Não é
   // segurança de verdade, só pra amigo curioso não bisbilhotar o ranking.
