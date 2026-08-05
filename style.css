@@ -1,14 +1,19 @@
 :root{
-  --bg:#0b0f14; --bg2:#121924; --card:#1a2431; --line:#26333f;
-  --txt:#eef3f8; --muted:#8ea0b3;
-  --like:#2ecc71; --dislike:#ff5a5f; --skip:#f5b942; --accent:#5b9dff;
-  --radius:18px; --nav-h:64px;
+  --bg:#0b0e14; --bg2:#161b22; --card:#161b22; --line:#21262d;
+  --txt:#f0f6fc; --muted:#8b949e;
+  --like:#2ecc71; --dislike:#ff4757; --skip:#fdb813; --accent:#fdb813;
+  --badge:#ff4757;
+  --radius:12px; --nav-h:64px;
 }
 *{box-sizing:border-box; -webkit-tap-highlight-color:transparent}
 html,body{height:100%}
 body{
-  margin:0; background:radial-gradient(120% 100% at 50% 0%, var(--bg2), var(--bg));
-  color:var(--txt); font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  margin:0; background-color:var(--bg);
+  background-image:
+    radial-gradient(circle at 50% 0%, rgba(253,184,19,.08) 0%, transparent 50%),
+    radial-gradient(circle at 80% 90%, rgba(255,71,87,.05) 0%, transparent 40%);
+  background-attachment:fixed;
+  color:var(--txt); font-family:'Montserrat',system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   overscroll-behavior:none;
 }
 .c-like{color:var(--like)} .c-no{color:var(--dislike)}
@@ -19,10 +24,11 @@ body{
 
 /* ---------- botões base ---------- */
 .btn-primary,.btn-ghost{
-  padding:14px; border:0; border-radius:14px; font-size:1.02rem; font-weight:700;
-  cursor:pointer; color:#fff;
+  padding:14px; border:0; border-radius:8px; font-size:.95rem; font-weight:800;
+  cursor:pointer; color:#fff; text-transform:uppercase; letter-spacing:.5px;
 }
-.btn-primary{background:linear-gradient(120deg,var(--accent),#7c5cff)}
+.btn-primary{background:var(--accent); color:#000; box-shadow:0 4px 18px rgba(253,184,19,.25)}
+.btn-primary:hover{background:#ffc439}
 .btn-ghost{background:transparent; color:var(--muted); font-weight:600}
 .btn-primary:active{transform:scale(.98)}
 .btn-primary.wide{width:100%; margin-bottom:14px}
@@ -37,7 +43,7 @@ body{
   margin:auto; padding:28px 24px; width:min(92vw,420px); text-align:center;
   display:flex; flex-direction:column; gap:16px;
 }
-.logo{font-size:2.4rem; font-weight:800; margin:0; letter-spacing:-.5px}
+.logo{font-size:2.2rem; font-weight:900; margin:0; letter-spacing:-.5px; font-style:italic; text-transform:uppercase}
 .logo span{color:var(--accent)}
 .subtitle{color:var(--muted); margin:0; line-height:1.5}
 #login-form{display:flex; flex-direction:column; gap:12px; margin-top:8px}
@@ -106,17 +112,20 @@ input[type=text]:focus{outline:none; border-color:var(--accent)}
 .card{
   position:absolute; width:100%; max-width:460px;
   border-radius:var(--radius); overflow:hidden; background:var(--card);
-  border:1px solid var(--line); box-shadow:0 18px 40px rgba(0,0,0,.45);
+  border:1px solid var(--line); box-shadow:0 14px 34px rgba(0,0,0,.6);
   touch-action:none; will-change:transform; user-select:none;
 }
-.card img{display:block; width:100%; height:auto; pointer-events:none}
-.card.imgfail::after{content:"imagem não carregou"; display:flex; aspect-ratio:16/9;
-  align-items:center; justify-content:center; color:var(--muted)}
-.card .idx{position:absolute; top:10px; left:12px; z-index:2; font-size:.78rem;
-  color:#fff; background:rgba(0,0,0,.45); padding:3px 9px; border-radius:99px}
-.card .caption{position:relative; z-index:2; padding:12px 14px; font-weight:700;
-  font-size:1.05rem; text-align:center; background:var(--card); border-top:1px solid var(--line)}
-.stamp{position:absolute; top:22px; z-index:3; font-size:1.6rem; font-weight:900;
+.card-media{position:relative; width:100%; aspect-ratio:16/9; overflow:hidden; background:#21262d}
+.card-media img{width:100%; height:100%; object-fit:cover; display:block; pointer-events:none}
+.card.imgfail .card-media::after{content:"imagem indisponível"; position:absolute; inset:0;
+  display:grid; place-items:center; color:var(--muted); font-size:.85rem}
+.card .idx{position:absolute; top:10px; right:12px; z-index:2; font-size:.72rem;
+  color:#fff; background:rgba(0,0,0,.55); padding:3px 9px; border-radius:99px}
+.card .caption{padding:15px 16px; font-weight:800; font-size:1.12rem; color:#fff; background:var(--card)}
+.badge-type{position:absolute; top:10px; left:10px; z-index:2; background:var(--badge); color:#fff;
+  font-size:.62rem; font-weight:800; padding:4px 9px; border-radius:4px; text-transform:uppercase;
+  letter-spacing:.5px; box-shadow:0 2px 8px rgba(0,0,0,.4)}
+.stamp{position:absolute; top:48px; z-index:3; font-size:1.6rem; font-weight:900;
   letter-spacing:2px; padding:6px 14px; border-radius:10px; border:4px solid; opacity:0; transition:opacity .1s}
 .stamp-like{right:18px; color:var(--like); border-color:var(--like); transform:rotate(14deg)}
 .stamp-nope{left:18px;  color:var(--dislike); border-color:var(--dislike); transform:rotate(-14deg)}
@@ -136,14 +145,18 @@ input[type=text]:focus{outline:none; border-color:var(--accent)}
 .ctrl-dislike{color:var(--dislike); border-color:var(--dislike)}
 
 /* ---------- grade de corridas ---------- */
-.racegrid{display:grid; grid-template-columns:repeat(2,1fr); gap:10px; padding:14px}
-@media(min-width:620px){ .racegrid{grid-template-columns:repeat(3,1fr)} }
-.tile{position:relative; border-radius:12px; overflow:hidden; border:1px solid var(--line);
-  background:var(--card); cursor:pointer}
-.tile img{display:block; width:100%; height:auto}
+.racegrid{display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:14px; padding:14px}
+.tile{border-radius:10px; overflow:hidden; border:1px solid var(--line);
+  background:var(--card); cursor:pointer; display:flex; flex-direction:column;
+  transition:transform .2s, border-color .2s, box-shadow .2s}
 .tile:active{transform:scale(.98)}
-.tile .mark{position:absolute; top:6px; right:6px; width:26px; height:26px; border-radius:50%;
-  display:grid; place-items:center; font-size:.85rem; color:#fff; box-shadow:0 2px 8px #0008}
+@media(hover:hover){.tile:hover{transform:translateY(-4px); border-color:rgba(253,184,19,.5); box-shadow:0 10px 24px rgba(0,0,0,.5)}}
+.tile .card-media{aspect-ratio:16/9}
+.tile > img{display:block; width:100%; aspect-ratio:16/9; object-fit:cover}
+.tile .tile-title{padding:9px 11px; font-size:.82rem; font-weight:700; color:#fff; line-height:1.25;
+  display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden}
+.tile .mark{position:absolute; top:6px; right:6px; z-index:2; width:24px; height:24px; border-radius:50%;
+  display:grid; place-items:center; font-size:.8rem; color:#fff; box-shadow:0 2px 8px #0008}
 .tile .mark.like{background:var(--like)} .tile .mark.dislike{background:var(--dislike)}
 .tile .cap{position:absolute; left:0; right:0; bottom:0; padding:14px 8px 6px;
   font-size:.74rem; font-weight:600; color:#fff; line-height:1.2;

@@ -1,502 +1,702 @@
 [
   {
     "id": "job_001",
-    "img": "images/job_001.webp",
-    "title": "job 001"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/8270/A8M6Bz8MLEC5xngvDCzGwA/1_0.jpg",
+    "title": "Cypress Flats LTS",
+    "type": "LastTeamStanding",
+    "jobId": "A8M6Bz8MLEC5xngvDCzGwA"
   },
   {
     "id": "job_002",
-    "img": "images/job_002.webp",
-    "title": "job 002"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/6861/raJFAGN0J0CWla3Tz8YnGg/1_0.jpg",
+    "title": "Criminal Records",
+    "type": "LandRace",
+    "jobId": "raJFAGN0J0CWla3Tz8YnGg"
   },
   {
     "id": "job_003",
-    "img": "images/job_003.webp",
-    "title": "job 003"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/2882/RUGT8IaCAEeLUhhlfCDCGw/1_0.jpg",
+    "title": "Taking Off",
+    "type": "LandRace",
+    "jobId": "RUGT8IaCAEeLUhhlfCDCGw"
   },
   {
     "id": "job_004",
-    "img": "images/job_004.webp",
-    "title": "job 004"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/5454/9g4xRe6tSEuwkR03KdpOcg/1_0.jpg",
+    "title": "Down the Drain",
+    "type": "LandRace",
+    "jobId": "9g4xRe6tSEuwkR03KdpOcg"
   },
   {
     "id": "job_005",
-    "img": "images/job_005.webp",
-    "title": "job 005"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/4998/vyTABS5xR06--t_w6e9t0w/2_0.jpg",
+    "title": "Stunt - Chiliad",
+    "type": "StuntRaceP2P",
+    "jobId": "vyTABS5xR06--t_w6e9t0w"
   },
   {
     "id": "job_006",
-    "img": "images/job_006.webp",
-    "title": "job 006"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/0647/Z412JInUSUmlOlyNNrItTw/1_0.jpg",
+    "title": "Arms Race",
+    "type": "LandRace",
+    "jobId": "Z412JInUSUmlOlyNNrItTw"
   },
   {
     "id": "job_007",
-    "img": "images/job_007.webp",
-    "title": "job 007"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/9015/xHqN1GOv1E2mcmcpaKOJHQ/2_0.jpg",
+    "title": "Stunt - Plummet",
+    "type": "StuntRaceP2P",
+    "jobId": "xHqN1GOv1E2mcmcpaKOJHQ"
   },
   {
     "id": "job_008",
-    "img": "images/job_008.webp",
-    "title": "job 008"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/8880/p5dR1Huzmk2W492a764yvg/2_0.jpg",
+    "title": "Stunt - Downtown Loop",
+    "type": "StuntRace",
+    "jobId": "p5dR1Huzmk2W492a764yvg"
   },
   {
     "id": "job_009",
-    "img": "images/job_009.webp",
-    "title": "job 009"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/9885/_fIf6ALoTk-epof_P3VoDA/1_0.jpg",
+    "title": "Dipping In",
+    "type": "LandRace",
+    "jobId": "_fIf6ALoTk-epof_P3VoDA"
   },
   {
     "id": "job_010",
-    "img": "images/job_010.webp",
-    "title": "job 010"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/5499/akcrtIfrH0ioverkdkdD0A/2_0.jpg",
+    "title": "Stunt - Canyon Crossing",
+    "type": "StuntRace",
+    "jobId": "akcrtIfrH0ioverkdkdD0A"
   },
   {
     "id": "job_011",
-    "img": "images/job_011.webp",
-    "title": "job 011"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/4327/DK_G439c906eO-JsIMOINQ/1_0.jpg",
+    "title": "Across the Wilderness",
+    "type": "LandRaceP2P",
+    "jobId": "DK_G439c906eO-JsIMOINQ"
   },
   {
     "id": "job_012",
-    "img": "images/job_012.webp",
-    "title": "job 012"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/1913/Xvj11ve-DkqSUKatUq5P8w/1_0.jpg",
+    "title": "A Sign of Things to Come",
+    "type": "BikeRaceP2P",
+    "jobId": "Xvj11ve-DkqSUKatUq5P8w"
   },
   {
     "id": "job_013",
-    "img": "images/job_013.webp",
-    "title": "job 013"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/9193/iRQjq-UwyUWUdkLFAHWNDw/1_0.jpg",
+    "title": "Over the Hump",
+    "type": "LandRace",
+    "jobId": "iRQjq-UwyUWUdkLFAHWNDw"
   },
   {
     "id": "job_014",
-    "img": "images/job_014.webp",
-    "title": "job 014"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/3874/ddHtd5ObCUulYYRG6CnSzw/2_0.jpg",
+    "title": "Stunt - Trench I",
+    "type": "StuntRace",
+    "jobId": "ddHtd5ObCUulYYRG6CnSzw"
   },
   {
     "id": "job_015",
-    "img": "images/job_015.webp",
-    "title": "job 015"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/4061/BnJdo30Ppkaknghd3xD00A/2_0.jpg",
+    "title": "Stunt - Double Loop",
+    "type": "StuntRace",
+    "jobId": "BnJdo30Ppkaknghd3xD00A"
   },
   {
     "id": "job_016",
-    "img": "images/job_016.webp",
-    "title": "job 016"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/3015/uGoPvS-PXEydYX7AWX_Wbw/1_0.jpg",
+    "title": "In the Grove",
+    "type": "LandRaceP2P",
+    "jobId": "uGoPvS-PXEydYX7AWX_Wbw"
   },
   {
     "id": "job_017",
-    "img": "images/job_017.webp",
-    "title": "job 017"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/5726/V7cWpI40WE-vAwT7Unz0og/1_0.jpg",
+    "title": "Cutting Coroners",
+    "type": "LandRace",
+    "jobId": "V7cWpI40WE-vAwT7Unz0og"
   },
   {
     "id": "job_018",
-    "img": "images/job_018.webp",
-    "title": "job 018"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/7474/2Y2HGHWTb0i_raVNjGnoXg/2_0.jpg",
+    "title": "Stunt - Over and Under",
+    "type": "StuntRace",
+    "jobId": "2Y2HGHWTb0i_raVNjGnoXg"
   },
   {
     "id": "job_019",
-    "img": "images/job_019.webp",
-    "title": "job 019"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/4870/WAyVbig6OkSMbD7lapk84w/2_0.jpg",
+    "title": "Stunt - Big Drop",
+    "type": "StuntRaceP2P",
+    "jobId": "WAyVbig6OkSMbD7lapk84w"
   },
   {
     "id": "job_020",
-    "img": "images/job_020.webp",
-    "title": "job 020"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/3134/JrbYCpLGdUuU2rhvsSW2wQ/2_0.jpg",
+    "title": "Stunt - East Coast",
+    "type": "StuntRace",
+    "jobId": "JrbYCpLGdUuU2rhvsSW2wQ"
   },
   {
     "id": "job_021",
-    "img": "images/job_021.webp",
-    "title": "job 021"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/7325/Ae0vz5vh602H_IQGj41etw/1_0.jpg",
+    "title": "Power Trip",
+    "type": "BikeRaceP2P",
+    "jobId": "Ae0vz5vh602H_IQGj41etw"
   },
   {
     "id": "job_022",
-    "img": "images/job_022.webp",
-    "title": "job 022"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/7980/JwAm0wWMbkmHa_TKIoau7w/2_0.jpg",
+    "title": "Stunt - City Air",
+    "type": "StuntRace",
+    "jobId": "JwAm0wWMbkmHa_TKIoau7w"
   },
   {
     "id": "job_023",
-    "img": "images/job_023.webp",
-    "title": "job 023"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/8023/mPCp2HY4VUOpJOo3XNyLJQ/2_0.jpg",
+    "title": "Stunt - Vespucci",
+    "type": "StuntRace",
+    "jobId": "mPCp2HY4VUOpJOo3XNyLJQ"
   },
   {
     "id": "job_024",
-    "img": "images/job_024.webp",
-    "title": "job 024"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/8123/thFZh44zzU28pQsrnL6Cgw/1_0.jpg",
+    "title": "Loss Leader",
+    "type": "LandRace",
+    "jobId": "thFZh44zzU28pQsrnL6Cgw"
   },
   {
     "id": "job_025",
-    "img": "images/job_025.webp",
-    "title": "job 025"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/5403/8PrF1PzohUGVERk5IH68Ew/2_0.jpg",
+    "title": "Stunt - Plummet II",
+    "type": "StuntRaceP2P",
+    "jobId": "8PrF1PzohUGVERk5IH68Ew"
   },
   {
     "id": "job_026",
-    "img": "images/job_026.webp",
-    "title": "job 026"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/8838/mAyR4kMvpUuAY8RRiO6a6A/1_0.jpg",
+    "title": "Stock Market Crash",
+    "type": "LandRace",
+    "jobId": "mAyR4kMvpUuAY8RRiO6a6A"
   },
   {
     "id": "job_027",
-    "img": "images/job_027.webp",
-    "title": "job 027"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/3941/A7jqgI-h9k2au7dj7gRsmw/2_0.jpg",
+    "title": "Stunt - Threading the Needle",
+    "type": "StuntRace",
+    "jobId": "A7jqgI-h9k2au7dj7gRsmw"
   },
   {
     "id": "job_028",
-    "img": "images/job_028.webp",
-    "title": "job 028"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/2597/f6YabtzUUkOKrXHCxXL2Ag/1_0.jpg",
+    "title": "Greenwich Meantime",
+    "type": "LandRace",
+    "jobId": "f6YabtzUUkOKrXHCxXL2Ag"
   },
   {
     "id": "job_029",
-    "img": "images/job_029.webp",
-    "title": "job 029"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/0126/DaHBvkP7dEKCdy1qPA78Ew/2_0.jpg",
+    "title": "Stunt - Lift Off",
+    "type": "StuntRaceP2P",
+    "jobId": "DaHBvkP7dEKCdy1qPA78Ew"
   },
   {
     "id": "job_030",
-    "img": "images/job_030.webp",
-    "title": "job 030"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/5396/H0UPrk10lUmBbmxIpKwcxg/1_0.jpg",
+    "title": "Trend Setting",
+    "type": "LandRace",
+    "jobId": "H0UPrk10lUmBbmxIpKwcxg"
   },
   {
     "id": "job_031",
-    "img": "images/job_031.webp",
-    "title": "job 031"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/2235/FN9Bi81zL0-UrLBglhCe9A/1_0.jpg",
+    "title": "Business Trip",
+    "type": "LandRaceP2P",
+    "jobId": "FN9Bi81zL0-UrLBglhCe9A"
   },
   {
     "id": "job_032",
-    "img": "images/job_032.webp",
-    "title": "job 032"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/3392/1ArLVLbMHEW6KQTtFE7QXQ/1_0.jpg",
+    "title": "Lost and Found",
+    "type": "LandRaceP2P",
+    "jobId": "1ArLVLbMHEW6KQTtFE7QXQ"
   },
   {
     "id": "job_033",
-    "img": "images/job_033.webp",
-    "title": "job 033"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/4328/Zut07BDxZker-13I9YpsYw/1_0.jpg",
+    "title": "Thrills in the Hills",
+    "type": "LandRace",
+    "jobId": "Zut07BDxZker-13I9YpsYw"
   },
   {
     "id": "job_034",
-    "img": "images/job_034.webp",
-    "title": "job 034"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/3139/bNG2E2y_LEeXxBEjAYqUnQ/1_0.jpg",
+    "title": "Ring of Fire",
+    "type": "LandRace",
+    "jobId": "bNG2E2y_LEeXxBEjAYqUnQ"
   },
   {
     "id": "job_035",
-    "img": "images/job_035.webp",
-    "title": "job 035"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/8098/JnlKjCjByEmNdTbWvzppZQ/2_0.jpg",
+    "title": "Stunt - 45°",
+    "type": "StuntRace",
+    "jobId": "JnlKjCjByEmNdTbWvzppZQ"
   },
   {
     "id": "job_036",
-    "img": "images/job_036.webp",
-    "title": "job 036"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/9899/zZYDkgMl70OUOKlj9BsLtA/2_0.jpg",
+    "title": "Stunt - Maze Bank Ascent",
+    "type": "StuntRace",
+    "jobId": "zZYDkgMl70OUOKlj9BsLtA"
   },
   {
     "id": "job_037",
-    "img": "images/job_037.webp",
-    "title": "job 037"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/3981/rtNlyMjwx02EehGBGELmFA/2_0.jpg",
+    "title": "Stunt - H200",
+    "type": "StuntRace",
+    "jobId": "rtNlyMjwx02EehGBGELmFA"
   },
   {
     "id": "job_038",
-    "img": "images/job_038.webp",
-    "title": "job 038"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/3054/B6r3Irqu8UuE5CyqpI512A/2_0.jpg",
+    "title": "Stunt - Afterburner",
+    "type": "StuntRace",
+    "jobId": "B6r3Irqu8UuE5CyqpI512A"
   },
   {
     "id": "job_039",
-    "img": "images/job_039.webp",
-    "title": "job 039"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/5811/e-ICTCVrgUSCdDjRyg3x9w/2_0.jpg",
+    "title": "Stunt - Nightlife",
+    "type": "StuntRace",
+    "jobId": "e-ICTCVrgUSCdDjRyg3x9w"
   },
   {
     "id": "job_040",
-    "img": "images/job_040.webp",
-    "title": "job 040"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/2125/8SdVUCCCJEi13iD5y0wOwA/1_0.jpg",
+    "title": "Double Parking",
+    "type": "LandRace",
+    "jobId": "8SdVUCCCJEi13iD5y0wOwA"
   },
   {
     "id": "job_041",
-    "img": "images/job_041.webp",
-    "title": "job 041"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/6518/tQArg4sDt0-ATPwkAa4UcA/2_0.jpg",
+    "title": "Stunt - Over the Bridge",
+    "type": "StuntRaceP2P",
+    "jobId": "tQArg4sDt0-ATPwkAa4UcA"
   },
   {
     "id": "job_042",
-    "img": "images/job_042.webp",
-    "title": "job 042"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/9262/g9pM0C_DoUan2t_kzpL0lA/2_0.jpg",
+    "title": "Stunt - Duel",
+    "type": "StuntRace",
+    "jobId": "g9pM0C_DoUan2t_kzpL0lA"
   },
   {
     "id": "job_043",
-    "img": "images/job_043.webp",
-    "title": "job 043"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/9791/oj3YTsvfAUes1_kNv9Iycw/1_1.jpg",
+    "title": "By the Side of the Bay",
+    "type": "LandRaceP2P",
+    "jobId": "oj3YTsvfAUes1_kNv9Iycw"
   },
   {
     "id": "job_044",
-    "img": "images/job_044.webp",
-    "title": "job 044"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/0822/83axdSaAS02J-Z0e1df-jw/2_0.jpg",
+    "title": "Stunt - Racing Alley",
+    "type": "StuntRace",
+    "jobId": "83axdSaAS02J-Z0e1df-jw"
   },
   {
     "id": "job_045",
-    "img": "images/job_045.webp",
-    "title": "job 045"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/8573/0sQw52xaekGDJIglmG8TUw/2_0.jpg",
+    "title": "Stunt - Green Machine",
+    "type": "StuntRace",
+    "jobId": "0sQw52xaekGDJIglmG8TUw"
   },
   {
     "id": "job_046",
-    "img": "images/job_046.webp",
-    "title": "job 046"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/3793/o8yNzLS0O02Ld5w_h8CKtw/2_0.jpg",
+    "title": "Stunt - Wall Climb",
+    "type": "StuntRace",
+    "jobId": "o8yNzLS0O02Ld5w_h8CKtw"
   },
   {
     "id": "job_047",
-    "img": "images/job_047.webp",
-    "title": "job 047"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/4846/YmiHpz6bBU2g78fo4GrJng/2_0.jpg",
+    "title": "Stunt - Zebra",
+    "type": "StuntRaceP2P",
+    "jobId": "YmiHpz6bBU2g78fo4GrJng"
   },
   {
     "id": "job_048",
-    "img": "images/job_048.webp",
-    "title": "job 048"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/6684/eV8RvueYtUyboNpN_7UWag/2_0.jpg",
+    "title": "Stunt - Raton",
+    "type": "StuntRace",
+    "jobId": "eV8RvueYtUyboNpN_7UWag"
   },
   {
     "id": "job_049",
-    "img": "images/job_049.webp",
-    "title": "job 049"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/8910/_qVEnMQAFEKQJENdLWw6HA/2_0.jpg",
+    "title": "Stunt - Big M",
+    "type": "StuntRace",
+    "jobId": "_qVEnMQAFEKQJENdLWw6HA"
   },
   {
     "id": "job_050",
-    "img": "images/job_050.webp",
-    "title": "job 050"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/6681/s8A3DDORE0CN5zUKPB4dLQ/2_0.jpg",
+    "title": "Stunt - High Flier",
+    "type": "StuntRace",
+    "jobId": "s8A3DDORE0CN5zUKPB4dLQ"
   },
   {
     "id": "job_051",
-    "img": "images/job_051.webp",
-    "title": "job 051"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/0336/BmZlQFoywk-caVw_amwjhQ/2_0.jpg",
+    "title": "Congestion Charge",
+    "type": "LandRaceP2P",
+    "jobId": "BmZlQFoywk-caVw_amwjhQ"
   },
   {
     "id": "job_052",
-    "img": "images/job_052.webp",
-    "title": "job 052"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/4151/zQMPw-QFBkWXsA5yrEHiBg/2_0.jpg",
+    "title": "Stunt - Turbine",
+    "type": "StuntRace",
+    "jobId": "zQMPw-QFBkWXsA5yrEHiBg"
   },
   {
     "id": "job_053",
-    "img": "images/job_053.webp",
-    "title": "job 053"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/7862/j9KIsGgp0keTks4rjlqoTg/2_0.jpg",
+    "title": "Stunt - Spinner",
+    "type": "StuntRace",
+    "jobId": "j9KIsGgp0keTks4rjlqoTg"
   },
   {
     "id": "job_054",
-    "img": "images/job_054.webp",
-    "title": "job 054"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/4643/ocDrNUhoiEKZb29cMOKf5g/1_0.jpg",
+    "title": "Vespucci Dreams",
+    "type": "LandRace",
+    "jobId": "ocDrNUhoiEKZb29cMOKf5g"
   },
   {
     "id": "job_055",
-    "img": "images/job_055.webp",
-    "title": "job 055"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/9741/qbTZ-7llX0CI-2jGLHpthw/1_0.jpg",
+    "title": "The First Corporation",
+    "type": "LandRace",
+    "jobId": "qbTZ-7llX0CI-2jGLHpthw"
   },
   {
     "id": "job_056",
-    "img": "images/job_056.webp",
-    "title": "job 056"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/2566/zi54QsQGQEqWDKHnveMreg/2_0.jpg",
+    "title": "Rocket Voltic - Atmosphere",
+    "type": "SpecialRace",
+    "jobId": "zi54QsQGQEqWDKHnveMreg"
   },
   {
     "id": "job_057",
-    "img": "images/job_057.webp",
-    "title": "job 057"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/8752/KsQyYoPomE2Ov5sqC0n4dA/1_0.jpg",
+    "title": "Under the Wing",
+    "type": "LandRace",
+    "jobId": "KsQyYoPomE2Ov5sqC0n4dA"
   },
   {
     "id": "job_058",
-    "img": "images/job_058.webp",
-    "title": "job 058"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/6252/3imRTH7ehEWmDwW2-mncmg/2_0.jpg",
+    "title": "Stunt - Rally",
+    "type": "StuntRaceP2P",
+    "jobId": "3imRTH7ehEWmDwW2-mncmg"
   },
   {
     "id": "job_059",
-    "img": "images/job_059.webp",
-    "title": "job 059"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/6138/62pmdrswgku6wEdi45s3tw/1_0.jpg",
+    "title": "If I Were a Richman",
+    "type": "LandRace",
+    "jobId": "62pmdrswgku6wEdi45s3tw"
   },
   {
     "id": "job_060",
-    "img": "images/job_060.webp",
-    "title": "job 060"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/8349/rN2-NtpRNEuCccGeEW7I5g/2_0.jpg",
+    "title": "Stunt - Trench III",
+    "type": "StuntRaceP2P",
+    "jobId": "rN2-NtpRNEuCccGeEW7I5g"
   },
   {
     "id": "job_061",
-    "img": "images/job_061.webp",
-    "title": "job 061"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/8523/159dEmF19k69-8RrYQSXbg/2_0.jpg",
+    "title": "Stunt - Forest",
+    "type": "StuntRace",
+    "jobId": "159dEmF19k69-8RrYQSXbg"
   },
   {
     "id": "job_062",
-    "img": "images/job_062.webp",
-    "title": "job 062"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/2688/od2MHwZ-z0y_oxYOCJiadw/2_0.jpg",
+    "title": "Stunt - Splits",
+    "type": "StuntRace",
+    "jobId": "od2MHwZ-z0y_oxYOCJiadw"
   },
   {
     "id": "job_063",
-    "img": "images/job_063.webp",
-    "title": "job 063"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/5969/P5ojMF12TUmTFwaCluaR2w/2_0.jpg",
+    "title": "At the Races",
+    "type": "LandRace",
+    "jobId": "P5ojMF12TUmTFwaCluaR2w"
   },
   {
     "id": "job_064",
-    "img": "images/job_064.webp",
-    "title": "job 064"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/0925/-iQBCouj8k6UQFNHG7vP8w/1_0.jpg",
+    "title": "American Cycle",
+    "type": "BikeRaceP2P",
+    "jobId": "-iQBCouj8k6UQFNHG7vP8w"
   },
   {
     "id": "job_065",
-    "img": "images/job_065.webp",
-    "title": "job 065"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/6477/kxV5YVMQSEKY04MseoEmFA/2_0.jpg",
+    "title": "Stunt - Trench II",
+    "type": "StuntRace",
+    "jobId": "kxV5YVMQSEKY04MseoEmFA"
   },
   {
     "id": "job_066",
-    "img": "images/job_066.webp",
-    "title": "job 066"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/3075/Bso_Z23S9UWDvMAwMuwpUw/1_0.jpg",
+    "title": "Gone Fishin'",
+    "type": "LandRaceP2P",
+    "jobId": "Bso_Z23S9UWDvMAwMuwpUw"
   },
   {
     "id": "job_067",
-    "img": "images/job_067.webp",
-    "title": "job 067"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/2816/qwSIyw_qTkGKuCYxiCjyww/1_0.jpg",
+    "title": "Mud, Sweat and Gears",
+    "type": "LandRaceP2P",
+    "jobId": "qwSIyw_qTkGKuCYxiCjyww"
   },
   {
     "id": "job_068",
-    "img": "images/job_068.webp",
-    "title": "job 068"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/2314/mZ0PcmK-lUusdC3d_db6CA/2_0.jpg",
+    "title": "Stunt - Around the Docks",
+    "type": "StuntRace",
+    "jobId": "mZ0PcmK-lUusdC3d_db6CA"
   },
   {
     "id": "job_069",
-    "img": "images/job_069.webp",
-    "title": "job 069"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/8793/ChZFmliTHkWLGy2lSGQ_TA/2_0.jpg",
+    "title": "Rocket Voltic - Ascent",
+    "type": "SpecialRace",
+    "jobId": "ChZFmliTHkWLGy2lSGQ_TA"
   },
   {
     "id": "job_070",
-    "img": "images/job_070.webp",
-    "title": "job 070"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/1383/rcCpgAeoaUGhmKLciHXQQg/1_0.jpg",
+    "title": "Dorset Drive",
+    "type": "LandRace",
+    "jobId": "rcCpgAeoaUGhmKLciHXQQg"
   },
   {
     "id": "job_071",
-    "img": "images/job_071.webp",
-    "title": "job 071"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/6658/cQr_aIGBr0m5gNYwbpWHdw/1_0.jpg",
+    "title": "Ace Liquor",
+    "type": "TeamDeathmatch",
+    "jobId": "cQr_aIGBr0m5gNYwbpWHdw"
   },
   {
     "id": "job_072",
-    "img": "images/job_072.webp",
-    "title": "job 072"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/2013/0shqLVDjd0qVDv-CHUv8ew/2_0.jpg",
+    "title": "Stunt - The Wave",
+    "type": "StuntRace",
+    "jobId": "0shqLVDjd0qVDv-CHUv8ew"
   },
   {
     "id": "job_073",
-    "img": "images/job_073.webp",
-    "title": "job 073"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/0729/BPybuOZZI0mTskKSoSQZKQ/1_0.jpg",
+    "title": "Learning Curve",
+    "type": "LandRace",
+    "jobId": "BPybuOZZI0mTskKSoSQZKQ"
   },
   {
     "id": "job_074",
-    "img": "images/job_074.webp",
-    "title": "job 074"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/1658/X0WgmCAzjUqsIdeVUtH8yw/2_0.jpg",
+    "title": "Rocket Voltic - Bumblebee",
+    "type": "SpecialRace",
+    "jobId": "X0WgmCAzjUqsIdeVUtH8yw"
   },
   {
     "id": "job_075",
-    "img": "images/job_075.webp",
-    "title": "job 075"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/3157/zHoELGi9Y026kmcBKH7_gg/1_0.jpg",
+    "title": "Morning Perm-a-wood",
+    "type": "LandRace",
+    "jobId": "zHoELGi9Y026kmcBKH7_gg"
   },
   {
     "id": "job_076",
-    "img": "images/job_076.webp",
-    "title": "job 076"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/8725/Mg6Z-OVXskechPZm0DeQRA/1_0.jpg",
+    "title": "Maze",
+    "type": "TeamDeathmatch",
+    "jobId": "Mg6Z-OVXskechPZm0DeQRA"
   },
   {
     "id": "job_077",
-    "img": "images/job_077.webp",
-    "title": "job 077"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/8469/8EC28lyqjUC4QbYzyAs7_Q/2_0.jpg",
+    "title": "Stunt - In the City",
+    "type": "StuntRace",
+    "jobId": "8EC28lyqjUC4QbYzyAs7_Q"
   },
   {
     "id": "job_078",
-    "img": "images/job_078.webp",
-    "title": "job 078"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/6999/-3cw8BVYqUKXU3RQvr60Fg/1_0.jpg",
+    "title": "Bluffing",
+    "type": "LandRace",
+    "jobId": "-3cw8BVYqUKXU3RQvr60Fg"
   },
   {
     "id": "job_079",
-    "img": "images/job_079.webp",
-    "title": "job 079"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/0893/oeWgDf7GN0CkLszt8JRjfQ/2_0.jpg",
+    "title": "Stunt - Vinewood Downhill",
+    "type": "StuntRaceP2P",
+    "jobId": "oeWgDf7GN0CkLszt8JRjfQ"
   },
   {
     "id": "job_080",
-    "img": "images/job_080.webp",
-    "title": "job 080"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/1421/6JknS5ducESN7tUtuOt3uA/1_0.jpg",
+    "title": "Dock Ring",
+    "type": "LandRaceP2P",
+    "jobId": "6JknS5ducESN7tUtuOt3uA"
   },
   {
     "id": "job_081",
-    "img": "images/job_081.webp",
-    "title": "job 081"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/7105/BOKa_blyakS6_cHtIAMllw/1_0.jpg",
+    "title": "Tour the Lake",
+    "type": "BikeRaceP2P",
+    "jobId": "BOKa_blyakS6_cHtIAMllw"
   },
   {
     "id": "job_082",
-    "img": "images/job_082.webp",
-    "title": "job 082"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/6889/_s7fIPxJCU2gviRs8R1Spg/1_0.jpg",
+    "title": "Tunnel Vision",
+    "type": "BikeRaceP2P",
+    "jobId": "_s7fIPxJCU2gviRs8R1Spg"
   },
   {
     "id": "job_083",
-    "img": "images/job_083.webp",
-    "title": "job 083"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/3610/KG4DSHKibEWRNdy2_7dKyA/1_0.jpg",
+    "title": "Art to Art",
+    "type": "BikeRaceP2P",
+    "jobId": "KG4DSHKibEWRNdy2_7dKyA"
   },
   {
     "id": "job_084",
-    "img": "images/job_084.webp",
-    "title": "job 084"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/6062/-DkdoRcQK0SZ04rrxvOjlA/2_0.jpg",
+    "title": "Stunt - Gauntlet",
+    "type": "StuntRace",
+    "jobId": "-DkdoRcQK0SZ04rrxvOjlA"
   },
   {
     "id": "job_085",
-    "img": "images/job_085.webp",
-    "title": "job 085"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/8973/i_2RxIA-G0iq1OGbErp-8w/1_0.jpg",
+    "title": "Stadium Tour",
+    "type": "LandRace",
+    "jobId": "i_2RxIA-G0iq1OGbErp-8w"
   },
   {
     "id": "job_086",
-    "img": "images/job_086.webp",
-    "title": "job 086"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/4866/CpvYY8u29Em4QpPpDxofKg/1_0.jpg",
+    "title": "Quick Getaway",
+    "type": "BikeRaceP2P",
+    "jobId": "CpvYY8u29Em4QpPpDxofKg"
   },
   {
     "id": "job_087",
-    "img": "images/job_087.webp",
-    "title": "job 087"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/0108/t9OCfIlBEkuno2_w_TnYPg/1_0.jpg",
+    "title": "CyclePath",
+    "type": "BikeRaceP2P",
+    "jobId": "t9OCfIlBEkuno2_w_TnYPg"
   },
   {
     "id": "job_088",
-    "img": "images/job_088.webp",
-    "title": "job 088"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/2525/Y-Vv0cIN2Uqxx3xR2PALag/2_0.jpg",
+    "title": "Stunt - Pier Race",
+    "type": "StuntRace",
+    "jobId": "Y-Vv0cIN2Uqxx3xR2PALag"
   },
   {
     "id": "job_089",
-    "img": "images/job_089.webp",
-    "title": "job 089"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/5679/D8Pn8DWjQkaKoo0y0w_OnA/2_0.jpg",
+    "title": "Rocket Voltic - The Loop",
+    "type": "SpecialRace",
+    "jobId": "D8Pn8DWjQkaKoo0y0w_OnA"
   },
   {
     "id": "job_090",
-    "img": "images/job_090.webp",
-    "title": "job 090"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/9093/7dvLnQs1ykyVpRwA1X7U7w/2_0.jpg",
+    "title": "Rocket Voltic - Pulse",
+    "type": "SpecialRace",
+    "jobId": "7dvLnQs1ykyVpRwA1X7U7w"
   },
   {
     "id": "job_091",
-    "img": "images/job_091.webp",
-    "title": "job 091"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/9629/7XYHF0Bd0Emb3Iy4fd_iLQ/1_0.jpg",
+    "title": "Delta V",
+    "type": "WaterRaceP2P",
+    "jobId": "7XYHF0Bd0Emb3Iy4fd_iLQ"
   },
   {
     "id": "job_092",
-    "img": "images/job_092.webp",
-    "title": "job 092"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/6463/hJwKExP6fEaieYdQeSTNPA/1_0.jpg",
+    "title": "Into the Lights",
+    "type": "BikeRaceP2P",
+    "jobId": "hJwKExP6fEaieYdQeSTNPA"
   },
   {
     "id": "job_093",
-    "img": "images/job_093.webp",
-    "title": "job 093"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/6477/B5xTMEa6CUKrW9YBTdxUPg/1_0.jpg",
+    "title": "Staying on Track",
+    "type": "BikeRace",
+    "jobId": "B5xTMEa6CUKrW9YBTdxUPg"
   },
   {
     "id": "job_094",
-    "img": "images/job_094.webp",
-    "title": "job 094"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/8354/vLWtKE-4yUed3CDCX_Ry8Q/2_0.jpg",
+    "title": "Stunt - Mountain Drop",
+    "type": "StuntRaceP2P",
+    "jobId": "vLWtKE-4yUed3CDCX_Ry8Q"
   },
   {
     "id": "job_095",
-    "img": "images/job_095.webp",
-    "title": "job 095"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/8417/syWYa5I3NEm8brUEwuVrsQ/1_0.jpg",
+    "title": "The Los Santos Triangle",
+    "type": "LandRace",
+    "jobId": "syWYa5I3NEm8brUEwuVrsQ"
   },
   {
     "id": "job_096",
-    "img": "images/job_096.webp",
-    "title": "job 096"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/2437/K4aafL34eEK-Y8jcGjPBlw/2_0.jpg",
+    "title": "Rocket Voltic - Zebra II",
+    "type": "SpecialRace",
+    "jobId": "K4aafL34eEK-Y8jcGjPBlw"
   },
   {
     "id": "job_097",
-    "img": "images/job_097.webp",
-    "title": "job 097"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/8925/u6sJtAgJQkaUWphczHjPCg/1_0.jpg",
+    "title": "Grass Route II",
+    "type": "LandRaceP2P",
+    "jobId": "u6sJtAgJQkaUWphczHjPCg"
   },
   {
     "id": "job_098",
-    "img": "images/job_098.webp",
-    "title": "job 098"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/9014/EO8YukLilECobCYUP8T2RA/1_0.jpg",
+    "title": "Off the Rails",
+    "type": "BikeRaceP2P",
+    "jobId": "EO8YukLilECobCYUP8T2RA"
   },
   {
     "id": "job_099",
-    "img": "images/job_099.webp",
-    "title": "job 099"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/4757/p9sLZOfzkU-Vg13JYHDjwQ/1_0.jpg",
+    "title": "Touch Base",
+    "type": "BikeRaceP2P",
+    "jobId": "p9sLZOfzkU-Vg13JYHDjwQ"
   },
   {
     "id": "job_100",
-    "img": "images/job_100.webp",
-    "title": "job 100"
+    "img": "https://prod.cloud.rockstargames.com/ugc/gta5mission/1237/TN5T8jpdVUK_XnxIcBLi2w/1_0.jpg",
+    "title": "Redwood Light District",
+    "type": "BikeRace",
+    "jobId": "TN5T8jpdVUK_XnxIcBLi2w"
   }
 ]

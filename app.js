@@ -167,17 +167,25 @@
     deck.appendChild(top); enableDrag(top);
     for (let k = qi + 1; k < qi + 4 && k < queue.length; k++) { const im = new Image(); im.src = queue[k].img; }
   }
+  function prettyType(t) {
+    if (!t) return "";
+    return t.replace(/P2P$/, "").replace(/([a-z])([A-Z])/g, "$1 $2").trim();
+  }
   function buildCard(job, interactive) {
     const el = document.createElement("div"); el.className = "card";
     const pos = jobs.indexOf(job) + 1;
-    const cap = (/^https?:/.test(job.img) && job.title)
-      ? `<div class="caption">${escapeHTML(job.title)}</div>` : "";
+    const remote = /^https?:/.test(job.img);
+    const badge = job.type ? `<span class="badge-type">${escapeHTML(prettyType(job.type))}</span>` : "";
+    const cap = (remote && job.title) ? `<div class="caption">${escapeHTML(job.title)}</div>` : "";
     el.innerHTML = `
-      <span class="idx">${pos} / ${jobs.length}</span>
-      <div class="stamp stamp-like">CURTIU</div>
-      <div class="stamp stamp-nope">PASSOU</div>
-      <img src="${job.img}" alt="${job.title || job.id}" draggable="false"
-           onerror="this.parentElement.classList.add('imgfail')">${cap}`;
+      <div class="card-media">
+        <span class="idx">${pos} / ${jobs.length}</span>
+        ${badge}
+        <div class="stamp stamp-like">CURTIU</div>
+        <div class="stamp stamp-nope">PASSOU</div>
+        <img src="${job.img}" alt="${job.title || job.id}" draggable="false"
+             onerror="this.closest('.card').classList.add('imgfail')">
+      </div>${cap}`;
     return el;
   }
   function enableDrag(card) {
@@ -231,11 +239,13 @@
     const v = votes[job.id];
     const mark = v === "like" ? `<span class="mark like">♥</span>`
               : v === "dislike" ? `<span class="mark dislike">✕</span>` : "";
-    const cap = (/^https?:/.test(job.img) && job.title)
-      ? `<div class="cap">${escapeHTML(job.title)}</div>` : "";
-    return `<div class="tile" data-job="${job.id}">${mark}
-      <img src="${job.img}" alt="${job.title || job.id}"
-           onerror="this.style.aspectRatio='16/9';this.style.background='#26333f'">${cap}</div>`;
+    const badge = job.type ? `<span class="badge-type">${escapeHTML(prettyType(job.type))}</span>` : "";
+    const title = job.title ? `<div class="tile-title">${escapeHTML(job.title)}</div>` : "";
+    return `<div class="tile" data-job="${job.id}">
+      <div class="card-media">${badge}${mark}
+        <img src="${job.img}" alt="${job.title || job.id}"
+             onerror="this.style.opacity=0">
+      </div>${title}</div>`;
   }
   function renderGrid() {
     $("#grid-all").innerHTML = jobs.map(tileHTML).join("");
@@ -254,7 +264,8 @@
   function openSheet(jobId) {
     sheetJob = jobId; const job = jobById[jobId];
     $("#sheet-img").src = job.img;
-    $("#sheet-title").textContent = job.title || "";
+    $("#sheet-title").innerHTML = escapeHTML(job.title || "") +
+      (job.type ? ` <small style="color:var(--muted);font-weight:600">· ${escapeHTML(prettyType(job.type))}</small>` : "");
     refreshSheet(); $("#sheet").hidden = false;
   }
   function refreshSheet() {
