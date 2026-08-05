@@ -150,6 +150,10 @@
   }
   function renderDeck() {
     const deck = $("#deck"); deck.innerHTML = ""; updateProgress();
+    if (!jobs.length) {
+      deck.innerHTML = `<div class="empty-state">🏁 As corridas estão sendo cadastradas.<br>Volte em instantes!</div>`;
+      return;
+    }
     if (qi >= queue.length) {
       const likeN = jobs.filter((j) => votes[j.id] === "like").length;
       deck.innerHTML =
@@ -352,8 +356,8 @@
   async function loadJobs() {
     const r = await fetch("jobs.json", { cache: "no-store" });
     if (!r.ok) throw new Error("jobs.json não encontrado");
-    jobs = await r.json();
-    if (!Array.isArray(jobs) || !jobs.length) throw new Error("As corridas ainda estão sendo cadastradas 🏁 volte em instantes!");
+    const data = await r.json();
+    jobs = Array.isArray(data) ? data : [];
     jobs.forEach((j) => (jobById[j.id] = j));
   }
   function loadLocal() {
@@ -369,7 +373,8 @@
     a.textContent = (name.trim()[0] || "?").toUpperCase();
     a.style.background = avatarColor(name || "?");
   }
-  function enterApp() {
+  async function enterApp() {
+    if (!jobs.length) { try { await loadJobs(); } catch (err) { console.warn(err); } }
     setAvatar(voter.name);
     $("#greeting").textContent = `Oi, ${voter.name}`;
     showScreen("screen-app"); switchView("swipe"); flushRetry();
@@ -391,9 +396,15 @@
       const id = (saved && saved.name === name && saved.id) ? saved.id : uid();
       voter = { id, name };
       localStorage.setItem(K.voter, JSON.stringify(voter));
-      try { await loadJobs(); } catch (err) { return toast("Erro: " + err.message); }
       loadLocal();
-      if (localStorage.getItem(K.seenTut)) enterApp(); else startTutorial();
+      // PRIMEIRO ACESSO desta pessoa: joga o tutorial na cara na hora.
+      // As corridas carregam em paralelo (não travam o tutorial).
+      if (!localStorage.getItem(K.seenTut)) {
+        startTutorial();
+        loadJobs().catch((err) => console.warn(err));
+      } else {
+        enterApp();
+      }
     });
 
     // tutorial
