@@ -3,109 +3,256 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Ranking — GTA Job Swipe</title>
+  <title>Painel — GTA Job Swipe</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,600;0,700;0,800;0,900;1,900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <style>
-    body{padding:20px}
-    .wrap{max-width:760px; margin:0 auto}
-    h1{font-size:1.6rem}
-    table{width:100%; border-collapse:collapse; margin-top:16px; font-size:.95rem}
-    th,td{padding:10px 8px; border-bottom:1px solid var(--line); text-align:left}
-    th{color:var(--muted); font-weight:600}
-    td.num{text-align:right; font-variant-numeric:tabular-nums}
-    .thumb{width:80px; aspect-ratio:16/9; object-fit:cover; border-radius:8px; vertical-align:middle}
-    .like{color:var(--like); font-weight:700}
-    .dislike{color:var(--dislike)}
-    .bar{height:6px; background:var(--card); border-radius:99px; overflow:hidden; margin-top:4px}
-    .bar > i{display:block; height:100%; background:var(--like)}
-    .tools{display:flex; gap:10px; flex-wrap:wrap; margin-top:16px}
-    .tools button{padding:10px 14px}
-    .rank{color:var(--muted); width:28px}
+    body{display:block; padding-bottom:40px}
+    .wrap{max-width:1100px; margin:0 auto; padding:0 16px}
+    .top{position:sticky; top:0; z-index:10; background:rgba(11,14,20,.92); backdrop-filter:blur(8px);
+      border-bottom:1px solid var(--line); padding:16px; text-align:center}
+    .top .logo{font-size:.95rem; font-weight:900; letter-spacing:2px; color:var(--accent); text-transform:uppercase}
+    .top h1{font-size:1.5rem; font-weight:900; font-style:italic; text-transform:uppercase; margin:4px 0 0}
+    .tabs{display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin:14px 0}
+    .tabs button{padding:9px 16px; border-radius:99px; border:1px solid var(--line); background:var(--card);
+      color:var(--muted); font-weight:700; font-size:.85rem; cursor:pointer}
+    .tabs button.on{background:var(--accent); color:#000; border-color:var(--accent)}
+    .sec{display:none} .sec.on{display:block}
+    .stats{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px; margin:16px 0}
+    .stat{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:18px; text-align:center}
+    .stat b{display:block; font-size:2rem; font-weight:900; color:var(--accent)}
+    .stat span{color:var(--muted); font-size:.85rem; text-transform:uppercase; letter-spacing:.5px}
+    .bar-actions{display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin:8px 0 18px}
+    .bar-actions button{padding:9px 14px; border-radius:8px; border:1px solid var(--line); background:var(--card); color:var(--txt); cursor:pointer; font-weight:700}
+    .muted{color:var(--muted)}
+    /* ranking */
+    .rank-row{display:flex; align-items:center; gap:12px; padding:10px 0; border-bottom:1px solid var(--line)}
+    .rank-pos{width:28px; text-align:center; font-weight:900; color:var(--muted)}
+    .rank-thumb{width:96px; aspect-ratio:16/9; object-fit:cover; border-radius:8px; flex:none; background:#21262d}
+    .rank-info{flex:1; min-width:0}
+    .rank-info b{display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+    .rank-bar{height:6px; background:var(--card); border-radius:99px; overflow:hidden; margin-top:5px}
+    .rank-bar i{display:block; height:100%; background:var(--like)}
+    .rank-nums{display:flex; gap:12px; font-size:.85rem; white-space:nowrap; font-variant-numeric:tabular-nums}
+    .like{color:var(--like); font-weight:800} .dislike{color:var(--dislike)}
+    /* pessoas / listas */
+    .person{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:16px; margin-bottom:14px}
+    .person-head{display:flex; align-items:center; gap:12px; margin-bottom:12px}
+    .pav{width:42px; height:42px; border-radius:50%; display:grid; place-items:center; font-weight:900; color:#fff; flex:none}
+    .person-head .pn{font-weight:800; font-size:1.05rem}
+    .person-head .pc{color:var(--muted); font-size:.82rem}
+    .chips{display:flex; gap:8px; flex-wrap:wrap; margin-left:auto}
+    .chip{font-size:.78rem; font-weight:700; padding:3px 10px; border-radius:99px; background:var(--bg); border:1px solid var(--line)}
+    .thumbs{display:grid; grid-template-columns:repeat(auto-fill,minmax(120px,1fr)); gap:10px}
+    .th{border:1px solid var(--line); border-radius:8px; overflow:hidden; background:var(--card)}
+    .th img{width:100%; aspect-ratio:16/9; object-fit:cover; display:block; background:#21262d}
+    .th span{display:block; padding:6px 8px; font-size:.72rem; font-weight:600; line-height:1.2;
+      overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+    .th.miss{aspect-ratio:16/9; display:grid; place-items:center; color:var(--muted)}
+    .pl-card{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:16px; margin-bottom:14px}
+    .pl-head{display:flex; align-items:baseline; gap:10px; margin-bottom:12px; flex-wrap:wrap}
+    .pl-head b{font-size:1.15rem; font-weight:900}
+    .pl-head .by{color:var(--muted); font-size:.85rem}
+    .pl-head .cnt{margin-left:auto; color:var(--accent); font-weight:800; font-size:.85rem}
+    .empty{padding:50px 20px; text-align:center; color:var(--muted)}
+    #status{padding:40px 20px; text-align:center}
+    .gate{max-width:360px; margin:60px auto; text-align:center; display:flex; flex-direction:column; gap:12px}
+    .gate[hidden]{display:none}
+    .gate input{padding:14px; border-radius:10px; border:1px solid var(--line); background:var(--card); color:var(--txt); text-align:center}
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <h1>🏁 Ranking de corridas</h1>
-    <p id="status" class="subtitle">Carregando…</p>
-    <div class="tools" hidden id="tools">
-      <button class="btn-secondary" id="btn-refresh">Atualizar</button>
-      <button class="btn-secondary" id="btn-csv">Baixar CSV</button>
-    </div>
-    <div id="table-wrap"></div>
+  <div class="top">
+    <div class="logo">GTA Job Swipe</div>
+    <h1>Painel do Admin</h1>
   </div>
+
+  <div id="gate" class="gate" hidden>
+    <p class="muted">Digite a senha do painel:</p>
+    <input id="gate-pw" type="password" placeholder="senha">
+    <button class="btn-primary" onclick="checkPw()">Entrar</button>
+    <p id="gate-msg" class="dislike"></p>
+  </div>
+
+  <div class="wrap" id="app" hidden>
+    <div class="tabs">
+      <button data-sec="resumo" class="on">Resumo</button>
+      <button data-sec="ranking">Ranking</button>
+      <button data-sec="pessoas">Pessoas</button>
+      <button data-sec="listas">Playlists</button>
+    </div>
+    <div class="bar-actions">
+      <button onclick="load()">↻ Atualizar</button>
+      <button onclick="exportCSV()">Baixar CSV (ranking)</button>
+      <span id="updated" class="muted"></span>
+    </div>
+
+    <div id="sec-resumo" class="sec on"></div>
+    <div id="sec-ranking" class="sec"></div>
+    <div id="sec-pessoas" class="sec"></div>
+    <div id="sec-listas" class="sec"></div>
+  </div>
+
+  <div id="status">Carregando…</div>
 
   <script src="config.js"></script>
   <script>
-  (async () => {
-    const CFG = window.CONFIG || {};
-    const status = document.getElementById("status");
+  const CFG = window.CONFIG || {};
+  const KEY = CFG.SUPABASE_ANON_KEY;
+  const $ = s => document.querySelector(s);
+  const esc = s => String(s==null?"":s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const prettyType = t => !t ? "" : t.replace(/P2P$/,"").replace(/([a-z])([A-Z])/g,"$1 $2").trim();
+  const color = s => { let h=0; for(const c of (s||"?")) h=(h*31+c.charCodeAt(0))>>>0; return `hsl(${h%360} 62% 46%)`; };
+  let jobById = {}, rankRows = [];
 
-    if (!CFG.SUPABASE_URL || !CFG.SUPABASE_ANON_KEY) {
-      status.textContent = "Configure o Supabase em config.js para ver o ranking.";
-      return;
-    }
-    // trava boba de senha
-    if (CFG.ADMIN_PASSWORD && CFG.ADMIN_PASSWORD !== "troque-isto") {
-      const pw = prompt("Senha:");
-      if (pw !== CFG.ADMIN_PASSWORD) { status.textContent = "Senha incorreta."; return; }
-    }
+  // ------- gate de senha -------
+  function needPw(){ return CFG.ADMIN_PASSWORD && CFG.ADMIN_PASSWORD !== "troque-isto"; }
+  function checkPw(){
+    if($("#gate-pw").value === CFG.ADMIN_PASSWORD){ sessionStorage.setItem("gjs_admin","1"); start(); }
+    else $("#gate-msg").textContent = "Senha incorreta.";
+  }
 
-    let jobs = [];
-    try { jobs = await (await fetch("jobs.json", {cache:"no-store"})).json(); } catch {}
-    const titleOf = {}, imgOf = {};
-    jobs.forEach(j => { titleOf[j.id] = j.title || j.id; imgOf[j.id] = j.img; });
+  async function sb(path){
+    const r = await fetch(`${CFG.SUPABASE_URL}/rest/v1/${path}`, { headers:{ apikey:KEY, Authorization:"Bearer "+KEY } });
+    if(!r.ok) throw new Error(path+" → "+r.status+" "+await r.text());
+    return r.json();
+  }
 
-    async function fetchRanking() {
-      const res = await fetch(`${CFG.SUPABASE_URL}/rest/v1/ranking?select=*`, {
-        headers: { apikey: CFG.SUPABASE_ANON_KEY,
-                   Authorization: `Bearer ${CFG.SUPABASE_ANON_KEY}` },
-      });
-      if (!res.ok) throw new Error(await res.text());
-      return res.json();
+  async function load(){
+    $("#status").hidden = false; $("#status").textContent = "Carregando…";
+    try{
+      const [jobs, votes, pls] = await Promise.all([
+        fetch("jobs.json",{cache:"no-store"}).then(r=>r.json()).catch(()=>[]),
+        sb("votes?select=*&order=created_at.desc&limit=100000"),
+        sb("playlists?select=*&limit=100000"),
+      ]);
+      jobById = {}; jobs.forEach(j=>jobById[j.id]=j);
+      render(votes, pls);
+      $("#status").hidden = true; $("#app").hidden = false;
+      $("#updated").textContent = "atualizado " + new Date().toLocaleTimeString("pt-BR");
+    }catch(e){
+      $("#status").hidden=false; $("#app").hidden=true;
+      $("#status").innerHTML = "<span class='dislike'>Erro: "+esc(e.message)+"</span><br><br>"+
+        "<span class='muted'>Confira se o supabase_setup.sql foi rodado (tabelas votes e playlists) e o config.js.</span>";
     }
+  }
 
-    let rows = [];
-    function draw() {
-      rows.sort((a,b) => b.likes - a.likes || a.dislikes - b.dislikes);
-      const maxLikes = Math.max(1, ...rows.map(r => r.likes));
-      let html = `<table><thead><tr>
-        <th></th><th></th><th>Corrida</th>
-        <th class="num">👍</th><th class="num">👎</th>
-        <th class="num">pulos</th><th class="num">votantes</th></tr></thead><tbody>`;
-      rows.forEach((r, i) => {
-        html += `<tr>
-          <td class="rank">${i+1}</td>
-          <td>${imgOf[r.job_id] ? `<img class="thumb" src="${imgOf[r.job_id]}">` : ""}</td>
-          <td>${titleOf[r.job_id] || r.job_id}
-              <div class="bar"><i style="width:${r.likes/maxLikes*100}%"></i></div></td>
-          <td class="num like">${r.likes}</td>
-          <td class="num dislike">${r.dislikes}</td>
-          <td class="num">${r.skips}</td>
-          <td class="num">${r.votantes}</td></tr>`;
-      });
-      html += "</tbody></table>";
-      document.getElementById("table-wrap").innerHTML = html;
-      status.textContent = `${rows.length} corridas · ${rows.reduce((s,r)=>s+r.likes+r.dislikes+r.skips,0)} votos`;
-    }
+  function thumb(jobId){
+    const j = jobById[jobId];
+    if(!j) return `<div class="th miss">?<span>${esc(jobId)}</span></div>`;
+    return `<div class="th"><img src="${j.img}" alt="" loading="lazy"><span>${esc(j.title||jobId)}</span></div>`;
+  }
 
-    function toCSV() {
-      const head = "job_id,title,likes,dislikes,skips,votantes\n";
-      const body = rows.map(r =>
-        `${r.job_id},"${(titleOf[r.job_id]||"").replace(/"/g,'""')}",${r.likes},${r.dislikes},${r.skips},${r.votantes}`
-      ).join("\n");
-      const blob = new Blob([head+body], {type:"text/csv"});
-      const a = document.createElement("a");
-      a.href = URL.createObjectURL(blob); a.download = "ranking.csv"; a.click();
-    }
+  function render(votes, pls){
+    // ----- agrega -----
+    const voters = {};   // id -> {name,id,like:[],dislike:[],skip:[],last}
+    votes.forEach(v=>{
+      const V = voters[v.voter_id] || (voters[v.voter_id] = {name:v.voter_name, id:v.voter_id, like:[], dislike:[], skip:[], last:v.created_at});
+      V.name = v.voter_name || V.name;
+      if(V[v.vote]) V[v.vote].push(v.job_id);
+      if(v.created_at > V.last) V.last = v.created_at;
+    });
+    pls.forEach(p=>{ if(!voters[p.voter_id]) voters[p.voter_id] = {name:p.voter_name, id:p.voter_id, like:[], dislike:[], skip:[], last:p.updated_at}; });
 
-    async function load() {
-      try { rows = await fetchRanking(); draw(); document.getElementById("tools").hidden = false; }
-      catch (e) { status.textContent = "Erro: " + e.message; }
-    }
-    document.getElementById("btn-refresh").onclick = load;
-    document.getElementById("btn-csv").onclick = toCSV;
-    load();
-  })();
+    const rank = {};     // job_id -> {like,dislike,skip,vset}
+    votes.forEach(v=>{ const R = rank[v.job_id] || (rank[v.job_id]={like:0,dislike:0,skip:0,vset:new Set()}); if(R[v.vote]!=null)R[v.vote]++; R.vset.add(v.voter_id); });
+    rankRows = Object.entries(rank).map(([job_id,r])=>({job_id, likes:r.like, dislikes:r.dislike, skips:r.skip, votantes:r.vset.size}))
+      .sort((a,b)=> b.likes-a.likes || a.dislikes-b.dislikes);
+
+    const lists = [];    // {owner, name, jobs[]}
+    pls.forEach(p=> (p.data||[]).forEach(l=> lists.push({owner:p.voter_name, name:l.name, jobs:l.jobs||[]})));
+
+    const voterArr = Object.values(voters).sort((a,b)=> (b.like.length+b.dislike.length+b.skip.length)-(a.like.length+a.dislike.length+a.skip.length));
+    const totalLikes = votes.filter(v=>v.vote==="like").length;
+
+    // ----- RESUMO -----
+    $("#sec-resumo").innerHTML = `
+      <div class="stats">
+        <div class="stat"><b>${voterArr.length}</b><span>Pessoas</span></div>
+        <div class="stat"><b>${votes.length}</b><span>Votos</span></div>
+        <div class="stat"><b>${totalLikes}</b><span>Curtidas</span></div>
+        <div class="stat"><b>${lists.length}</b><span>Playlists</span></div>
+      </div>
+      <h3 style="margin:18px 0 10px">Quem entrou (mais recentes)</h3>
+      ${voterArr.slice().sort((a,b)=> (b.last||"").localeCompare(a.last||"")).slice(0,20).map(v=>`
+        <div class="rank-row">
+          <span class="pav" style="width:34px;height:34px;background:${color(v.name)}">${esc((v.name||"?")[0]||"?").toUpperCase()}</span>
+          <div class="rank-info"><b>${esc(v.name||"Anônimo")}</b>
+            <div class="muted" style="font-size:.8rem">${v.last?new Date(v.last).toLocaleString("pt-BR"):""}</div></div>
+          <div class="rank-nums"><span class="like">👍 ${v.like.length}</span><span class="dislike">👎 ${v.dislike.length}</span></div>
+        </div>`).join("") || "<p class='muted'>Ninguém votou ainda.</p>"}`;
+
+    // ----- RANKING -----
+    const maxL = Math.max(1, ...rankRows.map(r=>r.likes));
+    $("#sec-ranking").innerHTML = rankRows.length ? rankRows.map((r,i)=>{
+      const j = jobById[r.job_id] || {};
+      return `<div class="rank-row">
+        <span class="rank-pos">${i+1}</span>
+        <img class="rank-thumb" src="${j.img||""}" alt="" loading="lazy">
+        <div class="rank-info">
+          <b>${esc(j.title||r.job_id)}</b>
+          <span class="muted" style="font-size:.78rem">${esc(prettyType(j.type))}</span>
+          <div class="rank-bar"><i style="width:${r.likes/maxL*100}%"></i></div>
+        </div>
+        <div class="rank-nums"><span class="like">👍 ${r.likes}</span><span class="dislike">👎 ${r.dislikes}</span><span class="muted">⏭ ${r.skips}</span></div>
+      </div>`;
+    }).join("") : "<p class='empty'>Sem votos ainda.</p>";
+
+    // ----- PESSOAS -----
+    $("#sec-pessoas").innerHTML = voterArr.length ? voterArr.map(v=>`
+      <div class="person">
+        <div class="person-head">
+          <span class="pav" style="background:${color(v.name)}">${esc((v.name||"?")[0]||"?").toUpperCase()}</span>
+          <div><div class="pn">${esc(v.name||"Anônimo")}</div>
+            <div class="pc">${v.last?("último voto "+new Date(v.last).toLocaleString("pt-BR")):""}</div></div>
+          <div class="chips">
+            <span class="chip like">👍 ${v.like.length}</span>
+            <span class="chip dislike">👎 ${v.dislike.length}</span>
+            <span class="chip muted">⏭ ${v.skip.length}</span>
+          </div>
+        </div>
+        ${v.like.length ? `<div class="muted" style="margin-bottom:8px;font-size:.82rem">Curtiu:</div>
+          <div class="thumbs">${v.like.map(thumb).join("")}</div>` : `<p class="muted">Nenhuma curtida ainda.</p>`}
+      </div>`).join("") : "<p class='empty'>Ninguém entrou ainda.</p>";
+
+    // ----- LISTAS -----
+    $("#sec-listas").innerHTML = lists.length ? lists.map(l=>`
+      <div class="pl-card">
+        <div class="pl-head"><b>🏁 ${esc(l.name||"(sem nome)")}</b>
+          <span class="by">por ${esc(l.owner||"Anônimo")}</span>
+          <span class="cnt">${l.jobs.length} corrida(s)</span></div>
+        ${l.jobs.length ? `<div class="thumbs">${l.jobs.map(thumb).join("")}</div>` : `<p class="muted">Lista vazia.</p>`}
+      </div>`).join("") : "<p class='empty'>Nenhuma playlist criada ainda.</p>";
+  }
+
+  function exportCSV(){
+    const head = "job_id,titulo,tipo,likes,dislikes,skips,votantes\n";
+    const body = rankRows.map(r=>{ const j=jobById[r.job_id]||{};
+      return `${r.job_id},"${(j.title||"").replace(/"/g,'""')}","${prettyType(j.type)}",${r.likes},${r.dislikes},${r.skips},${r.votantes}`; }).join("\n");
+    const a=document.createElement("a");
+    a.href=URL.createObjectURL(new Blob([head+body],{type:"text/csv"})); a.download="ranking.csv"; a.click();
+  }
+
+  // tabs
+  document.querySelectorAll(".tabs button").forEach(b=> b.onclick = ()=>{
+    document.querySelectorAll(".tabs button").forEach(x=>x.classList.remove("on")); b.classList.add("on");
+    document.querySelectorAll(".sec").forEach(s=>s.classList.remove("on"));
+    $("#sec-"+b.dataset.sec).classList.add("on"); window.scrollTo(0,0);
+  });
+
+  function start(){ $("#gate").hidden=true; load(); }
+
+  // boot
+  if(!CFG.SUPABASE_URL || !KEY){
+    $("#status").innerHTML = "<span class='dislike'>Configure o Supabase em config.js.</span>";
+  } else if(needPw() && sessionStorage.getItem("gjs_admin")!=="1"){
+    $("#status").hidden=true; $("#gate").hidden=false;
+    $("#gate-pw").addEventListener("keydown", e=>{ if(e.key==="Enter") checkPw(); });
+  } else {
+    start();
+  }
   </script>
 </body>
 </html>
