@@ -57,9 +57,6 @@
         <span id="avatar" class="avatar" aria-hidden="true"></span>
         <span id="greeting" class="greeting"></span>
       </div>
-      <div id="swipe-progress" class="progress" hidden>
-        <div id="progress-fill" class="progress-fill"></div>
-      </div>
       <span id="view-title" class="view-title"></span>
       <div class="topbar-actions">
         <button id="btn-help" class="icon-btn" title="Tutorial" aria-label="Tutorial">❓</button>
@@ -71,6 +68,10 @@
       <!-- ---- DESLIZAR ---- -->
       <div id="view-swipe" class="view active">
         <div id="deck" class="deck" aria-live="polite"></div>
+        <div class="swipe-bar">
+          <div class="progress"><div id="progress-fill" class="progress-fill"></div></div>
+          <span id="progress-text" class="progress-text">0 / 0</span>
+        </div>
         <div class="controls">
           <button id="btn-undo"    class="ctrl ctrl-undo"    title="Desfazer" aria-label="Desfazer">↩︎</button>
           <button id="btn-dislike" class="ctrl ctrl-dislike" title="Passar"   aria-label="Passar">✕</button>

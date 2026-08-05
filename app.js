@@ -128,7 +128,6 @@
     $$(".nav-item").forEach((b) => b.classList.toggle("active", b.dataset.view === name));
     const titles = { swipe: "", grid: "Grade", likes: "Curtidas", lists: "Listas" };
     $("#view-title").textContent = titles[name] || "";
-    $("#swipe-progress").hidden = name !== "swipe";
     $("#views").scrollTop = 0;
     if (name === "swipe") { if (!queue.length || qi >= queue.length) buildQueue(); renderDeck(); }
     if (name === "grid") renderGrid();
@@ -146,6 +145,7 @@
   function updateProgress() {
     const decided = jobs.filter((j) => votes[j.id] === "like" || votes[j.id] === "dislike").length;
     $("#progress-fill").style.width = (decided / (jobs.length || 1) * 100) + "%";
+    $("#progress-text").textContent = `${decided} / ${jobs.length}`;
     $("#btn-undo").disabled = history.length === 0;
   }
   function renderDeck() {
