@@ -104,4 +104,6 @@ depois rode sem `--preview` pra gerar.
 - **Rede ruim:** votos que falham entram numa fila e são reenviados sozinhos.
 - A chave `anon` do Supabase **pode** ficar pública — a segurança está nas
   policies do banco (só dá pra inserir/ler voto, não apagar).
-att
+
+
+Force
