@@ -50,7 +50,7 @@
     .th img{width:100%; aspect-ratio:16/9; object-fit:cover; display:block; background:#21262d}
     .th span{display:block; padding:6px 8px; font-size:.72rem; font-weight:600; line-height:1.2;
       overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
-    .th.miss{aspect-ratio:16/9; display:grid; place-items:center; color:var(--muted)}
+    .lbl{font-weight:700; font-size:.85rem; margin-bottom:8px}
     .pl-card{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:16px; margin-bottom:14px}
     .pl-head{display:flex; align-items:baseline; gap:10px; margin-bottom:12px; flex-wrap:wrap}
     .pl-head b{font-size:1.15rem; font-weight:900}
@@ -142,9 +142,10 @@
   }
 
   function thumb(jobId){
-    const j = jobById[jobId];
-    if(!j) return `<div class="th miss">?<span>${esc(jobId)}</span></div>`;
-    return `<div class="th"><img src="${j.img}" alt="" loading="lazy"><span>${esc(j.title||jobId)}</span></div>`;
+    const j = jobById[jobId] || {};
+    const title = j.title || jobId;
+    const img = j.img ? `<img src="${j.img}" alt="" loading="lazy" onerror="this.remove()">` : "";
+    return `<div class="th">${img}<span>${esc(title)}</span></div>`;
   }
 
   function render(votes, pls, plsErr){
@@ -215,8 +216,11 @@
             <span class="chip muted">⏭ ${v.skip.length}</span>
           </div>
         </div>
-        ${v.like.length ? `<div class="muted" style="margin-bottom:8px;font-size:.82rem">Curtiu:</div>
-          <div class="thumbs">${v.like.map(thumb).join("")}</div>` : `<p class="muted">Nenhuma curtida ainda.</p>`}
+        ${v.like.length ? `<div class="lbl like">👍 Curtiu (${v.like.length})</div>
+          <div class="thumbs">${v.like.map(thumb).join("")}</div>` : ""}
+        ${v.dislike.length ? `<div class="lbl dislike" style="margin-top:14px">👎 Passou (${v.dislike.length})</div>
+          <div class="thumbs">${v.dislike.map(thumb).join("")}</div>` : ""}
+        ${(!v.like.length && !v.dislike.length) ? `<p class="muted">Ainda sem curtidas ou dislikes.</p>` : ""}
       </div>`).join("") : "<p class='empty'>Ninguém entrou ainda.</p>";
 
     // ----- LISTAS -----

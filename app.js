@@ -399,6 +399,9 @@
     $("#btn-admin").hidden = !admin;
     if (admin) localStorage.setItem("gjs_admin_ok", "1");
     showScreen("screen-app"); switchView("swipe"); flushRetry();
+    // reenvia pro Supabase as listas que ficaram só no aparelho
+    // (ex.: criadas antes da tabela playlists existir)
+    if (CLOUD && lists.length) syncLists();
   }
   function logout() {
     if (!confirm("Sair? Seus votos e listas ficam salvos.")) return;
