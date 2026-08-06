@@ -106,4 +106,4 @@ depois rode sem `--preview` pra gerar.
   policies do banco (só dá pra inserir/ler voto, não apagar).
 
 
-Force
+Force Again
