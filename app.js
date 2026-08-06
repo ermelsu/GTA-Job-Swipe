@@ -277,7 +277,7 @@
     const desc = (remote && job.desc) ? `<p class="card-desc">${escapeHTML(job.desc)}</p>` : "";
     return `<div class="gcard" data-job="${job.id}">
       <div class="card-media">${badge}${flag}
-        <img src="${job.img}" alt="${escapeHTML(job.title || job.id)}" onerror="this.style.opacity=0">
+        <img src="${job.img}" alt="${escapeHTML(job.title || job.id)}" loading="lazy" decoding="async" onerror="this.style.opacity=0">
       </div>
       <div class="gcard-body">
         <div class="c-title">${escapeHTML(job.title || job.id)}</div>${rock}${desc}
