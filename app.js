@@ -9,6 +9,7 @@
   const CLOUD = Boolean(CFG.SUPABASE_URL && CFG.SUPABASE_ANON_KEY);
   const ADMIN_NAME = (CFG.ADMIN_NAME || "Emerson-admin");
   const isAdmin = (n) => (n || "").trim().toLowerCase() === ADMIN_NAME.toLowerCase();
+  const MAX_LIST = 16;   // máximo de corridas por playlist
   const $ = (s) => document.querySelector(s);
   const $$ = (s) => [...document.querySelectorAll(s)];
 
@@ -314,7 +315,7 @@
   function renderListDetail() {
     const l = lists[openListIdx]; if (!l) return renderLists();
     $("#list-detail-name").textContent = l.name;
-    $("#btn-add-to-list").textContent = pickerMode ? "✓ Concluir" : "＋ Adicionar corridas";
+    $("#btn-add-to-list").textContent = pickerMode ? `✓ Concluir (${l.jobs.length}/${MAX_LIST})` : "＋ Adicionar corridas";
     const grid = $("#list-detail-grid");
     if (pickerMode) {
       $("#list-detail-empty").hidden = true;
@@ -335,7 +336,8 @@
   }
   function toggleInList(jobId) {
     const l = lists[openListIdx]; const at = l.jobs.indexOf(jobId);
-    if (at >= 0) l.jobs.splice(at, 1); else l.jobs.push(jobId);
+    if (at >= 0) l.jobs.splice(at, 1);
+    else { if (l.jobs.length >= MAX_LIST) return toast(`Máximo de ${MAX_LIST} corridas por lista`); l.jobs.push(jobId); }
     saveLists(); renderListDetail();
   }
   function removeFromList(jobId) {
@@ -355,12 +357,13 @@
     $("#pick-lists").innerHTML = lists.length ? lists.map((l, i) => {
       const on = l.jobs.includes(pickJob) ? " on" : "";
       return `<div class="pick-row${on}" data-i="${i}">
-        <b>${escapeHTML(l.name)}</b><small style="color:var(--muted)">&nbsp;· ${l.jobs.length}</small>
+        <b>${escapeHTML(l.name)}</b><small style="color:var(--muted)">&nbsp;· ${l.jobs.length}/${MAX_LIST}</small>
         <span class="tick">✓</span></div>`;
     }).join("") : `<p style="color:var(--muted);text-align:center">Nenhuma lista. Crie uma abaixo 👇</p>`;
     $$("#pick-lists .pick-row").forEach((r) => r.onclick = () => {
       const l = lists[+r.dataset.i]; const at = l.jobs.indexOf(pickJob);
-      if (at >= 0) l.jobs.splice(at, 1); else l.jobs.push(pickJob);
+      if (at >= 0) l.jobs.splice(at, 1);
+      else { if (l.jobs.length >= MAX_LIST) return toast(`Máximo de ${MAX_LIST} corridas por lista`); l.jobs.push(pickJob); }
       saveLists(); renderPick();
     });
   }
