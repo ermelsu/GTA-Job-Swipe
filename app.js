@@ -148,7 +148,6 @@
   function updateProgress() {
     const decided = jobs.filter((j) => votes[j.id] === "like" || votes[j.id] === "dislike").length;
     $("#progress-fill").style.width = (decided / (jobs.length || 1) * 100) + "%";
-    $("#progress-text").textContent = `${decided} / ${jobs.length}`;
     $("#btn-undo").disabled = history.length === 0;
   }
   function renderDeck() {
@@ -176,13 +175,14 @@
   }
   function buildCard(job, interactive) {
     const el = document.createElement("div"); el.className = "card";
-    const pos = jobs.indexOf(job) + 1;
     const remote = /^https?:/.test(job.img);
     const badge = job.type ? `<span class="badge-type">${escapeHTML(prettyType(job.type))}</span>` : "";
-    const cap = (remote && job.title) ? `<div class="caption">${escapeHTML(job.title)}</div>` : "";
+    const rock = job.rockstar ? `<span class="badge-rockstar">Criado pela Rockstar</span>` : "";
+    const desc = (remote && job.desc) ? `<p class="card-desc">${escapeHTML(job.desc)}</p>` : "";
+    const cap = (remote && job.title)
+      ? `<div class="caption"><div class="c-title">${escapeHTML(job.title)}</div>${rock}${desc}</div>` : "";
     el.innerHTML = `
       <div class="card-media">
-        <span class="idx">${pos} / ${jobs.length}</span>
         ${badge}
         <div class="stamp stamp-like">CURTIU</div>
         <div class="stamp stamp-nope">PASSOU</div>
@@ -267,8 +267,10 @@
   function openSheet(jobId) {
     sheetJob = jobId; const job = jobById[jobId];
     $("#sheet-img").src = job.img;
-    $("#sheet-title").innerHTML = escapeHTML(job.title || "") +
-      (job.type ? ` <small style="color:var(--muted);font-weight:600">· ${escapeHTML(prettyType(job.type))}</small>` : "");
+    $("#sheet-title").innerHTML = `<div class="c-title">${escapeHTML(job.title || "")}` +
+      (job.type ? ` <small style="color:var(--muted);font-weight:600">· ${escapeHTML(prettyType(job.type))}</small>` : "") + `</div>` +
+      (job.rockstar ? `<span class="badge-rockstar">Criado pela Rockstar</span>` : "") +
+      (job.desc ? `<p class="card-desc" style="-webkit-line-clamp:5">${escapeHTML(job.desc)}</p>` : "");
     refreshSheet(); $("#sheet").hidden = false;
   }
   function refreshSheet() {
@@ -380,6 +382,11 @@
     const data = await r.json();
     jobs = Array.isArray(data) ? data : [];
     jobs.forEach((j) => (jobById[j.id] = j));
+    // ordem ALEATÓRIA a cada acesso (item 4)
+    for (let i = jobs.length - 1; i > 0; i--) {
+      const k = Math.floor(Math.random() * (i + 1));
+      [jobs[i], jobs[k]] = [jobs[k], jobs[i]];
+    }
   }
   function loadLocal() {
     try { votes = JSON.parse(localStorage.getItem(K.votes())) || {}; } catch { votes = {}; }

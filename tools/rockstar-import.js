@@ -58,7 +58,8 @@
         if (all.length >= MAX) break;
         if (!it.id || seen.has(it.id)) continue; seen.add(it.id); added++;
         all.push({ id: "job_" + String(all.length + 1).padStart(3, "0"),
-                   img: it.imgSrc, title: it.name || "", type: it.type || "", jobId: it.id });
+                   img: it.imgSrc, title: it.name || "", type: it.type || "",
+                   desc: it.desc || "", rockstar: it.category === "rstar", jobId: it.id });
       }
       return added;
     }
