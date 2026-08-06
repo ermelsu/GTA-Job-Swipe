@@ -86,13 +86,20 @@
 
       <!-- ---- GRADE ---- -->
       <div id="view-grid" class="view">
-        <div id="grid-all" class="racegrid"></div>
-      </div>
-
-      <!-- ---- CURTIDAS ---- -->
-      <div id="view-likes" class="view">
-        <div id="likes-empty" class="empty-state">Você ainda não curtiu nenhuma corrida.<br>Vá em <b>Deslizar</b> ou <b>Grade</b> e comece 👍</div>
-        <div id="grid-likes" class="racegrid"></div>
+        <div class="grid-filters">
+          <div class="fseg" id="f-creator" data-filter="creator">
+            <button data-v="all" class="on">Todos</button>
+            <button data-v="rockstar">Rockstar</button>
+            <button data-v="community">Comunidade</button>
+          </div>
+          <div class="fseg" id="f-vote" data-filter="vote">
+            <button data-v="all" class="on">Todas</button>
+            <button data-v="like" title="Curtidas">👍</button>
+            <button data-v="dislike" title="Passadas">👎</button>
+          </div>
+          <select id="f-type" class="fselect"><option value="all">Todos os tipos</option></select>
+        </div>
+        <div id="grid-all" class="racegrid big"></div>
       </div>
 
       <!-- ---- LISTAS ---- -->
@@ -118,7 +125,6 @@
     <nav class="bottomnav">
       <button class="nav-item active" data-view="swipe"><span>🎴</span>Deslizar</button>
       <button class="nav-item" data-view="grid"><span>🏁</span>Grade</button>
-      <button class="nav-item" data-view="likes"><span>❤️</span>Curtidas</button>
       <button class="nav-item" data-view="lists"><span>📋</span>Listas</button>
     </nav>
   </section>

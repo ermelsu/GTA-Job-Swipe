@@ -134,7 +134,6 @@
     $("#views").scrollTop = 0;
     if (name === "swipe") { if (!queue.length || qi >= queue.length) buildQueue(); renderDeck(); }
     if (name === "grid") renderGrid();
-    if (name === "likes") renderLikes();
     if (name === "lists") { openListIdx = -1; renderLists(); }
   }
 
@@ -250,15 +249,68 @@
              onerror="this.style.opacity=0">
       </div>${title}</div>`;
   }
-  function renderGrid() {
-    $("#grid-all").innerHTML = jobs.map(tileHTML).join("");
-    $$("#grid-all .tile").forEach((t) => t.onclick = () => openSheet(t.dataset.job));
+  // ---- filtros da Grade ----
+  let gridFilter = { creator: "all", vote: "all", type: "all" };
+  let typeOptsBuilt = false;
+  function buildTypeOpts() {
+    if (typeOptsBuilt || !jobs.length) return; typeOptsBuilt = true;
+    const set = [...new Set(jobs.map((j) => prettyType(j.type)).filter(Boolean))].sort();
+    const sel = $("#f-type");
+    set.forEach((t) => { const o = document.createElement("option"); o.value = t; o.textContent = t; sel.appendChild(o); });
   }
-  function renderLikes() {
-    const liked = jobs.filter((j) => votes[j.id] === "like");
-    $("#likes-empty").hidden = liked.length > 0;
-    $("#grid-likes").innerHTML = liked.map(tileHTML).join("");
-    $$("#grid-likes .tile").forEach((t) => t.onclick = () => openSheet(t.dataset.job));
+  function passesFilter(j) {
+    const F = gridFilter;
+    if (F.creator === "rockstar" && !j.rockstar) return false;
+    if (F.creator === "community" && j.rockstar) return false;
+    if (F.type !== "all" && prettyType(j.type) !== F.type) return false;
+    if (F.vote === "like" && votes[j.id] !== "like") return false;
+    if (F.vote === "dislike" && votes[j.id] !== "dislike") return false;
+    return true;
+  }
+  function gcardHTML(job) {
+    const remote = /^https?:/.test(job.img);
+    const badge = job.type ? `<span class="badge-type">${escapeHTML(prettyType(job.type))}</span>` : "";
+    const v = votes[job.id];
+    const flag = v === "like" ? `<span class="vote-flag like">♥</span>`
+              : v === "dislike" ? `<span class="vote-flag dislike">✕</span>` : "";
+    const rock = job.rockstar ? `<span class="badge-rockstar">Criado pela Rockstar</span>` : "";
+    const desc = (remote && job.desc) ? `<p class="card-desc">${escapeHTML(job.desc)}</p>` : "";
+    return `<div class="gcard" data-job="${job.id}">
+      <div class="card-media">${badge}${flag}
+        <img src="${job.img}" alt="${escapeHTML(job.title || job.id)}" onerror="this.style.opacity=0">
+      </div>
+      <div class="gcard-body">
+        <div class="c-title">${escapeHTML(job.title || job.id)}</div>${rock}${desc}
+        <div class="gcard-actions">
+          <button class="ga dislike${v === "dislike" ? " on" : ""}" data-a="dislike">👎</button>
+          <button class="ga like${v === "like" ? " on" : ""}" data-a="like">👍</button>
+          <button class="ga add" data-a="add">＋ Lista</button>
+        </div>
+      </div>
+    </div>`;
+  }
+  function renderGrid() {
+    buildTypeOpts();
+    const list = jobs.filter(passesFilter);
+    const el = $("#grid-all");
+    el.innerHTML = list.length ? list.map(gcardHTML).join("")
+      : `<p class="empty-state">Nenhuma corrida com esses filtros.</p>`;
+    el.querySelectorAll(".gcard").forEach((c) => {
+      const id = c.dataset.job;
+      c.querySelector(".card-media").onclick = () => openSheet(id);
+      c.querySelectorAll(".ga").forEach((btn) => btn.onclick = () => {
+        const a = btn.dataset.a;
+        if (a === "add") return openPick(id);
+        gridToggleVote(id, a);
+      });
+    });
+  }
+  function gridToggleVote(jobId, vote) {
+    const v = votes[jobId] === vote ? undefined : vote;
+    if (v === undefined) { delete votes[jobId]; saveVotes(); }
+    else setVote(jobId, vote);
+    renderGrid();
+    toast(v === "like" ? "Curtida 👍" : v === "dislike" ? "Passou 👎" : "Voto removido");
   }
 
   // =======================================================================
@@ -288,7 +340,6 @@
   }
   function refreshVisibleGrids() {
     if ($("#view-grid").classList.contains("active")) renderGrid();
-    if ($("#view-likes").classList.contains("active")) renderLikes();
     if ($("#view-lists").classList.contains("active") && openListIdx >= 0) renderListDetail();
   }
 
@@ -449,6 +500,16 @@
 
     // nav
     $$(".nav-item").forEach((b) => b.onclick = () => switchView(b.dataset.view));
+
+    // filtros da Grade
+    ["f-creator", "f-vote"].forEach((id) => {
+      const key = id === "f-creator" ? "creator" : "vote";
+      $$("#" + id + " button").forEach((b) => b.onclick = () => {
+        $$("#" + id + " button").forEach((x) => x.classList.remove("on"));
+        b.classList.add("on"); gridFilter[key] = b.dataset.v; renderGrid();
+      });
+    });
+    $("#f-type").onchange = (e) => { gridFilter.type = e.target.value; renderGrid(); };
 
     // swipe
     $("#btn-like").onclick = () => buttonSwipe("like");
