@@ -18,6 +18,8 @@
   let voter = null;                 // {id, name}
   let votes = {};                   // { jobId: 'like'|'dislike'|'skip' }
   let lists = [];                   // [{ name, jobs:[jobId,...] }]
+  let theme = "classic";            // visual escolhido pela pessoa
+  let pickedTheme = "classic";      // seleção provisória na tela de escolha
   const jobById = {};
 
   // swipe
@@ -41,6 +43,7 @@
     seenTut: `gjs_${NS}_seen_tut`,
     retry: `gjs_${NS}_retry`,
     adminOk: `gjs_${NS}_admin_ok`,
+    theme: () => `gjs_${NS}_theme_${voter.id}`,
   };
   const uid = () => "v_" + Math.random().toString(36).slice(2) + Date.now().toString(36);
 
@@ -123,7 +126,26 @@
   function startTutorial() { tut = 0; renderTut(); showScreen("screen-tutorial"); }
   function finishTutorial() {
     localStorage.setItem(K.seenTut, "1");
-    enterApp();
+    showThemePicker();   // escolher o visual logo depois do tutorial
+  }
+
+  // =======================================================================
+  // TEMA (visual escolhido pela pessoa)
+  // =======================================================================
+  const VALID_THEMES = ["classic", "vice", "asphalt", "day"];
+  function applyTheme(name) {
+    if (!VALID_THEMES.includes(name)) name = "classic";
+    const b = document.body;
+    [...b.classList].forEach((c) => { if (c.startsWith("theme-")) b.classList.remove(c); });
+    b.classList.add("theme-" + name);
+  }
+  function markThemeSel() {
+    $$("#screen-theme .sw-card").forEach((c) => c.classList.toggle("sel", c.dataset.theme === pickedTheme));
+  }
+  function showThemePicker() {
+    pickedTheme = VALID_THEMES.includes(theme) ? theme : "classic";
+    applyTheme(pickedTheme); markThemeSel();
+    showScreen("screen-theme");
   }
 
   // =======================================================================
@@ -479,6 +501,7 @@
     try { votes = JSON.parse(localStorage.getItem(K.votes())) || {}; } catch { votes = {}; }
     try { lists = JSON.parse(localStorage.getItem(K.lists())) || []; } catch { lists = []; }
     activeListIdx = lists.length - 1;   // segue na última lista criada
+    theme = localStorage.getItem(K.theme()) || "classic";
   }
   function avatarColor(s) {
     let h = 0; for (const c of s) h = (h * 31 + c.charCodeAt(0)) >>> 0;
@@ -490,6 +513,7 @@
     a.style.background = avatarColor(name || "?");
   }
   async function enterApp() {
+    applyTheme(theme);
     if (!jobs.length) { try { await loadJobs(); } catch (err) { console.warn(err); } }
     setAvatar(voter.name);
     $("#greeting").textContent = `Oi, ${voter.name}`;
@@ -534,6 +558,14 @@
     $("#tut-skip").onclick = finishTutorial;
     $("#btn-help").onclick = startTutorial;
     $("#btn-logout").onclick = logout;
+
+    // escolha de tema (depois do tutorial)
+    $$("#screen-theme .sw-card").forEach((c) => c.onclick = () => {
+      pickedTheme = c.dataset.theme; markThemeSel(); applyTheme(pickedTheme);
+    });
+    $("#theme-confirm").onclick = () => {
+      theme = pickedTheme; localStorage.setItem(K.theme(), theme); enterApp();
+    };
 
     // nav
     $$(".nav-item").forEach((b) => b.onclick = () => switchView(b.dataset.view));
