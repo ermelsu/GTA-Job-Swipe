@@ -156,6 +156,8 @@ input[type=text]:focus{outline:none; border-color:var(--accent)}
   background:var(--accent); padding:3px 9px; border-radius:4px; text-transform:uppercase; letter-spacing:.4px}
 .card-desc{margin:8px 0 0; font-size:.85rem; font-weight:400; color:var(--muted); line-height:1.35;
   display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden}
+/* no card do swipe mostra mais da descrição, com altura fixa (cards uniformes) */
+.card .card-desc{-webkit-line-clamp:4; line-height:1.4; min-height:calc(4 * 1.4em)}
 #progress-text{display:none}
 .badge-type{position:absolute; top:10px; left:10px; z-index:2; background:var(--badge); color:#fff;
   font-size:.62rem; font-weight:800; padding:4px 9px; border-radius:4px; text-transform:uppercase;
@@ -299,11 +301,13 @@ input[type=text]:focus{outline:none; border-color:var(--accent)}
   border-radius:99px; font-size:.9rem; z-index:50}
 
 /* ---------- escolha de tema (depois do tutorial) ---------- */
-.picker{margin:auto; width:min(94vw,560px); padding:24px 20px;
-  display:flex; flex-direction:column; gap:14px; text-align:center}
-.picker-title{font-size:1.55rem; font-weight:900; font-style:italic; text-transform:uppercase; margin:0}
-.picker-sub{color:var(--muted); margin:0 0 4px}
-.picker-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+#screen-theme{height:100dvh; overflow:hidden}   /* altura fixa -> grade rola, botão fica fixo */
+.picker{margin:0 auto; width:min(94vw,560px); padding:20px 20px 14px; flex:1; min-height:0;
+  display:flex; flex-direction:column; gap:12px; text-align:center}
+.picker-title{font-size:1.55rem; font-weight:900; font-style:italic; text-transform:uppercase; margin:0; flex:none}
+.picker-sub{color:var(--muted); margin:0 0 2px; flex:none}
+.picker-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px;
+  flex:1; min-height:0; overflow-y:auto; align-content:start; padding:2px 2px 4px}
 .sw-card{font-family:inherit; text-align:left; cursor:pointer; color:var(--txt);
   background:var(--bg2); border:1px solid var(--line); border-radius:16px; padding:11px;
   display:flex; flex-direction:column; gap:9px; transition:box-shadow .15s, transform .1s}
@@ -324,7 +328,7 @@ input[type=text]:focus{outline:none; border-color:var(--accent)}
 .sw-name .check{margin-left:auto; color:var(--accent); font-weight:900; opacity:0}
 .sw-card.sel .sw-name .check{opacity:1}
 .sw-desc{font-size:.72rem; color:var(--muted); line-height:1.3}
-#theme-confirm{margin-top:8px}
+#theme-confirm{margin-top:4px; flex:none}
 @media (max-width:400px){ .picker-grid{grid-template-columns:1fr} }
 
 @media (max-width:360px){ .logo{font-size:2rem} .ctrl{width:52px;height:52px} }

@@ -57,7 +57,7 @@
   <section id="screen-theme" class="screen">
     <div class="picker">
       <h2 class="picker-title">Escolha o visual</h2>
-      <p class="picker-sub">Toque num tema. Depois dá pra trocar no ❓ lá em cima.</p>
+      <p class="picker-sub">Toque num tema. Depois dá pra trocar no ⚙️ lá em cima.</p>
       <div class="picker-grid">
         <button type="button" class="sw-card theme-classic" data-theme="classic">
           <div class="sw-prev">
@@ -110,7 +110,7 @@
       <span id="view-title" class="view-title"></span>
       <div class="topbar-actions">
         <a id="btn-admin" class="icon-btn" href="admin.html" title="Painel do admin" aria-label="Painel" hidden>📊</a>
-        <button id="btn-help" class="icon-btn" title="Tutorial" aria-label="Tutorial">❓</button>
+        <button id="btn-config" class="icon-btn" title="Configurações" aria-label="Configurações">⚙️</button>
         <button id="btn-logout" class="icon-btn" title="Sair" aria-label="Sair">🚪</button>
       </div>
     </header>
@@ -200,6 +200,17 @@
         <button id="sheet-like" class="btn-round like">❤️<small>Curtir</small></button>
         <button id="sheet-addlist" class="btn-round add">📋<small>Lista</small></button>
       </div>
+      <button class="btn-ghost" data-close>Fechar</button>
+    </div>
+  </div>
+
+  <!-- configurações (tutorial / tema) -->
+  <div id="settings" class="modal" hidden>
+    <div class="modal-bg" data-close></div>
+    <div class="sheet-panel">
+      <h3 style="text-align:center; margin:0 0 4px">⚙️ Configurações</h3>
+      <button id="set-tutorial" class="btn-primary wide" style="margin:0">🎬 Ver o tutorial</button>
+      <button id="set-theme" class="btn-primary wide" style="margin:0">🎨 Escolher o tema</button>
       <button class="btn-ghost" data-close>Fechar</button>
     </div>
   </div>

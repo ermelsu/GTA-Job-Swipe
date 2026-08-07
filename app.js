@@ -123,10 +123,12 @@
     dots.forEach((d, i) => d.classList.toggle("active", i === tut));
     $("#tut-next").textContent = tut === slides.length - 1 ? "Começar" : "Próximo";
   }
-  function startTutorial() { tut = 0; renderTut(); showScreen("screen-tutorial"); }
+  let afterTut = "picker";   // pra onde ir ao terminar o tutorial: "picker" ou "app"
+  function startTutorial(mode) { afterTut = mode || "picker"; tut = 0; renderTut(); showScreen("screen-tutorial"); }
   function finishTutorial() {
     localStorage.setItem(K.seenTut, "1");
-    showThemePicker();   // escolher o visual logo depois do tutorial
+    if (afterTut === "picker") showThemePicker();   // 1ª vez: tutorial -> escolha do tema
+    else enterApp();                                 // rever tutorial: volta pro app
   }
 
   // =======================================================================
@@ -577,7 +579,10 @@
     // tutorial
     $("#tut-next").onclick = () => { if (tut < 2) { tut++; renderTut(); } else finishTutorial(); };
     $("#tut-skip").onclick = finishTutorial;
-    $("#btn-help").onclick = startTutorial;
+    $("#btn-config").onclick = () => { $("#settings").hidden = false; };
+    $("#set-tutorial").onclick = () => { $("#settings").hidden = true; startTutorial("app"); };
+    $("#set-theme").onclick = () => { $("#settings").hidden = true; showThemePicker(); };
+    $("#settings").querySelectorAll("[data-close]").forEach((el) => el.onclick = () => $("#settings").hidden = true);
     $("#btn-logout").onclick = logout;
 
     // escolha de tema (depois do tutorial)
