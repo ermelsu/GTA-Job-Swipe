@@ -48,6 +48,15 @@ create policy "anon le votos"
   to anon
   using (true);
 
+-- ...e APAGAR — usado pelo botão "Excluir" / "Zerar tudo" do painel admin.
+-- (App de amigos: o painel é protegido só pelo nome. Se quiser travar de
+--  verdade, remova esta policy e faça as exclusões pelo painel do Supabase.)
+drop policy if exists "anon apaga voto" on public.votes;
+create policy "anon apaga voto"
+  on public.votes for delete
+  to anon
+  using (true);
+
 -- ===========================================================================
 -- Playlists — cada votante guarda suas listas como JSON (1 linha por pessoa)
 -- ===========================================================================
@@ -71,6 +80,10 @@ create policy "anon atualiza playlist"
 drop policy if exists "anon le playlist" on public.playlists;
 create policy "anon le playlist"
   on public.playlists for select to anon using (true);
+
+drop policy if exists "anon apaga playlist" on public.playlists;
+create policy "anon apaga playlist"
+  on public.playlists for delete to anon using (true);
 
 -- View pronta com o ranking de curtidas por corrida.
 create or replace view public.ranking as

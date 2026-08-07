@@ -86,6 +86,7 @@
     <div class="bar-actions">
       <button onclick="load()">↻ Atualizar</button>
       <button onclick="exportCSV()">Baixar CSV (ranking)</button>
+      <button onclick="wipeAll()" style="border-color:var(--dislike); color:var(--dislike)">🗑 Zerar tudo</button>
       <span id="updated" class="muted"></span>
     </div>
 
@@ -103,16 +104,29 @@
   const KEY = CFG.SUPABASE_ANON_KEY;
   const $ = s => document.querySelector(s);
   const esc = s => String(s==null?"":s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-  const prettyType = t => !t ? "" : t.replace(/P2P$/,"").replace(/([a-z])([A-Z])/g,"$1 $2").trim();
+  const TYPE_PT = {
+    LandRace:"Corrida de terra", AirRace:"Corrida aérea", WaterRace:"Corrida aquática",
+    BikeRace:"Corrida de moto", StreetRace:"Corrida de rua", StuntRace:"Corrida acrobática",
+    DragRace:"Arrancada", DriftRace:"Corrida de drift", PursuitRace:"Corrida de perseguição",
+    SpecialRace:"Corrida especial", ArcadeRace:"Corrida arcade",
+    Deathmatch:"Mata-mata", TeamDeathmatch:"Mata-mata em equipe",
+    VehicleDeathmatch:"Mata-mata de veículos", ArenaDeathmatch:"Mata-mata na Arena",
+    Capture:"Captura", LastTeamStanding:"Última equipe de pé",
+    KingOfTheHill:"Rei da montanha", TeamKingOfTheHill:"Rei da montanha em equipe",
+    Parachuting:"Paraquedismo", AdversaryMode:"Modo Confronto", ArenaWar:"Arena War",
+    MissionCreator:"Missão",
+  };
+  const prettyType = t => { if(!t) return ""; const b=t.replace(/P2P$/,""); return TYPE_PT[b] || b.replace(/([a-z])([A-Z])/g,"$1 $2").trim(); };
   const color = s => { let h=0; for(const c of (s||"?")) h=(h*31+c.charCodeAt(0))>>>0; return `hsl(${h%360} 62% 46%)`; };
-  let jobById = {}, rankRows = [];
+  let jobById = {}, rankRows = [], peopleById = {};
 
   // ------- acesso restrito por NOME -------
   const ADMIN_NAME = (CFG.ADMIN_NAME || "Emerson-admin");
   const isAdmin = n => (n||"").trim().toLowerCase() === ADMIN_NAME.toLowerCase();
-  function savedVoterName(){ try{ return (JSON.parse(localStorage.getItem("gjs_voter"))||{}).name; }catch(e){ return null; } }
+  const NS = "r2";   // mesmo namespace do app.js
+  function savedVoterName(){ try{ return (JSON.parse(localStorage.getItem(`gjs_${NS}_voter`))||{}).name; }catch(e){ return null; } }
   function checkName(){
-    if(isAdmin($("#gate-name").value)){ localStorage.setItem("gjs_admin_ok","1"); start(); }
+    if(isAdmin($("#gate-name").value)){ localStorage.setItem(`gjs_${NS}_admin_ok`,"1"); start(); }
     else $("#gate-msg").textContent = "Acesso restrito. Esse nome não tem permissão.";
   }
 
@@ -158,6 +172,7 @@
       if(v.created_at > V.last) V.last = v.created_at;
     });
     pls.forEach(p=>{ if(!voters[p.voter_id]) voters[p.voter_id] = {name:p.voter_name, id:p.voter_id, like:[], dislike:[], skip:[], last:p.updated_at}; });
+    peopleById = voters;
 
     const rank = {};     // job_id -> {like,dislike,skip,vset}
     votes.forEach(v=>{ const R = rank[v.job_id] || (rank[v.job_id]={like:0,dislike:0,skip:0,vset:new Set()}); if(R[v.vote]!=null)R[v.vote]++; R.vset.add(v.voter_id); });
@@ -214,6 +229,7 @@
             <span class="chip like">👍 ${v.like.length}</span>
             <span class="chip dislike">👎 ${v.dislike.length}</span>
             <span class="chip muted">⏭ ${v.skip.length}</span>
+            <button class="chip" style="cursor:pointer; border-color:var(--dislike); color:var(--dislike)" data-del-user="${esc(v.id)}">🗑 Excluir</button>
           </div>
         </div>
         ${v.like.length ? `<div class="lbl like">👍 Curtiu (${v.like.length})</div>
@@ -238,6 +254,37 @@
       </div>`).join("") : "<p class='empty'>Nenhuma playlist criada ainda.</p>";
   }
 
+  // ------- excluir usuário / zerar tudo -------
+  async function sbDelete(path){
+    const r = await fetch(`${CFG.SUPABASE_URL}/rest/v1/${path}`, {
+      method:"DELETE", headers:{ apikey:KEY, Authorization:"Bearer "+KEY, Prefer:"return=minimal" }
+    });
+    if(!r.ok) throw new Error(path+" → "+r.status+" "+await r.text());
+  }
+  async function delUser(id){
+    const p = peopleById[id]; const name = (p && p.name) || "essa pessoa";
+    if(!confirm(`Excluir "${name}" e TODOS os votos e listas dela?\nNão dá pra desfazer.`)) return;
+    try{
+      await sbDelete(`votes?voter_id=eq.${encodeURIComponent(id)}`);
+      await sbDelete(`playlists?voter_id=eq.${encodeURIComponent(id)}`);
+      load();
+    }catch(e){ alert("Falhou ao excluir: "+e.message+"\n\nRode o supabase_setup.sql atualizado (políticas de DELETE)."); }
+  }
+  async function wipeAll(){
+    if(!confirm("MARCO ZERO: apagar TODOS os votos e TODAS as listas de TODO MUNDO. Tem certeza?")) return;
+    if(!confirm("Última confirmação — isso NÃO dá pra desfazer. Zerar tudo?")) return;
+    try{
+      await sbDelete("votes?voter_id=not.is.null");
+      await sbDelete("playlists?voter_id=not.is.null");
+      alert("Pronto! Tudo zerado. 🧹");
+      load();
+    }catch(e){ alert("Falhou ao zerar: "+e.message+"\n\nRode o supabase_setup.sql atualizado (políticas de DELETE)."); }
+  }
+  document.addEventListener("click", e=>{
+    const b = e.target.closest("[data-del-user]");
+    if(b) delUser(b.getAttribute("data-del-user"));
+  });
+
   function exportCSV(){
     const head = "job_id,titulo,tipo,likes,dislikes,skips,votantes\n";
     const body = rankRows.map(r=>{ const j=jobById[r.job_id]||{};
@@ -258,7 +305,7 @@
   // boot — libera automático se você já entrou no app como admin neste navegador
   if(!CFG.SUPABASE_URL || !KEY){
     $("#status").innerHTML = "<span class='dislike'>Configure o Supabase em config.js.</span>";
-  } else if(localStorage.getItem("gjs_admin_ok")==="1" || isAdmin(savedVoterName())){
+  } else if(localStorage.getItem(`gjs_${NS}_admin_ok`)==="1" || isAdmin(savedVoterName())){
     start();
   } else {
     $("#status").hidden=true; $("#gate").hidden=false;

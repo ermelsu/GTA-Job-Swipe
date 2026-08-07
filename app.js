@@ -31,12 +31,16 @@
   let activeListIdx = -1;           // lista "ativa" que recebe as corridas com 1 toque
 
   // -------------------------- localStorage keys --------------------------
+  // NS = "namespace" dos dados locais. Mudar o NS = marco zero pra todo mundo:
+  // os dados antigos ficam órfãos e cada pessoa recomeça do zero (re-cadastro).
+  const NS = "r2";
   const K = {
-    voter: "gjs_voter",
-    votes: () => "gjs_votes_" + voter.id,
-    lists: () => "gjs_lists_" + voter.id,
-    seenTut: "gjs_seen_tut",
-    retry: "gjs_retry",
+    voter: `gjs_${NS}_voter`,
+    votes: () => `gjs_${NS}_votes_${voter.id}`,
+    lists: () => `gjs_${NS}_lists_${voter.id}`,
+    seenTut: `gjs_${NS}_seen_tut`,
+    retry: `gjs_${NS}_retry`,
+    adminOk: `gjs_${NS}_admin_ok`,
   };
   const uid = () => "v_" + Math.random().toString(36).slice(2) + Date.now().toString(36);
 
@@ -168,9 +172,24 @@
     deck.appendChild(top); enableDrag(top);
     for (let k = qi + 1; k < qi + 4 && k < queue.length; k++) { const im = new Image(); im.src = queue[k].img; }
   }
+  // Nomes de tipo em pt-BR (como a galera de GTA chama cada modo).
+  // P2P (ponto a ponto) é agrupado no mesmo tipo-base.
+  const TYPE_PT = {
+    LandRace: "Corrida de terra", AirRace: "Corrida aérea", WaterRace: "Corrida aquática",
+    BikeRace: "Corrida de moto", StreetRace: "Corrida de rua", StuntRace: "Corrida acrobática",
+    DragRace: "Arrancada", DriftRace: "Corrida de drift", PursuitRace: "Corrida de perseguição",
+    SpecialRace: "Corrida especial", ArcadeRace: "Corrida arcade",
+    Deathmatch: "Mata-mata", TeamDeathmatch: "Mata-mata em equipe",
+    VehicleDeathmatch: "Mata-mata de veículos", ArenaDeathmatch: "Mata-mata na Arena",
+    Capture: "Captura", LastTeamStanding: "Última equipe de pé",
+    KingOfTheHill: "Rei da montanha", TeamKingOfTheHill: "Rei da montanha em equipe",
+    Parachuting: "Paraquedismo", AdversaryMode: "Modo Confronto", ArenaWar: "Arena War",
+    MissionCreator: "Missão",
+  };
   function prettyType(t) {
     if (!t) return "";
-    return t.replace(/P2P$/, "").replace(/([a-z])([A-Z])/g, "$1 $2").trim();
+    const base = t.replace(/P2P$/, "");
+    return TYPE_PT[base] || base.replace(/([a-z])([A-Z])/g, "$1 $2").trim();
   }
   function buildCard(job, interactive) {
     const el = document.createElement("div"); el.className = "card";
@@ -476,7 +495,7 @@
     $("#greeting").textContent = `Oi, ${voter.name}`;
     const admin = isAdmin(voter.name);
     $("#btn-admin").hidden = !admin;
-    if (admin) localStorage.setItem("gjs_admin_ok", "1");
+    if (admin) localStorage.setItem(K.adminOk, "1");
     showScreen("screen-app"); switchView("swipe"); flushRetry();
     // reenvia pro Supabase as listas que ficaram só no aparelho
     // (ex.: criadas antes da tabela playlists existir)
