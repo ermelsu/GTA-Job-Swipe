@@ -26,9 +26,9 @@
 
   // modais
   let sheetJob = null;              // jobId aberto no sheet
-  let pickJob = null;               // jobId alvo do "adicionar a lista"
   let openListIdx = -1;             // lista aberta no detalhe
   let pickerMode = false;           // detalhe da lista em modo "adicionar corridas"
+  let activeListIdx = -1;           // lista "ativa" que recebe as corridas com 1 toque
 
   // -------------------------- localStorage keys --------------------------
   const K = {
@@ -275,6 +275,11 @@
               : v === "dislike" ? `<span class="vote-flag dislike">✕</span>` : "";
     const rock = job.rockstar ? `<span class="badge-rockstar">Criado pela Rockstar</span>` : "";
     const desc = (remote && job.desc) ? `<p class="card-desc">${escapeHTML(job.desc)}</p>` : "";
+    const al = activeList();
+    const inList = al && al.jobs.includes(job.id);
+    const addLabel = inList ? "✓ Na lista"
+      : (al && al.jobs.length < MAX_LIST) ? "＋ " + shortName(al.name)
+      : "＋ Nova lista";
     return `<div class="gcard" data-job="${job.id}">
       <div class="card-media">${badge}${flag}
         <img src="${job.img}" alt="${escapeHTML(job.title || job.id)}" loading="lazy" decoding="async" onerror="this.style.opacity=0">
@@ -284,7 +289,7 @@
         <div class="gcard-actions">
           <button class="ga dislike${v === "dislike" ? " on" : ""}" data-a="dislike">👎</button>
           <button class="ga like${v === "like" ? " on" : ""}" data-a="like">👍</button>
-          <button class="ga add" data-a="add">＋ Lista</button>
+          <button class="ga add${inList ? " on" : ""}" data-a="add">${escapeHTML(addLabel)}</button>
         </div>
       </div>
     </div>`;
@@ -300,7 +305,7 @@
       c.querySelector(".card-media").onclick = () => openSheet(id);
       c.querySelectorAll(".ga").forEach((btn) => btn.onclick = () => {
         const a = btn.dataset.a;
-        if (a === "add") return openPick(id);
+        if (a === "add") return quickAdd(id);
         gridToggleVote(id, a);
       });
     });
@@ -329,6 +334,8 @@
     const v = votes[sheetJob];
     $("#sheet-like").classList.toggle("on", v === "like");
     $("#sheet-dislike").classList.toggle("on", v === "dislike");
+    const al = activeList();
+    $("#sheet-addlist").classList.toggle("on", !!(al && sheetJob && al.jobs.includes(sheetJob)));
   }
   function closeSheet() { $("#sheet").hidden = true; sheetJob = null; }
   function sheetVote(vote) {
@@ -361,7 +368,7 @@
     $$("#lists-container .listcard").forEach((c) => c.onclick = () => openList(+c.dataset.i));
   }
   function openList(i) {
-    openListIdx = i; pickerMode = false;
+    openListIdx = i; activeListIdx = i; pickerMode = false;   // abrir = vira a lista ativa
     $("#lists-home").hidden = true; $("#list-detail").hidden = false;
     renderListDetail();
   }
@@ -399,28 +406,38 @@
   }
   function createList(name) {
     name = (name || "").trim(); if (!name) return -1;
-    lists.push({ name, jobs: [] }); saveLists(); return lists.length - 1;
+    lists.push({ name, jobs: [] }); activeListIdx = lists.length - 1;
+    saveLists(); return activeListIdx;
   }
+  function activeList() {
+    return (activeListIdx >= 0 && activeListIdx < lists.length) ? lists[activeListIdx] : null;
+  }
+  function shortName(s) { s = String(s); return s.length > 12 ? s.slice(0, 11) + "…" : s; }
 
-  // ------ modal: escolher lista pra adicionar uma corrida ------
-  function openPick(jobId) {
-    pickJob = jobId; renderPick(); $("#pickmodal").hidden = false;
+  // ------ 1 toque: joga a corrida direto na LISTA ATIVA ------
+  // Sem lista (ou a atual cheia com 16), pede o nome de uma nova e passa a usar
+  // essa. Tocar de novo na mesma corrida remove. Trocar a lista ativa: é só
+  // abrir a lista desejada na aba Listas.
+  function quickAdd(jobId) {
+    let l = activeList();
+    if (l && l.jobs.includes(jobId)) {                  // já está -> remove
+      l.jobs = l.jobs.filter((x) => x !== jobId);
+      saveLists(); refreshVisibleGrids(); refreshSheet();
+      return toast(`Removida de "${l.name}"`);
+    }
+    if (!l || l.jobs.length >= MAX_LIST) {               // sem lista, ou encheu
+      const full = l && l.jobs.length >= MAX_LIST;
+      const msg = full
+        ? `"${l.name}" já tem ${MAX_LIST} corridas 🎉\nCrie a próxima lista:`
+        : "Crie uma lista pra ir juntando as corridas:";
+      const idx = createList(prompt(msg, full ? "" : "Minha playlist"));
+      if (idx < 0) return;                               // cancelou
+      l = lists[idx];
+    }
+    l.jobs.push(jobId);
+    saveLists(); refreshVisibleGrids(); refreshSheet();
+    toast(`Adicionada em "${l.name}" · ${l.jobs.length}/${MAX_LIST}`);
   }
-  function renderPick() {
-    $("#pick-lists").innerHTML = lists.length ? lists.map((l, i) => {
-      const on = l.jobs.includes(pickJob) ? " on" : "";
-      return `<div class="pick-row${on}" data-i="${i}">
-        <b>${escapeHTML(l.name)}</b><small style="color:var(--muted)">&nbsp;· ${l.jobs.length}/${MAX_LIST}</small>
-        <span class="tick">✓</span></div>`;
-    }).join("") : `<p style="color:var(--muted);text-align:center">Nenhuma lista. Crie uma abaixo 👇</p>`;
-    $$("#pick-lists .pick-row").forEach((r) => r.onclick = () => {
-      const l = lists[+r.dataset.i]; const at = l.jobs.indexOf(pickJob);
-      if (at >= 0) l.jobs.splice(at, 1);
-      else { if (l.jobs.length >= MAX_LIST) return toast(`Máximo de ${MAX_LIST} corridas por lista`); l.jobs.push(pickJob); }
-      saveLists(); renderPick();
-    });
-  }
-  function closePick() { $("#pickmodal").hidden = true; pickJob = null; }
 
   function escapeHTML(s) { return String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c])); }
 
@@ -442,6 +459,7 @@
   function loadLocal() {
     try { votes = JSON.parse(localStorage.getItem(K.votes())) || {}; } catch { votes = {}; }
     try { lists = JSON.parse(localStorage.getItem(K.lists())) || []; } catch { lists = []; }
+    activeListIdx = lists.length - 1;   // segue na última lista criada
   }
   function avatarColor(s) {
     let h = 0; for (const c of s) h = (h * 31 + c.charCodeAt(0)) >>> 0;
@@ -528,7 +546,7 @@
     // sheet
     $("#sheet-like").onclick = () => sheetVote("like");
     $("#sheet-dislike").onclick = () => sheetVote("dislike");
-    $("#sheet-addlist").onclick = () => { if (sheetJob) openPick(sheetJob); };
+    $("#sheet-addlist").onclick = () => { if (sheetJob) quickAdd(sheetJob); };
     $("#sheet").querySelectorAll("[data-close]").forEach((el) => el.onclick = closeSheet);
 
     // listas
@@ -540,15 +558,9 @@
     $("#btn-add-to-list").onclick = () => { pickerMode = !pickerMode; renderListDetail(); };
     $("#btn-del-list").onclick = () => {
       if (!confirm(`Apagar a lista "${lists[openListIdx].name}"?`)) return;
-      lists.splice(openListIdx, 1); saveLists(); openListIdx = -1; renderLists();
+      lists.splice(openListIdx, 1); saveLists();
+      openListIdx = -1; activeListIdx = lists.length - 1; renderLists();
     };
-
-    // pick modal
-    $("#pick-newform").addEventListener("submit", (e) => {
-      e.preventDefault(); const name = $("#pick-newname").value;
-      const i = createList(name); if (i >= 0) { $("#pick-newname").value = ""; renderPick(); }
-    });
-    $("#pickmodal").querySelectorAll("[data-close]").forEach((el) => el.onclick = closePick);
   }
 
   function init() {
