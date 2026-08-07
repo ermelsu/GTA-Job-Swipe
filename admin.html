@@ -89,11 +89,19 @@
     .runpanel{position:relative; width:min(720px,100%); max-height:90vh; overflow:auto; background:var(--bg2);
       border:1px solid var(--line); border-radius:16px; padding:20px; display:flex; flex-direction:column; gap:14px}
     .runpanel h3{margin:0; font-size:1.2rem}
-    .runsteps{margin:0; padding-left:22px; display:flex; flex-direction:column; gap:6px; font-size:.92rem}
-    .runsteps a{color:var(--accent)}
-    #runscript{width:100%; height:170px; resize:vertical; background:var(--bg); color:var(--txt);
-      border:1px solid var(--line); border-radius:10px; padding:12px; white-space:pre; overflow:auto;
-      font-family:ui-monospace,Menlo,Consolas,monospace; font-size:.76rem}
+    .run-head{display:flex; align-items:center; justify-content:space-between; gap:10px}
+    .run-list{display:flex; flex-direction:column; gap:8px; max-height:54vh; overflow:auto}
+    .run-row{display:flex; align-items:center; gap:12px; padding:11px 12px; border:1px solid var(--line);
+      border-radius:10px; background:var(--card); color:var(--txt); text-decoration:none}
+    .run-row:hover{border-color:var(--accent)}
+    .run-row.done{opacity:.55}
+    .run-tick{width:20px; text-align:center; font-weight:900; color:var(--muted)}
+    .run-row.done .run-tick{color:var(--like)}
+    .run-num{width:24px; text-align:right; color:var(--muted); font-variant-numeric:tabular-nums; flex:none}
+    .run-info{flex:1; min-width:0; display:flex; flex-direction:column}
+    .run-name{font-weight:800; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+    .run-cat{font-size:.75rem; color:var(--muted)}
+    .run-open{flex:none; color:var(--accent); font-weight:800; font-size:.85rem}
     .runactions{display:flex; gap:10px; flex-wrap:wrap}
     #status{padding:40px 20px; text-align:center}
     .gate{max-width:360px; margin:60px auto; text-align:center; display:flex; flex-direction:column; gap:12px}
@@ -137,24 +145,20 @@
     <div id="sec-listas" class="sec"></div>
   </div>
 
-  <!-- modal do RUN (script de bookmark) -->
+  <!-- modal do RUN: checklist de corridas pra abrir e dar Bookmark Job -->
   <div id="runmodal" class="runmodal" hidden>
-    <div class="runbg" onclick="document.getElementById('runmodal').hidden=true"></div>
+    <div class="runbg" onclick="closeRun()"></div>
     <div class="runpanel">
-      <h3 id="run-title">▶ RUN</h3>
-      <ol class="runsteps">
-        <li>Abra <a id="run-firstlink" href="#" target="_blank" rel="noopener">o site da Rockstar</a> logado — mesma conta do jogo.</li>
-        <li>Abra o Console: <b>F12</b> → aba <b>Console</b>.</li>
-        <li>Cole o script abaixo e aperte <b>Enter</b>.</li>
-        <li>Clique no botão <b>Bookmark Job</b> (⭐) de <b>UMA</b> corrida <b>desta lista</b>.</li>
-        <li>Ele adiciona as outras <span id="run-count"></span> sozinho. No jogo: menu <b>Bookmarked</b>.</li>
-      </ol>
-      <textarea id="runscript" readonly spellcheck="false"></textarea>
-      <div class="runactions">
-        <button class="btn-primary" id="run-copy" onclick="copyRun()">⧉ Copiar script</button>
-        <button class="btn-ghost" onclick="document.getElementById('runmodal').hidden=true">Fechar</button>
+      <h3 id="run-title">▶ Bookmark</h3>
+      <p class="muted" style="margin:0; font-size:.9rem">Esteja <b>logado</b> no site da Rockstar (mesma conta do jogo). Clique em cada corrida pra abrir e aperte <b>Bookmark Job</b>. O ✓ marca as que você já abriu (salvo neste navegador). No jogo: menu <b>Bookmarked</b>.</p>
+      <div class="run-head">
+        <span id="run-prog" class="muted"></span>
+        <button class="btn-ghost" style="padding:6px 12px" onclick="resetRunTicks()">Limpar ✓</button>
       </div>
-      <p class="muted" style="font-size:.8rem; margin:0">Precisa rodar no site da Rockstar (mesma origem) — o navegador bloqueia chamadas externas de outros sites. O script “aprende” o clique de bookmark e repete pras demais, com espera automática se a Rockstar limitar (429).</p>
+      <div id="run-list" class="run-list"></div>
+      <div class="runactions">
+        <button class="btn-ghost" onclick="closeRun()">Fechar</button>
+      </div>
     </div>
   </div>
 
@@ -411,32 +415,46 @@
   document.addEventListener("click", e=>{
     const run = e.target.closest("[data-run]");
     if(run){ e.stopPropagation(); openRun(+run.getAttribute("data-run")); return; }
+    const bm = e.target.closest("[data-bm]");
+    if(bm){ const id=bm.getAttribute("data-bm"); localStorage.setItem(bmKey(id),"1");
+      bm.classList.add("done"); const t=bm.querySelector(".run-tick"); if(t)t.textContent="✓"; updateRunProg(); return; }
     const card = e.target.closest("[data-goto]");
     if(card){ goTab(card.getAttribute("data-goto")); return; }
     const head = e.target.closest("[data-pl-toggle]");
     if(head){ head.closest(".pl-card").classList.toggle("collapsed"); }
   });
 
-  // ------- RUN: gera o script de bookmark com os IDs da lista -------
-  async function openRun(idx){
+  // ------- RUN: checklist de corridas pra abrir e dar Bookmark Job -------
+  let runIds = [];
+  const bmKey = id => `gjs_${NS}_bm_${id}`;
+  const jobUrl = id => "https://socialclub.rockstargames.com/job/gtav/" + id;
+  function openRun(idx){
     const l = allLists[idx]; if(!l) return;
-    const ids = (l.jobs||[]).filter(Boolean);
-    if(!ids.length){ alert("Essa lista está vazia."); return; }
-    let tpl;
-    try { tpl = await fetch("tools/rockstar-bookmark.js",{cache:"no-store"}).then(r=>r.text()); }
-    catch(e){ alert("Não consegui carregar o script (tools/rockstar-bookmark.js)."); return; }
-    $("#runscript").value = tpl.replace("__JOBS__", JSON.stringify(ids));
-    $("#run-title").textContent = `▶ RUN — "${l.name}" (${ids.length} corrida${ids.length>1?"s":""})`;
-    $("#run-count").textContent = ids.length;
-    $("#run-firstlink").href = "https://socialclub.rockstargames.com/job/gtav/" + ids[0];
+    runIds = (l.jobs||[]).filter(Boolean);
+    if(!runIds.length){ alert("Essa lista está vazia."); return; }
+    $("#run-title").textContent = `▶ Bookmark — "${l.name}"`;
+    renderRunList();
     $("#runmodal").hidden = false;
   }
-  function copyRun(){
-    const t = $("#runscript"); t.select();
-    const done = ()=>{ const b=$("#run-copy"); const o=b.textContent; b.textContent="✓ Copiado"; setTimeout(()=>b.textContent=o,1200); };
-    if(navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t.value).then(done).catch(()=>{try{document.execCommand("copy");done();}catch(e){}});
-    else { try{document.execCommand("copy");done();}catch(e){} }
+  function renderRunList(){
+    $("#run-list").innerHTML = runIds.map((id,i)=>{
+      const j = jobById[id] || {};
+      const done = localStorage.getItem(bmKey(id))==="1";
+      const meta = [prettyType(j.type), j.rockstar?"★ Rockstar":"Comunidade"].filter(Boolean).join(" · ");
+      return `<a class="run-row${done?" done":""}" href="${jobUrl(id)}" target="_blank" rel="noopener" data-bm="${esc(id)}">
+        <span class="run-tick">${done?"✓":"○"}</span>
+        <span class="run-num">${i+1}</span>
+        <span class="run-info"><span class="run-name">${esc(j.title||id)}</span><span class="run-cat">${esc(meta)}</span></span>
+        <span class="run-open">Abrir ↗</span></a>`;
+    }).join("");
+    updateRunProg();
   }
+  function updateRunProg(){
+    const done = runIds.filter(id=>localStorage.getItem(bmKey(id))==="1").length;
+    $("#run-prog").textContent = `${done} de ${runIds.length} abertas`;
+  }
+  function resetRunTicks(){ runIds.forEach(id=>localStorage.removeItem(bmKey(id))); renderRunList(); }
+  function closeRun(){ $("#runmodal").hidden = true; }
 
   function start(){ $("#gate").hidden=true; load(); }
 
