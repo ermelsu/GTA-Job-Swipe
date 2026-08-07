@@ -85,9 +85,10 @@
   </div>
 
   <div id="gate" class="gate" hidden>
-    <p class="muted">Área restrita. Confirme seu nome de admin:</p>
-    <input id="gate-name" type="text" placeholder="seu nome" autocomplete="off">
-    <button class="btn-primary" onclick="checkName()">Entrar</button>
+    <p class="muted">Área restrita. Faça login pra ver o painel.</p>
+    <input id="gate-user" type="text" placeholder="usuário" autocomplete="username" autocapitalize="none">
+    <input id="gate-pass" type="password" placeholder="senha" autocomplete="current-password">
+    <button class="btn-primary" onclick="checkLogin()">Entrar</button>
     <p id="gate-msg" class="dislike"></p>
   </div>
 
@@ -102,6 +103,7 @@
       <button onclick="load()">↻ Atualizar</button>
       <button onclick="exportCSV()">Baixar CSV (ranking)</button>
       <button onclick="wipeAll()" style="border-color:var(--dislike); color:var(--dislike)">🗑 Zerar tudo</button>
+      <button onclick="adminLogout()">🚪 Sair</button>
       <span id="updated" class="muted"></span>
     </div>
 
@@ -135,14 +137,28 @@
   const color = s => { let h=0; for(const c of (s||"?")) h=(h*31+c.charCodeAt(0))>>>0; return `hsl(${h%360} 62% 46%)`; };
   let jobById = {}, rankRows = [], peopleById = {};
 
-  // ------- acesso restrito por NOME -------
-  const ADMIN_NAME = (CFG.ADMIN_NAME || "Emerson-admin");
-  const isAdmin = n => (n||"").trim().toLowerCase() === ADMIN_NAME.toLowerCase();
+  // ------- acesso restrito por LOGIN + SENHA (1 usuário) -------
   const NS = "r2";   // mesmo namespace do app.js
-  function savedVoterName(){ try{ return (JSON.parse(localStorage.getItem(`gjs_${NS}_voter`))||{}).name; }catch(e){ return null; } }
-  function checkName(){
-    if(isAdmin($("#gate-name").value)){ localStorage.setItem(`gjs_${NS}_admin_ok`,"1"); start(); }
-    else $("#gate-msg").textContent = "Acesso restrito. Esse nome não tem permissão.";
+  const ADMIN_USER = "Emerson";
+  // SHA-256 da senha (a senha em si não fica no código).
+  const ADMIN_HASH = "d8aeee93382d061f6ed9ef73caeee79c0f0441e2cc3f560cc15375255dd491ca";
+  async function sha256(s){
+    const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s));
+    return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,"0")).join("");
+  }
+  async function checkLogin(){
+    const u = ($("#gate-user").value||"").trim();
+    const p = $("#gate-pass").value||"";
+    let ok = false;
+    if(u.toLowerCase() === ADMIN_USER.toLowerCase()){
+      try { ok = (await sha256(p)) === ADMIN_HASH; } catch(e){ ok = false; }
+    }
+    if(ok){ localStorage.setItem(`gjs_${NS}_admin_ok`,"1"); $("#gate-pass").value=""; start(); }
+    else { $("#gate-msg").textContent = "Usuário ou senha inválidos."; $("#gate-pass").value=""; $("#gate-pass").focus(); }
+  }
+  function adminLogout(){
+    localStorage.removeItem(`gjs_${NS}_admin_ok`);
+    location.reload();
   }
 
   async function sb(path){
@@ -342,14 +358,15 @@
 
   function start(){ $("#gate").hidden=true; load(); }
 
-  // boot — libera automático se você já entrou no app como admin neste navegador
+  // boot — só libera com login+senha (fica lembrado neste navegador até "Sair")
   if(!CFG.SUPABASE_URL || !KEY){
     $("#status").innerHTML = "<span class='dislike'>Configure o Supabase em config.js.</span>";
-  } else if(localStorage.getItem(`gjs_${NS}_admin_ok`)==="1" || isAdmin(savedVoterName())){
+  } else if(localStorage.getItem(`gjs_${NS}_admin_ok`)==="1"){
     start();
   } else {
     $("#status").hidden=true; $("#gate").hidden=false;
-    $("#gate-name").addEventListener("keydown", e=>{ if(e.key==="Enter") checkName(); });
+    $("#gate-pass").addEventListener("keydown", e=>{ if(e.key==="Enter") checkLogin(); });
+    $("#gate-user").addEventListener("keydown", e=>{ if(e.key==="Enter") $("#gate-pass").focus(); });
   }
   </script>
 </body>

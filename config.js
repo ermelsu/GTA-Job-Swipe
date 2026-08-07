@@ -20,8 +20,9 @@ window.CONFIG = {
   SUPABASE_URL: "https://ffdmxtcdgxtmmxkkhuzz.supabase.co",
   SUPABASE_ANON_KEY: "sb_publishable_pSx_m7hzo5nKUeEsVfVHBw_kkskuZFc",
 
-  // Só quem entrar no app com ESTE nome vê o painel (admin.html).
-  ADMIN_NAME: "Emerson-admin",
+  // Quem entrar no app com ESTE nome vê o atalho 📊 do painel (admin.html).
+  // O painel em si pede login + senha (só o Emerson).
+  ADMIN_NAME: "Emerson",
 };
 // MANTENHA TODO O CÓDIGO DO SUPABASE ACIMA E ADICIONE APENAS ISSO NO FINAL:
 

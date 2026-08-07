@@ -541,8 +541,7 @@
     setAvatar(voter.name);
     $("#greeting").textContent = `Oi, ${voter.name}`;
     const admin = isAdmin(voter.name);
-    $("#btn-admin").hidden = !admin;
-    if (admin) localStorage.setItem(K.adminOk, "1");
+    $("#btn-admin").hidden = !admin;   // só mostra o atalho; o painel pede login+senha
     showScreen("screen-app"); switchView("swipe"); flushRetry();
     // reenvia pro Supabase as listas que ficaram só no aparelho
     // (ex.: criadas antes da tabela playlists existir)
