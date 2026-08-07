@@ -79,6 +79,22 @@
     .copybtn:hover{background:var(--accent); color:#000}
     .copybtn.done{background:var(--like); border-color:var(--like); color:#000}
     .empty{padding:50px 20px; text-align:center; color:var(--muted)}
+    /* botão RUN + modal do script */
+    .runbtn{margin-left:12px; flex:none; border:1px solid var(--accent); background:transparent; color:var(--accent);
+      border-radius:8px; padding:8px 14px; font-weight:800; font-size:.85rem; cursor:pointer}
+    .runbtn:hover{background:var(--accent); color:#000}
+    .runmodal{position:fixed; inset:0; z-index:60; display:flex; align-items:center; justify-content:center; padding:16px}
+    .runmodal[hidden]{display:none}
+    .runbg{position:absolute; inset:0; background:rgba(0,0,0,.66)}
+    .runpanel{position:relative; width:min(720px,100%); max-height:90vh; overflow:auto; background:var(--bg2);
+      border:1px solid var(--line); border-radius:16px; padding:20px; display:flex; flex-direction:column; gap:14px}
+    .runpanel h3{margin:0; font-size:1.2rem}
+    .runsteps{margin:0; padding-left:22px; display:flex; flex-direction:column; gap:6px; font-size:.92rem}
+    .runsteps a{color:var(--accent)}
+    #runscript{width:100%; height:170px; resize:vertical; background:var(--bg); color:var(--txt);
+      border:1px solid var(--line); border-radius:10px; padding:12px; white-space:pre; overflow:auto;
+      font-family:ui-monospace,Menlo,Consolas,monospace; font-size:.76rem}
+    .runactions{display:flex; gap:10px; flex-wrap:wrap}
     #status{padding:40px 20px; text-align:center}
     .gate{max-width:360px; margin:60px auto; text-align:center; display:flex; flex-direction:column; gap:12px}
     .gate[hidden]{display:none}
@@ -107,6 +123,7 @@
       <button data-sec="listas">Playlists</button>
     </div>
     <div class="bar-actions">
+      <button onclick="location.href='index.html'">🎴 Voltar ao app</button>
       <button onclick="load()">↻ Atualizar</button>
       <button onclick="exportCSV()">Baixar CSV (ranking)</button>
       <button onclick="wipeAll()" style="border-color:var(--dislike); color:var(--dislike)">🗑 Zerar tudo</button>
@@ -118,6 +135,27 @@
     <div id="sec-ranking" class="sec"></div>
     <div id="sec-pessoas" class="sec"></div>
     <div id="sec-listas" class="sec"></div>
+  </div>
+
+  <!-- modal do RUN (script de bookmark) -->
+  <div id="runmodal" class="runmodal" hidden>
+    <div class="runbg" onclick="document.getElementById('runmodal').hidden=true"></div>
+    <div class="runpanel">
+      <h3 id="run-title">▶ RUN</h3>
+      <ol class="runsteps">
+        <li>Abra <a id="run-firstlink" href="#" target="_blank" rel="noopener">o site da Rockstar</a> logado — mesma conta do jogo.</li>
+        <li>Abra o Console: <b>F12</b> → aba <b>Console</b>.</li>
+        <li>Cole o script abaixo e aperte <b>Enter</b>.</li>
+        <li>Clique no botão <b>Bookmark Job</b> (⭐) de <b>UMA</b> corrida <b>desta lista</b>.</li>
+        <li>Ele adiciona as outras <span id="run-count"></span> sozinho. No jogo: menu <b>Bookmarked</b>.</li>
+      </ol>
+      <textarea id="runscript" readonly spellcheck="false"></textarea>
+      <div class="runactions">
+        <button class="btn-primary" id="run-copy" onclick="copyRun()">⧉ Copiar script</button>
+        <button class="btn-ghost" onclick="document.getElementById('runmodal').hidden=true">Fechar</button>
+      </div>
+      <p class="muted" style="font-size:.8rem; margin:0">Precisa rodar no site da Rockstar (mesma origem) — o navegador bloqueia chamadas externas de outros sites. O script “aprende” o clique de bookmark e repete pras demais, com espera automática se a Rockstar limitar (429).</p>
+    </div>
   </div>
 
   <div id="status">Carregando…</div>
@@ -142,7 +180,7 @@
   };
   const prettyType = t => { if(!t) return ""; const b=t.replace(/P2P$/,""); return TYPE_PT[b] || b.replace(/([a-z])([A-Z])/g,"$1 $2").trim(); };
   const color = s => { let h=0; for(const c of (s||"?")) h=(h*31+c.charCodeAt(0))>>>0; return `hsl(${h%360} 62% 46%)`; };
-  let jobById = {}, rankRows = [], peopleById = {};
+  let jobById = {}, rankRows = [], peopleById = {}, allLists = [];
 
   // ------- acesso restrito por LOGIN + SENHA (1 usuário) -------
   const NS = "r2";   // mesmo namespace do app.js
@@ -244,6 +282,7 @@
 
     const lists = [];    // {owner, name, jobs[]}
     pls.forEach(p=> (p.data||[]).forEach(l=> lists.push({owner:p.voter_name, name:l.name, jobs:l.jobs||[]})));
+    allLists = lists;    // pro botão RUN acessar
 
     const voterArr = Object.values(voters).sort((a,b)=> (b.like.length+b.dislike.length+b.skip.length)-(a.like.length+a.dislike.length+a.skip.length));
     const totalLikes = votes.filter(v=>v.vote==="like").length;
@@ -308,13 +347,14 @@
         Abra o <b>SQL Editor</b> e rode o bloco de playlists do <code>supabase_setup.sql</code> pra ativar esta aba.</div>`;
       return;
     }
-    $("#sec-listas").innerHTML = lists.length ? lists.map(l=>`
+    $("#sec-listas").innerHTML = lists.length ? lists.map((l,idx)=>`
       <div class="pl-card collapsed">
         <div class="pl-head" data-pl-toggle>
           <span class="pl-chev">▶</span>
           <b>🏁 ${esc(l.name||"(sem nome)")}</b>
           <span class="by">por ${esc(l.owner||"Anônimo")}</span>
-          <span class="cnt">${l.jobs.length} corrida(s)</span></div>
+          <span class="cnt">${l.jobs.length} corrida(s)</span>
+          <button class="runbtn" data-run="${idx}" title="Adicionar estas corridas aos Bookmarked da sua conta Rockstar">▶ RUN</button></div>
         <div class="pl-body">
           ${l.jobs.length ? l.jobs.map(raceRow).join("") : `<p class="muted">Lista vazia.</p>`}
         </div>
@@ -367,13 +407,36 @@
     window.scrollTo(0,0);
   }
   document.querySelectorAll(".tabs button").forEach(b=> b.onclick = ()=> goTab(b.dataset.sec));
-  // cards do Resumo levam pra aba correspondente; cabeçalho da playlist abre/fecha
+  // cards do Resumo levam pra aba; RUN abre o modal; cabeçalho abre/fecha a lista
   document.addEventListener("click", e=>{
+    const run = e.target.closest("[data-run]");
+    if(run){ e.stopPropagation(); openRun(+run.getAttribute("data-run")); return; }
     const card = e.target.closest("[data-goto]");
     if(card){ goTab(card.getAttribute("data-goto")); return; }
     const head = e.target.closest("[data-pl-toggle]");
     if(head){ head.closest(".pl-card").classList.toggle("collapsed"); }
   });
+
+  // ------- RUN: gera o script de bookmark com os IDs da lista -------
+  async function openRun(idx){
+    const l = allLists[idx]; if(!l) return;
+    const ids = (l.jobs||[]).filter(Boolean);
+    if(!ids.length){ alert("Essa lista está vazia."); return; }
+    let tpl;
+    try { tpl = await fetch("tools/rockstar-bookmark.js",{cache:"no-store"}).then(r=>r.text()); }
+    catch(e){ alert("Não consegui carregar o script (tools/rockstar-bookmark.js)."); return; }
+    $("#runscript").value = tpl.replace("__JOBS__", JSON.stringify(ids));
+    $("#run-title").textContent = `▶ RUN — "${l.name}" (${ids.length} corrida${ids.length>1?"s":""})`;
+    $("#run-count").textContent = ids.length;
+    $("#run-firstlink").href = "https://socialclub.rockstargames.com/job/gtav/" + ids[0];
+    $("#runmodal").hidden = false;
+  }
+  function copyRun(){
+    const t = $("#runscript"); t.select();
+    const done = ()=>{ const b=$("#run-copy"); const o=b.textContent; b.textContent="✓ Copiado"; setTimeout(()=>b.textContent=o,1200); };
+    if(navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t.value).then(done).catch(()=>{try{document.execCommand("copy");done();}catch(e){}});
+    else { try{document.execCommand("copy");done();}catch(e){} }
+  }
 
   function start(){ $("#gate").hidden=true; load(); }
 
