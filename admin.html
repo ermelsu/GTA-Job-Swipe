@@ -22,6 +22,9 @@
     .sec{display:none} .sec.on{display:block}
     .stats{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px; margin:16px 0}
     .stat{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:18px; text-align:center}
+    .stat[data-goto]{cursor:pointer; transition:border-color .15s, transform .1s}
+    .stat[data-goto]:hover{border-color:var(--accent)}
+    .stat[data-goto]:active{transform:scale(.98)}
     .stat b{display:block; font-size:2rem; font-weight:900; color:var(--accent)}
     .stat span{color:var(--muted); font-size:.85rem; text-transform:uppercase; letter-spacing:.5px}
     .bar-actions{display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin:8px 0 18px}
@@ -52,10 +55,14 @@
       overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
     .lbl{font-weight:700; font-size:.85rem; margin-bottom:8px}
     .pl-card{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:16px; margin-bottom:14px}
-    .pl-head{display:flex; align-items:baseline; gap:10px; margin-bottom:12px; flex-wrap:wrap}
+    .pl-head{display:flex; align-items:center; gap:10px; margin-bottom:12px; flex-wrap:wrap; cursor:pointer; user-select:none}
     .pl-head b{font-size:1.15rem; font-weight:900}
     .pl-head .by{color:var(--muted); font-size:.85rem}
     .pl-head .cnt{margin-left:auto; color:var(--accent); font-weight:800; font-size:.85rem}
+    .pl-chev{color:var(--muted); font-size:.85rem; transition:transform .15s; flex:none}
+    .pl-card:not(.collapsed) .pl-chev{transform:rotate(90deg)}
+    .pl-card.collapsed .pl-head{margin-bottom:0}
+    .pl-card.collapsed .pl-body{display:none}
     /* playlists — visão pra copiar nome e colar no GTA */
     .race-row{display:flex; align-items:center; gap:12px; padding:12px 2px; border-bottom:1px solid var(--line)}
     .race-row:last-child{border-bottom:0}
@@ -244,10 +251,10 @@
     // ----- RESUMO -----
     $("#sec-resumo").innerHTML = `
       <div class="stats">
-        <div class="stat"><b>${voterArr.length}</b><span>Pessoas</span></div>
-        <div class="stat"><b>${votes.length}</b><span>Votos</span></div>
-        <div class="stat"><b>${totalLikes}</b><span>Curtidas</span></div>
-        <div class="stat"><b>${lists.length}</b><span>Playlists</span></div>
+        <div class="stat" data-goto="pessoas"><b>${voterArr.length}</b><span>Pessoas</span></div>
+        <div class="stat" data-goto="ranking"><b>${votes.length}</b><span>Votos</span></div>
+        <div class="stat" data-goto="ranking"><b>${totalLikes}</b><span>Curtidas</span></div>
+        <div class="stat" data-goto="listas"><b>${lists.length}</b><span>Playlists</span></div>
       </div>
       <h3 style="margin:18px 0 10px">Quem entrou (mais recentes)</h3>
       ${voterArr.slice().sort((a,b)=> (b.last||"").localeCompare(a.last||"")).slice(0,20).map(v=>`
@@ -302,11 +309,15 @@
       return;
     }
     $("#sec-listas").innerHTML = lists.length ? lists.map(l=>`
-      <div class="pl-card">
-        <div class="pl-head"><b>🏁 ${esc(l.name||"(sem nome)")}</b>
+      <div class="pl-card collapsed">
+        <div class="pl-head" data-pl-toggle>
+          <span class="pl-chev">▶</span>
+          <b>🏁 ${esc(l.name||"(sem nome)")}</b>
           <span class="by">por ${esc(l.owner||"Anônimo")}</span>
           <span class="cnt">${l.jobs.length} corrida(s)</span></div>
-        ${l.jobs.length ? l.jobs.map(raceRow).join("") : `<p class="muted">Lista vazia.</p>`}
+        <div class="pl-body">
+          ${l.jobs.length ? l.jobs.map(raceRow).join("") : `<p class="muted">Lista vazia.</p>`}
+        </div>
       </div>`).join("") : "<p class='empty'>Nenhuma playlist criada ainda.</p>";
   }
 
@@ -350,10 +361,18 @@
   }
 
   // tabs
-  document.querySelectorAll(".tabs button").forEach(b=> b.onclick = ()=>{
-    document.querySelectorAll(".tabs button").forEach(x=>x.classList.remove("on")); b.classList.add("on");
-    document.querySelectorAll(".sec").forEach(s=>s.classList.remove("on"));
-    $("#sec-"+b.dataset.sec).classList.add("on"); window.scrollTo(0,0);
+  function goTab(sec){
+    document.querySelectorAll(".tabs button").forEach(x=>x.classList.toggle("on", x.dataset.sec===sec));
+    document.querySelectorAll(".sec").forEach(s=>s.classList.toggle("on", s.id==="sec-"+sec));
+    window.scrollTo(0,0);
+  }
+  document.querySelectorAll(".tabs button").forEach(b=> b.onclick = ()=> goTab(b.dataset.sec));
+  // cards do Resumo levam pra aba correspondente; cabeçalho da playlist abre/fecha
+  document.addEventListener("click", e=>{
+    const card = e.target.closest("[data-goto]");
+    if(card){ goTab(card.getAttribute("data-goto")); return; }
+    const head = e.target.closest("[data-pl-toggle]");
+    if(head){ head.closest(".pl-card").classList.toggle("collapsed"); }
   });
 
   function start(){ $("#gate").hidden=true; load(); }
