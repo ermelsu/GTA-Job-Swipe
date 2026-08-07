@@ -150,7 +150,8 @@
     <div class="runbg" onclick="closeRun()"></div>
     <div class="runpanel">
       <h3 id="run-title">▶ Bookmark</h3>
-      <p class="muted" style="margin:0; font-size:.9rem">Esteja <b>logado</b> no site da Rockstar (mesma conta do jogo). Clique em cada corrida pra abrir e aperte <b>Bookmark Job</b>. O ✓ marca as que você já abriu (salvo neste navegador). No jogo: menu <b>Bookmarked</b>.</p>
+      <p class="muted" style="margin:0; font-size:.9rem">Esteja <b>logado</b> no site da Rockstar (mesma conta do jogo). Abra as corridas e aperte <b>Bookmark Job</b> em cada uma. O ✓ marca as já abertas. No jogo: menu <b>Bookmarked</b>. <b>Se o navegador bloquear as abas, permita pop-ups</b> pra este site e clique de novo.</p>
+      <button class="btn-primary wide" style="margin:0" onclick="openAllTabs()">🗂️ Abrir todas as abas</button>
       <div class="run-head">
         <span id="run-prog" class="muted"></span>
         <button class="btn-ghost" style="padding:6px 12px" onclick="resetRunTicks()">Limpar ✓</button>
@@ -425,16 +426,27 @@
   });
 
   // ------- RUN: checklist de corridas pra abrir e dar Bookmark Job -------
-  let runIds = [];
+  let runIds = [], runName = "";
   const bmKey = id => `gjs_${NS}_bm_${id}`;
   const jobUrl = id => "https://socialclub.rockstargames.com/job/gtav/" + id;
   function openRun(idx){
     const l = allLists[idx]; if(!l) return;
-    runIds = (l.jobs||[]).filter(Boolean);
+    runIds = (l.jobs||[]).filter(Boolean); runName = l.name || "";
     if(!runIds.length){ alert("Essa lista está vazia."); return; }
     $("#run-title").textContent = `▶ Bookmark — "${l.name}"`;
     renderRunList();
     $("#runmodal").hidden = false;
+  }
+  function openAllTabs(){
+    if(!runIds.length) return;
+    if(runIds.length > 8 && !confirm(`Abrir ${runIds.length} abas de uma vez?`)) return;
+    let opened = 0, blocked = 0;
+    runIds.forEach(id=>{
+      const w = window.open(jobUrl(id), "_blank");
+      if(w){ opened++; localStorage.setItem(bmKey(id),"1"); } else blocked++;
+    });
+    renderRunList();
+    if(blocked) alert(`Abri ${opened} aba(s). O navegador bloqueou ${blocked}. Permita pop-ups pra este site (ícone na barra de endereço) e clique de novo em “Abrir todas as abas”.`);
   }
   function renderRunList(){
     $("#run-list").innerHTML = runIds.map((id,i)=>{
