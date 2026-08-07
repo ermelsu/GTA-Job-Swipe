@@ -56,6 +56,21 @@
     .pl-head b{font-size:1.15rem; font-weight:900}
     .pl-head .by{color:var(--muted); font-size:.85rem}
     .pl-head .cnt{margin-left:auto; color:var(--accent); font-weight:800; font-size:.85rem}
+    /* playlists — visão pra copiar nome e colar no GTA */
+    .race-row{display:flex; align-items:center; gap:12px; padding:12px 2px; border-bottom:1px solid var(--line)}
+    .race-row:last-child{border-bottom:0}
+    .race-info{flex:1; min-width:0}
+    .race-name{font-size:1.3rem; font-weight:800; line-height:1.2; word-break:break-word}
+    .race-meta{display:flex; gap:8px; flex-wrap:wrap; margin-top:6px}
+    .race-meta span{font-size:.72rem; font-weight:700; padding:3px 10px; border-radius:99px}
+    .race-meta .cat{text-transform:uppercase; letter-spacing:.4px; color:var(--muted);
+      background:var(--bg); border:1px solid var(--line)}
+    .race-meta .rk{font-weight:800; color:#000; background:var(--accent)}
+    .race-meta .cm{color:var(--muted); background:var(--bg); border:1px solid var(--line)}
+    .copybtn{flex:none; border:1px solid var(--accent); background:transparent; color:var(--accent);
+      border-radius:10px; padding:11px 16px; font-weight:800; font-size:.92rem; cursor:pointer; white-space:nowrap}
+    .copybtn:hover{background:var(--accent); color:#000}
+    .copybtn.done{background:var(--like); border-color:var(--like); color:#000}
     .empty{padding:50px 20px; text-align:center; color:var(--muted)}
     #status{padding:40px 20px; text-align:center}
     .gate{max-width:360px; margin:60px auto; text-align:center; display:flex; flex-direction:column; gap:12px}
@@ -161,6 +176,31 @@
     const img = j.img ? `<img src="${j.img}" alt="" loading="lazy" onerror="this.remove()">` : "";
     return `<div class="th">${img}<span>${esc(title)}</span></div>`;
   }
+  function raceRow(jobId){
+    const j = jobById[jobId] || {};
+    const name = j.title || jobId;
+    const cat = prettyType(j.type);
+    const origin = j.rockstar ? `<span class="rk">★ Rockstar</span>` : `<span class="cm">Comunidade</span>`;
+    return `<div class="race-row">
+      <div class="race-info">
+        <div class="race-name">${esc(name)}</div>
+        <div class="race-meta">${cat ? `<span class="cat">${esc(cat)}</span>` : ""}${origin}</div>
+      </div>
+      <button class="copybtn" data-copy="${esc(name)}" title="Copiar o nome pra colar no GTA">⧉ Copiar</button>
+    </div>`;
+  }
+  document.addEventListener("click", e=>{
+    const b = e.target.closest(".copybtn"); if(!b) return;
+    const txt = b.getAttribute("data-copy") || "";
+    const done = () => { const old = b.textContent; b.textContent = "✓ Copiado"; b.classList.add("done");
+      setTimeout(()=>{ b.textContent = old; b.classList.remove("done"); }, 1200); };
+    if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(txt).then(done).catch(fallbackCopy); }
+    else fallbackCopy();
+    function fallbackCopy(){
+      const t=document.createElement("textarea"); t.value=txt; t.style.position="fixed"; t.style.opacity="0";
+      document.body.appendChild(t); t.select(); try{ document.execCommand("copy"); done(); }catch(e){} t.remove();
+    }
+  });
 
   function render(votes, pls, plsErr){
     // ----- agrega -----
@@ -250,7 +290,7 @@
         <div class="pl-head"><b>🏁 ${esc(l.name||"(sem nome)")}</b>
           <span class="by">por ${esc(l.owner||"Anônimo")}</span>
           <span class="cnt">${l.jobs.length} corrida(s)</span></div>
-        ${l.jobs.length ? `<div class="thumbs">${l.jobs.map(thumb).join("")}</div>` : `<p class="muted">Lista vazia.</p>`}
+        ${l.jobs.length ? l.jobs.map(raceRow).join("") : `<p class="muted">Lista vazia.</p>`}
       </div>`).join("") : "<p class='empty'>Nenhuma playlist criada ainda.</p>";
   }
 

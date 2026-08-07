@@ -292,6 +292,7 @@
   }
   // ---- filtros da Grade ----
   let gridFilter = { creator: "all", vote: "all", type: "all" };
+  let listFilter = { creator: "all", vote: "all" };   // filtros da tela "adicionar corridas"
   let typeOptsBuilt = false;
   function buildTypeOpts() {
     if (typeOptsBuilt || !jobs.length) return; typeOptsBuilt = true;
@@ -413,23 +414,43 @@
     $("#lists-home").hidden = true; $("#list-detail").hidden = false;
     renderListDetail();
   }
+  function passesListFilter(j) {
+    const F = listFilter;
+    if (F.creator === "rockstar" && !j.rockstar) return false;
+    if (F.creator === "community" && j.rockstar) return false;
+    if (F.vote === "like" && votes[j.id] !== "like") return false;
+    if (F.vote === "dislike" && votes[j.id] !== "dislike") return false;
+    return true;
+  }
+  function pickTileHTML(j, on) {
+    const v = votes[j.id];
+    const mark = v === "like" ? `<span class="mark like">♥</span>`
+              : v === "dislike" ? `<span class="mark dislike">✕</span>` : "";
+    const flag = j.rockstar ? `<span class="tile-flag rockstar">R★</span>`
+                            : `<span class="tile-flag community">Comum</span>`;
+    return `<div class="tile${on}" data-job="${j.id}">
+      <div class="card-media">${mark}${flag}
+        <img src="${j.img}" loading="lazy" onerror="this.style.opacity=0"></div>
+      <div class="tile-title">${escapeHTML(j.title || j.id)}</div>
+    </div>`;
+  }
   function renderListDetail() {
     const l = lists[openListIdx]; if (!l) return renderLists();
     $("#list-detail-name").textContent = l.name;
     $("#btn-add-to-list").textContent = pickerMode ? `✓ Concluir (${l.jobs.length}/${MAX_LIST})` : "＋ Adicionar corridas";
+    $("#list-filters").hidden = !pickerMode;
     const grid = $("#list-detail-grid");
     if (pickerMode) {
       $("#list-detail-empty").hidden = true;
-      grid.innerHTML = jobs.map((j) => {
-        const on = l.jobs.includes(j.id) ? " picked" : "";
-        return `<div class="tile${on}" data-job="${j.id}"><img src="${j.img}"></div>`;
-      }).join("");
+      const view = jobs.filter(passesListFilter);
+      grid.innerHTML = view.length
+        ? view.map((j) => pickTileHTML(j, l.jobs.includes(j.id) ? " picked" : "")).join("")
+        : `<p class="empty-state">Nenhuma corrida com esses filtros.</p>`;
       $$("#list-detail-grid .tile").forEach((t) => t.onclick = () => toggleInList(t.dataset.job));
     } else {
       $("#list-detail-empty").hidden = l.jobs.length > 0;
-      grid.innerHTML = l.jobs.map((id) => jobById[id] ? `
-        <div class="tile" data-job="${id}"><span class="mark dislike">✕</span>
-          <img src="${jobById[id].img}"></div>` : "").join("");
+      grid.innerHTML = l.jobs.map((id) => jobById[id]
+        ? pickTileHTML(jobById[id], "") : "").join("");
       $$("#list-detail-grid .tile").forEach((t) => t.onclick = () => {
         removeFromList(t.dataset.job); toast("Removida da lista");
       });
@@ -579,6 +600,15 @@
       });
     });
     $("#f-type").onchange = (e) => { gridFilter.type = e.target.value; renderGrid(); };
+
+    // filtros da tela "adicionar corridas" (dentro de uma lista)
+    ["lf-creator", "lf-vote"].forEach((id) => {
+      const key = id === "lf-creator" ? "creator" : "vote";
+      $$("#" + id + " button").forEach((b) => b.onclick = () => {
+        $$("#" + id + " button").forEach((x) => x.classList.remove("on"));
+        b.classList.add("on"); listFilter[key] = b.dataset.v; renderListDetail();
+      });
+    });
 
     // swipe
     $("#btn-like").onclick = () => buttonSwipe("like");

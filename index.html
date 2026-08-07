@@ -163,6 +163,18 @@
             <button id="btn-del-list" class="icon-btn danger" title="Apagar lista">🗑</button>
           </div>
           <button id="btn-add-to-list" class="btn-primary wide">＋ Adicionar corridas</button>
+          <div id="list-filters" class="grid-filters" hidden>
+            <div class="fseg" id="lf-creator" data-filter="creator">
+              <button data-v="all" class="on">Todos</button>
+              <button data-v="rockstar">Rockstar</button>
+              <button data-v="community">Comunidade</button>
+            </div>
+            <div class="fseg" id="lf-vote" data-filter="vote">
+              <button data-v="all" class="on">Todas</button>
+              <button data-v="like" title="Curtidas">👍</button>
+              <button data-v="dislike" title="Passadas">👎</button>
+            </div>
+          </div>
           <div id="list-detail-grid" class="racegrid"></div>
           <div id="list-detail-empty" class="empty-state">Lista vazia. Toque em <b>Adicionar corridas</b>.</div>
         </div>
@@ -170,7 +182,7 @@
     </main>
 
     <nav class="bottomnav">
-      <button class="nav-item active" data-view="swipe"><span>🎴</span>Deslizar</button>
+      <button class="nav-item active" data-view="swipe"><span>↔️</span>Deslizar</button>
       <button class="nav-item" data-view="grid"><span>🏁</span>Grade</button>
       <button class="nav-item" data-view="lists"><span>📋</span>Listas</button>
     </nav>
