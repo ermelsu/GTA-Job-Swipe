@@ -230,6 +230,7 @@ input[type=text]:focus{outline:none; border-color:var(--accent)}
 .ga{flex:1; border:1px solid var(--line); background:var(--bg); color:var(--txt); border-radius:8px;
   padding:10px; font-weight:800; cursor:pointer; font-size:.95rem}
 .ga:active{transform:scale(.96)}
+.ga.like{color:var(--like)} .ga.dislike{color:var(--dislike)}
 .ga.like.on{background:var(--like); color:#000; border-color:var(--like)}
 .ga.dislike.on{background:var(--dislike); color:#fff; border-color:var(--dislike)}
 .ga.add{color:var(--accent); border-color:var(--accent)}

@@ -331,8 +331,8 @@
       <div class="gcard-body">
         <div class="c-title">${escapeHTML(job.title || job.id)}</div>${rock}${desc}
         <div class="gcard-actions">
-          <button class="ga dislike${v === "dislike" ? " on" : ""}" data-a="dislike">👎</button>
-          <button class="ga like${v === "like" ? " on" : ""}" data-a="like">👍</button>
+          <button class="ga dislike${v === "dislike" ? " on" : ""}" data-a="dislike">✕</button>
+          <button class="ga like${v === "like" ? " on" : ""}" data-a="like">♥</button>
           <button class="ga add${inList ? " on" : ""}" data-a="add">${escapeHTML(addLabel)}</button>
         </div>
       </div>
@@ -359,7 +359,7 @@
     if (v === undefined) { delete votes[jobId]; saveVotes(); }
     else setVote(jobId, vote);
     renderGrid();
-    toast(v === "like" ? "Curtida 👍" : v === "dislike" ? "Passou 👎" : "Voto removido");
+    toast(v === "like" ? "Curtida ♥" : v === "dislike" ? "Passou ✕" : "Voto removido");
   }
 
   // =======================================================================
@@ -387,7 +387,7 @@
     if (v === undefined) { delete votes[sheetJob]; saveVotes(); }
     else setVote(sheetJob, v);
     refreshSheet(); refreshVisibleGrids();
-    toast(v === "like" ? "Curtida 👍" : v === "dislike" ? "Passou 👎" : "Voto removido");
+    toast(v === "like" ? "Curtida ♥" : v === "dislike" ? "Passou ✕" : "Voto removido");
   }
   function refreshVisibleGrids() {
     if ($("#view-grid").classList.contains("active")) renderGrid();
